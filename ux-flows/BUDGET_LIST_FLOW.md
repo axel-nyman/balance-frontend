@@ -27,9 +27,9 @@ The Budget List page is the main entry point for budget management. It displays 
 │  │ ────────────    │  │ ────────────    │  │ ────────────    │  │
 │  │ UNLOCKED        │  │ LOCKED     ✓    │  │ LOCKED     ✓    │  │
 │  │                 │  │                 │  │                 │  │
-│  │ Income   $5,000 │  │ Income   $5,200 │  │ Income   $4,800 │  │
-│  │ Expenses $3,200 │  │ Expenses $3,100 │  │ Expenses $2,900 │  │
-│  │ Savings  $1,800 │  │ Savings  $2,100 │  │ Savings  $1,900 │  │
+│  │ Income   50 000 kr │ Income   52 000 kr │ Income   48 000 kr │
+│  │ Expenses 32 000 kr │ Expenses 31 000 kr │ Expenses 29 000 kr │
+│  │ Savings  18 000 kr │ Savings  21 000 kr │ Savings  19 000 kr │
 │  │                 │  │                 │  │                 │  │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘  │
 │                                                                 │
@@ -38,9 +38,9 @@ The Budget List page is the main entry point for budget management. It displays 
 │  │ ────────────    │  │ ────────────    │                       │
 │  │ LOCKED     ✓    │  │ LOCKED     ✓    │                       │
 │  │                 │  │                 │                       │
-│  │ Income   $4,500 │  │ Income   $4,500 │                       │
-│  │ Expenses $2,800 │  │ Expenses $3,000 │                       │
-│  │ Savings  $1,700 │  │ Savings  $1,500 │                       │
+│  │ Income   45 000 kr │ Income   45 000 kr │                    │
+│  │ Expenses 28 000 kr │ Expenses 30 000 kr │                    │
+│  │ Savings  17 000 kr │ Savings  15 000 kr │                    │
 │  │                 │  │                 │                       │
 │  └─────────────────┘  └─────────────────┘                       │
 │                                                                 │
@@ -84,9 +84,9 @@ The Budget List page is the main entry point for budget management. It displays 
 │ ──────────────────────  │
 │ UNLOCKED                │  ← Status badge
 │                         │
-│ Income      $5,000.00   │  ← Totals
-│ Expenses    $3,200.00   │
-│ Savings     $1,800.00   │
+│ Income      50 000,00 kr │  ← Totals
+│ Expenses    32 000,00 kr │
+│ Savings     18 000,00 kr │
 │                         │
 └─────────────────────────┘
 ```
@@ -125,11 +125,11 @@ The Budget List page is the main entry point for budget management. It displays 
 │ ──────────────────────  │
 │ UNLOCKED                │
 │                         │
-│ Income      $5,000.00   │
-│ Expenses    $3,200.00   │
-│ Savings     $1,800.00   │
+│ Income      50 000,00 kr │
+│ Expenses    32 000,00 kr │
+│ Savings     18 000,00 kr │
 │                         │
-│ Balance:      $0.00  ✓  │  ← Optional: show if balanced
+│ Balance:      0,00 kr ✓ │  ← Optional: show if balanced
 └─────────────────────────┘
 ```
 
@@ -137,8 +137,8 @@ Optional enhancement: Show balance status to indicate if budget is ready to lock
 
 | Balance | Display |
 |---------|---------|
-| $0.00 | Green "✓" or "Ready to lock" |
-| ≠ $0.00 | Muted text showing remaining amount |
+| 0,00 kr | Green "✓" or "Ready to lock" |
+| ≠ 0,00 kr | Muted text showing remaining amount |
 
 ### Locked Budget Card
 
@@ -148,9 +148,9 @@ Optional enhancement: Show balance status to indicate if budget is ready to lock
 │ ──────────────────────  │
 │ LOCKED             ✓    │
 │                         │
-│ Income      $5,200.00   │
-│ Expenses    $3,100.00   │
-│ Savings     $2,100.00   │
+│ Income      52 000,00 kr │
+│ Expenses    31 000,00 kr │
+│ Savings     21 000,00 kr │
 │                         │
 │ Todo: 3/5 completed     │  ← Optional: todo progress
 └─────────────────────────┘
@@ -253,18 +253,18 @@ While fetching budgets:
 │  │ March 2025                  │    │
 │  │ UNLOCKED                    │    │
 │  │                             │    │
-│  │ Income       $5,000.00      │    │
-│  │ Expenses     $3,200.00      │    │
-│  │ Savings      $1,800.00      │    │
+│  │ Income       50 000,00 kr   │    │
+│  │ Expenses     32 000,00 kr   │    │
+│  │ Savings      18 000,00 kr   │    │
 │  └─────────────────────────────┘    │
 │                                     │
 │  ┌─────────────────────────────┐    │
 │  │ February 2025               │    │
 │  │ LOCKED                 ✓    │    │
 │  │                             │    │
-│  │ Income       $5,200.00      │    │
-│  │ Expenses     $3,100.00      │    │
-│  │ Savings      $2,100.00      │    │
+│  │ Income       52 000,00 kr   │    │
+│  │ Expenses     31 000,00 kr   │    │
+│  │ Savings      21 000,00 kr   │    │
 │  └─────────────────────────────┘    │
 │                                     │
 └─────────────────────────────────────┘

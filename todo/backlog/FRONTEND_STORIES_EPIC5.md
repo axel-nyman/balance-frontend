@@ -55,58 +55,135 @@ The Budget Wizard guides users through creating a new monthly budget:
 ```typescript
 // src/components/wizard/types.ts
 
-export interface IncomeItem {
-  id: string // client-side UUID
-  source: string
-  amount: number
+// =============================================================================
+// WIZARD ITEM TYPES
+// These mirror the API request types but include a client-side `id` for local
+// state management and display-only fields for UX purposes.
+// =============================================================================
+
+export interface WizardIncomeItem {
+  id: string                    // Client-side UUID for React keys and local operations
+  name: string                  // Required: e.g., "Salary", "Freelance payment"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Target account for this income
+  bankAccountName: string       // Display only: Shown in UI, not sent to API
 }
 
-export interface ExpenseItem {
-  id: string
-  name: string
-  amount: number
-  recurringExpenseId?: string // if from template
+export interface WizardExpenseItem {
+  id: string                    // Client-side UUID
+  name: string                  // Required: e.g., "Rent", "Groceries"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Account this expense comes from
+  bankAccountName: string       // Display only: Shown in UI
+  isManual: boolean             // Required: If true, generates PAYMENT todo item
+  recurringExpenseId?: string   // Optional: Link to recurring expense template
+  deductedAt?: string           // Optional: Date expense is deducted (ISO format)
 }
 
-export interface SavingsItem {
-  id: string
-  targetAccountId: string
-  targetAccountName: string // for display
-  amount: number
+export interface WizardSavingsItem {
+  id: string                    // Client-side UUID
+  name: string                  // Required: e.g., "Emergency Fund", "Vacation"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Target savings account
+  bankAccountName: string       // Display only: Shown in UI
 }
+
+// =============================================================================
+// WIZARD STATE
+// =============================================================================
 
 export interface WizardState {
   currentStep: number
   month: number | null
   year: number | null
-  incomeItems: IncomeItem[]
-  expenseItems: ExpenseItem[]
-  savingsItems: SavingsItem[]
+  incomeItems: WizardIncomeItem[]
+  expenseItems: WizardExpenseItem[]
+  savingsItems: WizardSavingsItem[]
   isDirty: boolean
   isSubmitting: boolean
   error: string | null
 }
 
+// =============================================================================
+// WIZARD ACTIONS
+// =============================================================================
+
 export type WizardAction =
   | { type: 'SET_MONTH_YEAR'; month: number; year: number }
-  | { type: 'SET_INCOME_ITEMS'; items: IncomeItem[] }
-  | { type: 'ADD_INCOME_ITEM'; item: IncomeItem }
-  | { type: 'UPDATE_INCOME_ITEM'; id: string; updates: Partial<IncomeItem> }
+  // Income actions
+  | { type: 'SET_INCOME_ITEMS'; items: WizardIncomeItem[] }
+  | { type: 'ADD_INCOME_ITEM'; item: WizardIncomeItem }
+  | { type: 'UPDATE_INCOME_ITEM'; id: string; updates: Partial<WizardIncomeItem> }
   | { type: 'REMOVE_INCOME_ITEM'; id: string }
-  | { type: 'SET_EXPENSE_ITEMS'; items: ExpenseItem[] }
-  | { type: 'ADD_EXPENSE_ITEM'; item: ExpenseItem }
-  | { type: 'UPDATE_EXPENSE_ITEM'; id: string; updates: Partial<ExpenseItem> }
+  // Expense actions
+  | { type: 'SET_EXPENSE_ITEMS'; items: WizardExpenseItem[] }
+  | { type: 'ADD_EXPENSE_ITEM'; item: WizardExpenseItem }
+  | { type: 'UPDATE_EXPENSE_ITEM'; id: string; updates: Partial<WizardExpenseItem> }
   | { type: 'REMOVE_EXPENSE_ITEM'; id: string }
-  | { type: 'SET_SAVINGS_ITEMS'; items: SavingsItem[] }
-  | { type: 'ADD_SAVINGS_ITEM'; item: SavingsItem }
-  | { type: 'UPDATE_SAVINGS_ITEM'; id: string; updates: Partial<SavingsItem> }
+  // Savings actions
+  | { type: 'SET_SAVINGS_ITEMS'; items: WizardSavingsItem[] }
+  | { type: 'ADD_SAVINGS_ITEM'; item: WizardSavingsItem }
+  | { type: 'UPDATE_SAVINGS_ITEM'; id: string; updates: Partial<WizardSavingsItem> }
   | { type: 'REMOVE_SAVINGS_ITEM'; id: string }
+  // Navigation actions
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
   | { type: 'GO_TO_STEP'; step: number }
+  // Submission actions
   | { type: 'SET_SUBMITTING'; isSubmitting: boolean }
   | { type: 'SET_ERROR'; error: string | null }
   | { type: 'RESET' }
+
+// =============================================================================
+// CONSTANTS
+// =============================================================================
+
+export const STEP_TITLES = [
+  'Select Month',
+  'Income',
+  'Expenses',
+  'Savings',
+  'Review',
+] as const
+
+export const TOTAL_STEPS = 5
+
+// =============================================================================
+// HELPER: Convert wizard items to API requests
+// =============================================================================
+
+import type {
+  CreateBudgetIncomeRequest,
+  CreateBudgetExpenseRequest,
+  CreateBudgetSavingsRequest,
+} from '@/api/types'
+
+export function toIncomeRequest(item: WizardIncomeItem): CreateBudgetIncomeRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+  }
+}
+
+export function toExpenseRequest(item: WizardExpenseItem): CreateBudgetExpenseRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+    isManual: item.isManual,
+    recurringExpenseId: item.recurringExpenseId,
+    deductedAt: item.deductedAt,
+  }
+}
+
+export function toSavingsRequest(item: WizardSavingsItem): CreateBudgetSavingsRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+  }
+}
 ```
 
 ### Implementation
@@ -114,51 +191,76 @@ export type WizardAction =
 **Create `src/components/wizard/types.ts`:**
 
 ```typescript
-export interface IncomeItem {
-  id: string
-  source: string
-  amount: number
+import type {
+  CreateBudgetIncomeRequest,
+  CreateBudgetExpenseRequest,
+  CreateBudgetSavingsRequest,
+} from '@/api/types'
+
+// =============================================================================
+// WIZARD ITEM TYPES
+// =============================================================================
+
+export interface WizardIncomeItem {
+  id: string                    // Client-side UUID
+  name: string                  // Required: e.g., "Salary"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Target account
+  bankAccountName: string       // Display only
 }
 
-export interface ExpenseItem {
-  id: string
-  name: string
-  amount: number
-  recurringExpenseId?: string
+export interface WizardExpenseItem {
+  id: string                    // Client-side UUID
+  name: string                  // Required: e.g., "Rent"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Source account
+  bankAccountName: string       // Display only
+  isManual: boolean             // Required: Generates PAYMENT todo if true
+  recurringExpenseId?: string   // Optional: Link to template
+  deductedAt?: string           // Optional: Deduction date (ISO)
 }
 
-export interface SavingsItem {
-  id: string
-  targetAccountId: string
-  targetAccountName: string
-  amount: number
+export interface WizardSavingsItem {
+  id: string                    // Client-side UUID
+  name: string                  // Required: e.g., "Emergency Fund"
+  amount: number                // Required: Must be positive
+  bankAccountId: string         // Required: Target savings account
+  bankAccountName: string       // Display only
 }
+
+// =============================================================================
+// WIZARD STATE
+// =============================================================================
 
 export interface WizardState {
   currentStep: number
   month: number | null
   year: number | null
-  incomeItems: IncomeItem[]
-  expenseItems: ExpenseItem[]
-  savingsItems: SavingsItem[]
+  incomeItems: WizardIncomeItem[]
+  expenseItems: WizardExpenseItem[]
+  savingsItems: WizardSavingsItem[]
   isDirty: boolean
   isSubmitting: boolean
   error: string | null
 }
 
+// =============================================================================
+// WIZARD ACTIONS
+// =============================================================================
+
 export type WizardAction =
   | { type: 'SET_MONTH_YEAR'; month: number; year: number }
-  | { type: 'SET_INCOME_ITEMS'; items: IncomeItem[] }
-  | { type: 'ADD_INCOME_ITEM'; item: IncomeItem }
-  | { type: 'UPDATE_INCOME_ITEM'; id: string; updates: Partial<IncomeItem> }
+  | { type: 'SET_INCOME_ITEMS'; items: WizardIncomeItem[] }
+  | { type: 'ADD_INCOME_ITEM'; item: WizardIncomeItem }
+  | { type: 'UPDATE_INCOME_ITEM'; id: string; updates: Partial<WizardIncomeItem> }
   | { type: 'REMOVE_INCOME_ITEM'; id: string }
-  | { type: 'SET_EXPENSE_ITEMS'; items: ExpenseItem[] }
-  | { type: 'ADD_EXPENSE_ITEM'; item: ExpenseItem }
-  | { type: 'UPDATE_EXPENSE_ITEM'; id: string; updates: Partial<ExpenseItem> }
+  | { type: 'SET_EXPENSE_ITEMS'; items: WizardExpenseItem[] }
+  | { type: 'ADD_EXPENSE_ITEM'; item: WizardExpenseItem }
+  | { type: 'UPDATE_EXPENSE_ITEM'; id: string; updates: Partial<WizardExpenseItem> }
   | { type: 'REMOVE_EXPENSE_ITEM'; id: string }
-  | { type: 'SET_SAVINGS_ITEMS'; items: SavingsItem[] }
-  | { type: 'ADD_SAVINGS_ITEM'; item: SavingsItem }
-  | { type: 'UPDATE_SAVINGS_ITEM'; id: string; updates: Partial<SavingsItem> }
+  | { type: 'SET_SAVINGS_ITEMS'; items: WizardSavingsItem[] }
+  | { type: 'ADD_SAVINGS_ITEM'; item: WizardSavingsItem }
+  | { type: 'UPDATE_SAVINGS_ITEM'; id: string; updates: Partial<WizardSavingsItem> }
   | { type: 'REMOVE_SAVINGS_ITEM'; id: string }
   | { type: 'NEXT_STEP' }
   | { type: 'PREV_STEP' }
@@ -173,9 +275,105 @@ export const STEP_TITLES = [
   'Expenses',
   'Savings',
   'Review',
-]
+] as const
 
 export const TOTAL_STEPS = 5
+
+// =============================================================================
+// HELPER: Convert wizard items to API requests
+// =============================================================================
+
+export function toIncomeRequest(item: WizardIncomeItem): CreateBudgetIncomeRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+  }
+}
+
+export function toExpenseRequest(item: WizardExpenseItem): CreateBudgetExpenseRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+    isManual: item.isManual,
+    recurringExpenseId: item.recurringExpenseId,
+    deductedAt: item.deductedAt,
+  }
+}
+
+export function toSavingsRequest(item: WizardSavingsItem): CreateBudgetSavingsRequest {
+  return {
+    name: item.name,
+    amount: item.amount,
+    bankAccountId: item.bankAccountId,
+  }
+}
+
+// =============================================================================
+// HELPER: Create empty items for new rows
+// =============================================================================
+
+export function createEmptyIncomeItem(): WizardIncomeItem {
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    amount: 0,
+    bankAccountId: '',
+    bankAccountName: '',
+  }
+}
+
+export function createEmptyExpenseItem(): WizardExpenseItem {
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    amount: 0,
+    bankAccountId: '',
+    bankAccountName: '',
+    isManual: false,
+    recurringExpenseId: undefined,
+    deductedAt: undefined,
+  }
+}
+
+export function createEmptySavingsItem(): WizardSavingsItem {
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    amount: 0,
+    bankAccountId: '',
+    bankAccountName: '',
+  }
+}
+
+// =============================================================================
+// VALIDATION HELPERS
+// =============================================================================
+
+export function isIncomeItemValid(item: WizardIncomeItem): boolean {
+  return (
+    item.name.trim().length > 0 &&
+    item.amount > 0 &&
+    item.bankAccountId.length > 0
+  )
+}
+
+export function isExpenseItemValid(item: WizardExpenseItem): boolean {
+  return (
+    item.name.trim().length > 0 &&
+    item.amount > 0 &&
+    item.bankAccountId.length > 0
+  )
+}
+
+export function isSavingsItemValid(item: WizardSavingsItem): boolean {
+  return (
+    item.name.trim().length > 0 &&
+    item.amount > 0 &&
+    item.bankAccountId.length > 0
+  )
+}
 ```
 
 **Create `src/components/wizard/wizardReducer.ts`:**
@@ -1341,6 +1539,196 @@ describe('StepMonthYear', () => {
 - [ ] Defaults are set correctly
 - [ ] Warning shows for existing budgets
 - [ ] Cannot proceed when budget exists
+- [ ] Gap-filling validation works (can create Feb if March exists)
+- [ ] Unlocked budget check prevents creating new budget
+
+### Additional Validation Logic
+
+**Create `src/components/wizard/validation.ts`:**
+
+```typescript
+interface ExistingBudget {
+  month: number
+  year: number
+}
+
+/**
+ * Check if a budget already exists for the given month/year
+ */
+export function budgetExistsForMonth(
+  month: number,
+  year: number,
+  existingBudgets: ExistingBudget[]
+): boolean {
+  return existingBudgets.some(b => b.month === month && b.year === year)
+}
+
+/**
+ * Check if the selected month/year is older than the most recent budget
+ * (but allow gap-filling)
+ *
+ * Rule: Cannot create Jan 2025 if March 2025 exists
+ * Exception: CAN create Feb 2025 if March 2025 exists (fills a gap)
+ */
+export function isMonthTooOld(
+  month: number,
+  year: number,
+  mostRecent: ExistingBudget | null,
+  existingBudgets: ExistingBudget[]
+): boolean {
+  if (!mostRecent) return false // No budgets exist, any month is valid
+
+  // Convert to comparable number (YYYYMM format)
+  const selectedValue = year * 100 + month
+  const mostRecentValue = mostRecent.year * 100 + mostRecent.month
+
+  // If selected is after or equal to most recent, it's valid
+  if (selectedValue >= mostRecentValue) return false
+
+  // If selected is before most recent, check if it's filling a gap
+  const wouldFillGap = !budgetExistsForMonth(month, year, existingBudgets)
+
+  // Allow gap-filling
+  return !wouldFillGap
+}
+
+/**
+ * Get the default month/year to pre-select in the wizard
+ */
+export function getDefaultMonthYear(
+  existingBudgets: ExistingBudget[]
+): { month: number; year: number } {
+  const now = new Date()
+  const currentMonth = now.getMonth() + 1 // 1-indexed
+  const currentYear = now.getFullYear()
+
+  // If current month doesn't have a budget, use it
+  if (!budgetExistsForMonth(currentMonth, currentYear, existingBudgets)) {
+    return { month: currentMonth, year: currentYear }
+  }
+
+  // Otherwise, find the next month without a budget
+  let testMonth = currentMonth
+  let testYear = currentYear
+
+  for (let i = 0; i < 24; i++) { // Look up to 2 years ahead
+    testMonth++
+    if (testMonth > 12) {
+      testMonth = 1
+      testYear++
+    }
+
+    if (!budgetExistsForMonth(testMonth, testYear, existingBudgets)) {
+      return { month: testMonth, year: testYear }
+    }
+  }
+
+  // Fallback to next month
+  const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1
+  const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear
+  return { month: nextMonth, year: nextYear }
+}
+
+/**
+ * Validate a month/year selection
+ */
+export function validateMonthYear(
+  month: number,
+  year: number,
+  existingBudgets: ExistingBudget[],
+  mostRecent: ExistingBudget | null,
+  hasUnlockedBudget: boolean
+): { valid: boolean; error: string | null } {
+  // Check for existing unlocked budget
+  if (hasUnlockedBudget) {
+    return {
+      valid: false,
+      error: 'Du har redan en olåst budget. Lås eller ta bort den innan du skapar en ny.',
+    }
+  }
+
+  // Check if budget already exists for this month
+  if (budgetExistsForMonth(month, year, existingBudgets)) {
+    return {
+      valid: false,
+      error: 'Det finns redan en budget för denna månad.',
+    }
+  }
+
+  // Check if month is too old (not filling a gap)
+  if (isMonthTooOld(month, year, mostRecent, existingBudgets)) {
+    return {
+      valid: false,
+      error: 'Kan inte skapa en budget äldre än den senaste budgeten.',
+    }
+  }
+
+  // Valid month range
+  if (month < 1 || month > 12) {
+    return {
+      valid: false,
+      error: 'Månad måste vara mellan 1 och 12.',
+    }
+  }
+
+  // Valid year range
+  if (year < 2020 || year > 2100) {
+    return {
+      valid: false,
+      error: 'År måste vara mellan 2020 och 2100.',
+    }
+  }
+
+  return { valid: true, error: null }
+}
+```
+
+**Create `src/hooks/use-budget-validation.ts`:**
+
+```typescript
+import { useQuery } from '@tanstack/react-query'
+import { getBudgets } from '@/api'
+import { queryKeys } from './query-keys'
+
+interface BudgetValidation {
+  existingBudgets: Array<{ month: number; year: number; status: string }>
+  hasUnlockedBudget: boolean
+  mostRecentBudget: { month: number; year: number } | null
+  isLoading: boolean
+  error: Error | null
+}
+
+export function useBudgetValidation(): BudgetValidation {
+  const { data, isLoading, error } = useQuery({
+    queryKey: queryKeys.budgets.all,
+    queryFn: getBudgets,
+  })
+
+  const existingBudgets = data?.budgets.map(b => ({
+    month: b.month,
+    year: b.year,
+    status: b.status,
+  })) ?? []
+
+  const hasUnlockedBudget = existingBudgets.some(b => b.status === 'UNLOCKED')
+
+  // Most recent by year DESC, month DESC
+  const sortedBudgets = [...existingBudgets].sort((a, b) => {
+    if (a.year !== b.year) return b.year - a.year
+    return b.month - a.month
+  })
+
+  const mostRecentBudget = sortedBudgets[0] ?? null
+
+  return {
+    existingBudgets,
+    hasUnlockedBudget,
+    mostRecentBudget,
+    isLoading,
+    error: error as Error | null,
+  }
+}
+```
 
 ---
 
@@ -1710,6 +2098,196 @@ describe('StepIncome', () => {
 - [ ] Total displays correctly
 - [ ] Copy from last budget works
 - [ ] Validation message shows when empty
+- [ ] Duplicate items are skipped when copying
+
+### Copy from Last Budget Implementation
+
+**Create `src/hooks/use-last-budget.ts`:**
+
+```typescript
+import { useQuery } from '@tanstack/react-query'
+import { getBudgets, getBudget } from '@/api'
+import { queryKeys } from './query-keys'
+import type { BudgetDetail } from '@/api/types'
+
+interface UseLastBudgetResult {
+  lastBudget: BudgetDetail | null
+  isLoading: boolean
+  error: Error | null
+}
+
+export function useLastBudget(): UseLastBudgetResult {
+  // First, get all budgets to find the most recent
+  const { data: budgetList, isLoading: isLoadingList, error: listError } = useQuery({
+    queryKey: queryKeys.budgets.all,
+    queryFn: getBudgets,
+  })
+
+  // Find the most recent budget
+  const mostRecentBudgetId = budgetList?.budgets[0]?.id
+
+  // Then fetch its full details
+  const { data: budgetDetail, isLoading: isLoadingDetail, error: detailError } = useQuery({
+    queryKey: queryKeys.budgets.detail(mostRecentBudgetId ?? ''),
+    queryFn: () => getBudget(mostRecentBudgetId!),
+    enabled: !!mostRecentBudgetId,
+  })
+
+  return {
+    lastBudget: budgetDetail ?? null,
+    isLoading: isLoadingList || isLoadingDetail,
+    error: (listError as Error) ?? (detailError as Error) ?? null,
+  }
+}
+```
+
+**Create `src/components/wizard/CopyFromLastBudgetModal.tsx`:**
+
+```typescript
+import { useState, useMemo } from 'react'
+import { Copy, Check } from 'lucide-react'
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
+import { formatCurrency, formatMonthYear } from '@/lib/utils'
+import { useLastBudget } from '@/hooks/use-last-budget'
+import type { BudgetIncome, BudgetSavings } from '@/api/types'
+
+interface CopyFromLastBudgetModalProps<T> {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  itemType: 'income' | 'savings'
+  onCopy: (items: T[]) => void
+}
+
+export function CopyFromLastBudgetModal<T extends BudgetIncome | BudgetSavings>({
+  open, onOpenChange, itemType, onCopy,
+}: CopyFromLastBudgetModalProps<T>) {
+  const { lastBudget, isLoading, error } = useLastBudget()
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+
+  const items = useMemo(() => {
+    if (!lastBudget) return []
+    return itemType === 'income' ? lastBudget.income : lastBudget.savings
+  }, [lastBudget, itemType]) as T[]
+
+  const toggleItem = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleAll = () => {
+    if (selectedIds.size === items.length) setSelectedIds(new Set())
+    else setSelectedIds(new Set(items.map((item) => item.id)))
+  }
+
+  const handleCopy = () => {
+    const selectedItems = items.filter((item) => selectedIds.has(item.id))
+    onCopy(selectedItems)
+    onOpenChange(false)
+    setSelectedIds(new Set())
+  }
+
+  const title = itemType === 'income'
+    ? 'Kopiera inkomster från förra budgeten'
+    : 'Kopiera sparande från förra budgeten'
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Copy className="w-5 h-5" />
+            {title}
+          </DialogTitle>
+          {lastBudget && (
+            <p className="text-sm text-gray-500">
+              Från {formatMonthYear(lastBudget.month, lastBudget.year)}
+            </p>
+          )}
+        </DialogHeader>
+
+        <div className="py-4">
+          {isLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-12 w-full" />)}
+            </div>
+          ) : items.length === 0 ? (
+            <p className="text-sm text-gray-500 text-center py-4">
+              Inga {itemType === 'income' ? 'inkomster' : 'sparande'} i förra budgeten.
+            </p>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 mb-3 pb-3 border-b">
+                <Checkbox checked={selectedIds.size === items.length} onCheckedChange={toggleAll} />
+                <span className="text-sm font-medium">Välj alla ({items.length})</span>
+              </div>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    <Checkbox checked={selectedIds.has(item.id)} />
+                    <div className="flex-1">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {formatCurrency(item.amount)} • {item.bankAccount.name}
+                      </p>
+                    </div>
+                    {selectedIds.has(item.id) && <Check className="w-4 h-4 text-green-600" />}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Avbryt</Button>
+          <Button onClick={handleCopy} disabled={selectedIds.size === 0}>
+            Kopiera {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+```
+
+**Usage in IncomeStep:**
+
+```typescript
+const handleCopyFromLast = (items: BudgetIncome[]) => {
+  const existingNames = new Set(state.incomeItems.map((i) => i.name.toLowerCase()))
+
+  const wizardItems: WizardIncomeItem[] = items
+    .filter((item) => !existingNames.has(item.name.toLowerCase())) // Skip duplicates
+    .map((item) => ({
+      id: generateId(),
+      name: item.name,
+      amount: item.amount,
+      bankAccountId: item.bankAccount.id,
+      bankAccountName: item.bankAccount.name,
+    }))
+
+  if (wizardItems.length < items.length) {
+    toast.info(`Hoppade över ${items.length - wizardItems.length} dubbletter`)
+  }
+
+  for (const item of wizardItems) {
+    dispatch({ type: 'ADD_INCOME_ITEM', item })
+  }
+}
+```
 
 ---
 
@@ -2148,8 +2726,131 @@ describe('StepExpenses', () => {
 - [ ] Can add/edit/remove expense items
 - [ ] Quick-add shows recurring expenses
 - [ ] Due expenses highlighted
-- [ ] Added templates show checkmark
+- [ ] Added templates show checkmark (filtered from list)
 - [ ] Total displays correctly
+- [ ] Recurring expenses are removed from Quick-Add list when added to budget
+
+### Quick-Add State Tracking Implementation
+
+Track which recurring expenses have been added using a derived state approach:
+
+```typescript
+// In ExpenseStep component - derive from expense items
+const addedRecurringExpenseIds = useMemo(() => {
+  const ids = new Set<string>()
+  for (const item of state.expenseItems) {
+    if (item.recurringExpenseId) {
+      ids.add(item.recurringExpenseId)
+    }
+  }
+  return ids
+}, [state.expenseItems])
+
+// Filter out already-added templates from Quick-Add section
+const availableRecurringExpenses = recurringExpenses.filter(
+  exp => !addedRecurringExpenseIds.has(exp.id)
+)
+
+// Separate into due and not due
+const dueExpenses = availableRecurringExpenses.filter(exp => exp.isDue)
+const otherExpenses = availableRecurringExpenses.filter(exp => !exp.isDue)
+```
+
+**QuickAddSection Component:**
+
+```typescript
+interface QuickAddSectionProps {
+  addedIds: Set<string>
+  onAdd: (template: RecurringExpense) => void
+}
+
+export function QuickAddSection({ addedIds, onAdd }: QuickAddSectionProps) {
+  const { data, isLoading } = useRecurringExpenses()
+
+  if (isLoading) {
+    return <Skeleton className="h-32" />
+  }
+
+  const expenses = data?.expenses ?? []
+
+  // Filter out already-added templates
+  const availableExpenses = expenses.filter(exp => !addedIds.has(exp.id))
+
+  // Separate into due and not due
+  const dueExpenses = availableExpenses.filter(exp => exp.isDue)
+  const otherExpenses = availableExpenses.filter(exp => !exp.isDue)
+
+  if (availableExpenses.length === 0) {
+    return (
+      <div className="p-4 bg-gray-50 rounded-lg text-center">
+        <p className="text-sm text-gray-500">
+          {expenses.length === 0
+            ? 'Inga återkommande utgifter ännu.'
+            : 'Alla återkommande utgifter har lagts till.'}
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-sm font-medium text-gray-900">Snabblägg från återkommande utgifter</h3>
+
+      {dueExpenses.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-red-600 uppercase tracking-wide mb-2">
+            Förfaller denna månad
+          </h4>
+          <div className="space-y-2">
+            {dueExpenses.map(exp => (
+              <QuickAddItem key={exp.id} expense={exp} onAdd={onAdd} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {otherExpenses.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+            Alla återkommande utgifter
+          </h4>
+          <div className="space-y-2">
+            {otherExpenses.map(exp => (
+              <QuickAddItem key={exp.id} expense={exp} onAdd={onAdd} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+**Visual Feedback for Recurring Expense Items:**
+
+```typescript
+// In the expense table row component
+function ExpenseTableRow({ item, onUpdate, onRemove }: ExpenseTableRowProps) {
+  const isFromRecurring = Boolean(item.recurringExpenseId)
+
+  return (
+    <tr className={cn(isFromRecurring && 'bg-blue-50/50')}>
+      <td className="px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span>{item.name}</span>
+          {isFromRecurring && (
+            <Badge variant="secondary" className="text-xs">
+              <Repeat className="w-3 h-3 mr-1" />
+              Återkommande
+            </Badge>
+          )}
+        </div>
+      </td>
+      {/* ... other columns ... */}
+    </tr>
+  )
+}
+```
 
 ---
 

@@ -82,7 +82,7 @@ Editable table with the following columns:
 - User can then edit amounts/accounts as needed in the table
 
 **Running Total:**
-- Display "Total Income: $X,XXX.XX" below the table
+- Display "Total Income: X XXX,XX kr" below the table
 - Updates in real-time as user edits
 
 ### Validation
@@ -111,28 +111,28 @@ Two sections stacked vertically:
 │  ┌───────────────────────────────────────┐  │
 │  │ DUE THIS MONTH                        │  │
 │  │ ┌─────────────────────────────────┐   │  │
-│  │ │ [+] Rent — $1,500 (Monthly)     │   │  │
-│  │ │ [+] Electric — $120 (Monthly)   │   │  │
+│  │ │ [+] Rent — 15 000 kr (Monthly)  │   │  │
+│  │ │ [+] Electric — 1 200 kr (Monthly)│  │  │
 │  │ └─────────────────────────────────┘   │  │
 │  │                                       │  │
 │  │ ALL RECURRING EXPENSES                │  │
 │  │ ┌─────────────────────────────────┐   │  │
-│  │ │ [+] Car Insurance — $600 (Bia.) │   │  │
-│  │ │ [+] Amazon Prime — $140 (Year.) │   │  │
+│  │ │ [+] Car Insurance — 6 000 kr (Bia.)│ │  │
+│  │ │ [+] Amazon Prime — 1 400 kr (Year.)│ │  │
 │  │ └─────────────────────────────────┘   │  │
 │  └───────────────────────────────────────┘  │
 │                                             │
 │  Budget Expenses                            │
 │  ┌───────────────────────────────────────┐  │
-│  │ Name    | Amount | Account | Manual |  │  │
-│  │ --------|--------|---------|--------|  │  │
-│  │ Rent    | 1,500  | Check ▼ | ☑      |  │  │
-│  │ Electric| 120    | Check ▼ | ☐      |  │  │
-│  │ Groceries| 400   | Check ▼ | ☐      |  │  │
+│  │ Name    | Amount    | Account | Manual |│  │
+│  │ --------|-----------|---------|--------|│  │
+│  │ Rent    | 15 000 kr | Check ▼ | ☑      |│  │
+│  │ Electric| 1 200 kr  | Check ▼ | ☐      |│  │
+│  │ Groceries| 4 000 kr | Check ▼ | ☐      |│  │
 │  └───────────────────────────────────────┘  │
 │  [+ Add Expense]                            │
 │                                             │
-│  Total Expenses: $2,020.00                  │
+│  Total Expenses: 20 200,00 kr               │
 └─────────────────────────────────────────────┘
 ```
 
@@ -178,7 +178,7 @@ Two sections stacked vertically:
 - Amount from recurring template can be adjusted for this month
 
 **Running Total:**
-- Display "Total Expenses: $X,XXX.XX" below table
+- Display "Total Expenses: X XXX,XX kr" below table
 
 ### Validation
 - Each row must have: non-empty name, positive amount, selected bank account
@@ -221,20 +221,20 @@ Editable table with the following columns:
 **Running Balance Display:**
 ```
 ┌─────────────────────────────────────┐
-│  Income:        $5,000.00           │
-│  Expenses:     -$3,200.00           │
-│  Savings:      -$1,500.00           │
+│  Income:        50 000,00 kr        │
+│  Expenses:     -32 000,00 kr        │
+│  Savings:      -15 000,00 kr        │
 │  ─────────────────────────          │
-│  Remaining:       $300.00           │
+│  Remaining:      3 000,00 kr        │
 │                                     │
-│  ⚠ Budget must equal $0 to lock    │
+│  ⚠ Budget must equal 0 kr to lock  │
 └─────────────────────────────────────┘
 ```
 
 - Shows breakdown: Income, Expenses, Savings, Remaining
 - Updates in real-time
-- When Remaining = $0.00, show success indicator (checkmark, green color)
-- When Remaining ≠ $0.00, show warning (but don't block progress)
+- When Remaining = 0,00 kr, show success indicator (checkmark, green color)
+- When Remaining ≠ 0,00 kr, show warning (but don't block progress)
 
 ### Validation
 - Each row must have: non-empty name, positive amount, selected bank account
@@ -258,24 +258,24 @@ Final review of the complete budget with ability to edit, save, and optionally l
 ┌─────────────────────────────────────────────────────────┐
 │  Budget: March 2025                                     │
 │                                                         │
-│  ▼ Income                            Total: $5,000.00   │
+│  ▼ Income                            Total: 50 000 kr  │
 │  ┌─────────────────────────────────────────────────┐    │
-│  │ Name      | Amount   | Account    | Actions     │    │
-│  │ Salary    | 4,500.00 | Checking   | [Edit][Del] │    │
-│  │ Side gig  |   500.00 | Checking   | [Edit][Del] │    │
+│  │ Name      | Amount      | Account    | Actions  │    │
+│  │ Salary    | 45 000,00 kr| Checking   | [Edit][Del]│   │
+│  │ Side gig  |  5 000,00 kr| Checking   | [Edit][Del]│   │
 │  │                                   | [+ Add]     │    │
 │  └─────────────────────────────────────────────────┘    │
 │                                                         │
-│  ▶ Expenses (collapsed)              Total: $3,200.00   │
+│  ▶ Expenses (collapsed)              Total: 32 000 kr  │
 │                                                         │
-│  ▶ Savings (collapsed)               Total: $1,800.00   │
+│  ▶ Savings (collapsed)               Total: 18 000 kr  │
 │                                                         │
 │  ┌─────────────────────────────────────────────────┐    │
-│  │  Income:        $5,000.00                       │    │
-│  │  Expenses:     -$3,200.00                       │    │
-│  │  Savings:      -$1,800.00                       │    │
+│  │  Income:        50 000,00 kr                    │    │
+│  │  Expenses:     -32 000,00 kr                    │    │
+│  │  Savings:      -18 000,00 kr                    │    │
 │  │  ─────────────────────────                      │    │
-│  │  Balance:          $0.00  ✓                     │    │
+│  │  Balance:           0,00 kr  ✓                  │    │
 │  └─────────────────────────────────────────────────┘    │
 │                                                         │
 │  [Cancel]                      [Save Budget] [Lock]     │
@@ -312,8 +312,8 @@ Each category (Income, Expenses, Savings) is a collapsible accordion:
 - Budget can be edited later from the detail page
 
 **Lock:**
-- Only enabled when balance = $0.00
-- Disabled with tooltip when unbalanced: "Budget must balance to $0 to lock"
+- Only enabled when balance = 0,00 kr
+- Disabled with tooltip when unbalanced: "Budget must balance to 0 kr to lock"
 - When clicked:
   - Saves the budget
   - Locks the budget (sets status to LOCKED)

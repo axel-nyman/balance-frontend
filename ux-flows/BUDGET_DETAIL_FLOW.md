@@ -27,30 +27,30 @@ The page design mirrors the Review step of the budget wizard, providing a consis
 │  Created: Mar 1, 2025                                           │
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │ ▼ Income                                  Total: $5,000   │  │
+│  │ ▼ Income                              Total: 50 000 kr    │  │
 │  │ ┌─────────────────────────────────────────────────────┐   │  │
-│  │ │ Salary        │ $4,500  │ Checking  │ [Edit] [Del]  │   │  │
-│  │ │ Side gig      │ $500    │ Checking  │ [Edit] [Del]  │   │  │
+│  │ │ Salary        │ 45 000 kr │ Checking │ [Edit] [Del] │   │  │
+│  │ │ Side gig      │ 5 000 kr  │ Checking │ [Edit] [Del] │   │  │
 │  │ │                                      │ [+ Add]       │   │  │
 │  │ └─────────────────────────────────────────────────────┘   │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │ ▶ Expenses (collapsed)                    Total: $3,200   │  │
+│  │ ▶ Expenses (collapsed)                Total: 32 000 kr    │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │ ▶ Savings (collapsed)                     Total: $1,800   │  │
+│  │ ▶ Savings (collapsed)                 Total: 18 000 kr    │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │  ┌───────────────────────────────────────────────────────────┐  │
 │  │  Summary                                                  │  │
 │  │  ─────────────────────────────────────────────────────    │  │
-│  │  Income:        $5,000.00                                 │  │
-│  │  Expenses:     -$3,200.00                                 │  │
-│  │  Savings:      -$1,800.00                                 │  │
+│  │  Income:        50 000,00 kr                              │  │
+│  │  Expenses:     -32 000,00 kr                              │  │
+│  │  Savings:      -18 000,00 kr                              │  │
 │  │  ─────────────────────────                                │  │
-│  │  Balance:          $0.00  ✓                               │  │
+│  │  Balance:           0,00 kr  ✓                            │  │
 │  └───────────────────────────────────────────────────────────┘  │
 │                                                                 │
 │  [Delete Budget]                                    [Lock]      │
@@ -83,7 +83,7 @@ Each category (Income, Expenses, Savings) is displayed as a collapsible accordio
 ### Collapsed State
 ```
 ┌───────────────────────────────────────────────────────────┐
-│ ▶ Expenses                                   Total: $3,200 │
+│ ▶ Expenses                               Total: 32 000 kr │
 └───────────────────────────────────────────────────────────┘
 ```
 - Chevron icon (▶) indicates expandable
@@ -102,10 +102,12 @@ Shows full table of items within that category.
 
 | Column | Type | Notes |
 |--------|------|-------|
-| Name | Text (editable) | Click to edit inline |
-| Amount | Currency (editable) | Click to edit inline |
-| Bank Account | Dropdown (editable) | Click to change |
+| Name | Text | Display only, edit via modal |
+| Amount | Currency | Display only, edit via modal |
+| Bank Account | Text | Display only, edit via modal |
 | Actions | Buttons | Edit (opens modal), Delete |
+
+**Note:** Table rows are not clickable. Use the Edit button in the Actions column to modify items.
 
 ### Table Columns — Locked Budget
 
@@ -129,11 +131,13 @@ Shows full table of items within that category.
 
 | Column | Type | Notes |
 |--------|------|-------|
-| Name | Text (editable) | Click to edit inline |
-| Amount | Currency (editable) | Click to edit inline |
-| Bank Account | Dropdown (editable) | Click to change |
-| Manual | Checkbox (editable) | Toggle directly |
+| Name | Text | Display only, edit via modal |
+| Amount | Currency | Display only, edit via modal |
+| Bank Account | Text | Display only, edit via modal |
+| Manual | Icon | Visual indicator only, edit via modal |
 | Actions | Buttons | Edit (opens modal), Delete |
+
+**Note:** Table rows are not clickable. Use the Edit button in the Actions column to modify items.
 
 ### Table Columns — Locked Budget
 
@@ -160,10 +164,12 @@ Shows full table of items within that category.
 
 | Column | Type | Notes |
 |--------|------|-------|
-| Name | Text (editable) | Click to edit inline |
-| Amount | Currency (editable) | Click to edit inline |
-| Bank Account | Dropdown (editable) | Click to change |
+| Name | Text | Display only, edit via modal |
+| Amount | Currency | Display only, edit via modal |
+| Bank Account | Text | Display only, edit via modal |
 | Actions | Buttons | Edit (opens modal), Delete |
+
+**Note:** Table rows are not clickable. Use the Edit button in the Actions column to modify items.
 
 ### Table Columns — Locked Budget
 
@@ -187,18 +193,18 @@ Always visible at the bottom of the sections, showing:
 ┌─────────────────────────────────────┐
 │  Summary                            │
 │  ───────────────────────────────    │
-│  Income:        $5,000.00           │
-│  Expenses:     -$3,200.00           │
-│  Savings:      -$1,800.00           │
+│  Income:        50 000,00 kr        │
+│  Expenses:     -32 000,00 kr        │
+│  Savings:      -18 000,00 kr        │
 │  ───────────────────────────────    │
-│  Balance:          $0.00  ✓         │
+│  Balance:           0,00 kr  ✓      │
 └─────────────────────────────────────┘
 ```
 
 ### Balance Indicator
 | Balance | Display |
 |---------|---------|
-| $0.00 | Green checkmark ✓ |
+| 0,00 kr | Green checkmark ✓ |
 | Positive (surplus) | Warning color, shows amount remaining to allocate |
 | Negative (deficit) | Error color, shows overspent amount |
 
@@ -211,7 +217,7 @@ Always visible at the bottom of the sections, showing:
 | Button | Position | Behavior |
 |--------|----------|----------|
 | Delete Budget | Bottom left | Opens confirmation modal, deletes budget and all items |
-| Lock | Bottom right | Enabled only when balance = $0, locks budget |
+| Lock | Bottom right | Enabled only when balance = 0 kr, locks budget |
 
 ### Locked Budget
 
@@ -224,26 +230,73 @@ Always visible at the bottom of the sections, showing:
 
 ## Editing Items (Unlocked Budget)
 
-Two editing patterns are supported:
+All editing is done via modals for consistency and simplicity:
 
-### Pattern 1: Inline Editing
-- Click directly on a cell (name, amount, account)
-- Cell becomes editable input
-- Save on blur or Enter
-- Cancel on Escape
-- Best for quick single-field changes
-
-### Pattern 2: Modal Editing
-- Click "Edit" button in actions column
+- Click "Edit" button in the actions column
 - Opens modal with full form
 - All fields editable at once
 - Save and Cancel buttons
-- Best for editing multiple fields
+- Form validation before save
+- Toast notification on success/error
+- Modal closes on successful save
 
-### Which to Use?
-- Both options available for flexibility
-- Inline for speed, modal for comprehensive edits
-- Consistent with wizard behavior
+---
+
+## Edit Modals (Unlocked Budget)
+
+### Edit Income Modal
+```
+┌─────────────────────────────────────┐
+│  Edit Income                   [X]  │
+│  ───────────────────────────────    │
+│  Name                               │
+│  [________Salary______________]     │
+│                                     │
+│  Amount                             │
+│  [________45000_______________]     │
+│                                     │
+│  Bank Account                       │
+│  [Checking               ▼]         │
+│                                     │
+│           [Cancel]  [Save]          │
+└─────────────────────────────────────┘
+```
+
+- Pre-filled with current values
+- API call: `PUT /api/budgets/{budgetId}/income/{id}`
+- On success: Close modal, show toast, refresh data
+
+### Edit Expense Modal
+```
+┌─────────────────────────────────────┐
+│  Edit Expense                  [X]  │
+│  ───────────────────────────────    │
+│  Name                               │
+│  [________Rent________________]     │
+│                                     │
+│  Amount                             │
+│  [________8000________________]     │
+│                                     │
+│  Bank Account                       │
+│  [Checking               ▼]         │
+│                                     │
+│  ☑ Manual payment required          │
+│                                     │
+│           [Cancel]  [Save]          │
+└─────────────────────────────────────┘
+```
+
+- Pre-filled with current values
+- API call: `PUT /api/budgets/{budgetId}/expenses/{id}`
+- On success: Close modal, show toast, refresh data
+
+### Edit Savings Modal
+
+Same structure as Edit Income modal.
+
+- Pre-filled with current values
+- API call: `PUT /api/budgets/{budgetId}/savings/{id}`
+- On success: Close modal, show toast, refresh data
 
 ---
 
@@ -321,13 +374,13 @@ Same as Add Income modal.
 
 ### Prerequisites
 - Budget must be UNLOCKED
-- Balance must equal $0.00
+- Balance must equal 0,00 kr
 
 ### Lock Button State
 | Condition | Button State |
 |-----------|--------------|
-| Balance = $0 | Enabled |
-| Balance ≠ $0 | Disabled, tooltip: "Budget must balance to $0 to lock" |
+| Balance = 0 kr | Enabled |
+| Balance ≠ 0 kr | Disabled, tooltip: "Budget must balance to 0 kr to lock" |
 
 ### Lock Flow
 1. User clicks "Lock" button
@@ -433,7 +486,7 @@ When viewing a locked budget:
   ```
   ┌─────────────────────────────┐
   │  Salary                     │
-  │  $4,500.00                  │
+  │  45 000,00 kr               │
   │  Checking Account           │
   │  [Edit]  [Delete]           │
   └─────────────────────────────┘

@@ -527,9 +527,18 @@ export interface TodoItem {
   createdAt: string
 }
 
+export interface TodoListSummary {
+  totalItems: number
+  pendingItems: number
+  completedItems: number
+}
+
 export interface TodoList {
+  id: string
   budgetId: string
+  createdAt: string
   items: TodoItem[]
+  summary: TodoListSummary
 }
 
 export interface UpdateTodoItemRequest {
@@ -915,6 +924,225 @@ src/
 - [ ] `formatCurrency(1234.56)` returns `"1 234,56 kr"`
 - [ ] `formatMonthYear(3, 2025)` returns `"mars 2025"` (or similar Swedish format)
 - [ ] Error mapping works (manual test with mock response)
+- [ ] Budget balance calculation utilities work correctly
+- [ ] Month/year comparison utilities work correctly
+
+### Additional Utility Functions
+
+**Add to `src/lib/utils.ts`:**
+
+```typescript
+// =============================================================================
+// BUDGET BALANCE UTILITIES
+// =============================================================================
+
+/**
+ * Calculate budget totals and balance
+ * Balance = income - expenses - savings
+ * Balance of 0 means budget is balanced (ready to lock)
+ */
+export function calculateBudgetTotals(
+  income: Array<{ amount: number }>,
+  expenses: Array<{ amount: number }>,
+  savings: Array<{ amount: number }>
+): {
+  incomeTotal: number
+  expensesTotal: number
+  savingsTotal: number
+  balance: number
+} {
+  const incomeTotal = income.reduce((sum, item) => sum + item.amount, 0)
+  const expensesTotal = expenses.reduce((sum, item) => sum + item.amount, 0)
+  const savingsTotal = savings.reduce((sum, item) => sum + item.amount, 0)
+  const balance = incomeTotal - expensesTotal - savingsTotal
+
+  return { incomeTotal, expensesTotal, savingsTotal, balance }
+}
+
+/**
+ * Check if a budget is balanced (balance equals zero)
+ * Uses a small epsilon for floating point comparison
+ */
+export function isBudgetBalanced(balance: number): boolean {
+  return Math.abs(balance) < 0.01 // Within 1 öre
+}
+
+/**
+ * Format balance with color indicator
+ */
+export function formatBalance(balance: number): {
+  text: string
+  colorClass: string
+  isBalanced: boolean
+} {
+  const isBalanced = isBudgetBalanced(balance)
+
+  if (isBalanced) {
+    return { text: '0,00 kr', colorClass: 'text-green-600', isBalanced: true }
+  }
+
+  if (balance > 0) {
+    return { text: `+${formatCurrency(balance)}`, colorClass: 'text-yellow-600', isBalanced: false }
+  }
+
+  return { text: formatCurrency(balance), colorClass: 'text-red-600', isBalanced: false }
+}
+
+// =============================================================================
+// MONTH/YEAR UTILITIES
+// =============================================================================
+
+/**
+ * Convert month and year to a comparable integer (YYYYMM format)
+ */
+export function monthYearToNumber(month: number, year: number): number {
+  return year * 100 + month
+}
+
+/**
+ * Compare two month/year pairs
+ * Returns negative if a < b, zero if equal, positive if a > b
+ */
+export function compareMonthYear(
+  a: { month: number; year: number },
+  b: { month: number; year: number }
+): number {
+  return monthYearToNumber(a.month, a.year) - monthYearToNumber(b.month, b.year)
+}
+
+/**
+ * Get the previous month
+ */
+export function getPreviousMonth(month: number, year: number): { month: number; year: number } {
+  if (month === 1) {
+    return { month: 12, year: year - 1 }
+  }
+  return { month: month - 1, year }
+}
+
+/**
+ * Get the next month
+ */
+export function getNextMonth(month: number, year: number): { month: number; year: number } {
+  if (month === 12) {
+    return { month: 1, year: year + 1 }
+  }
+  return { month: month + 1, year }
+}
+
+/**
+ * Get current month and year
+ */
+export function getCurrentMonthYear(): { month: number; year: number } {
+  const now = new Date()
+  return { month: now.getMonth() + 1, year: now.getFullYear() }
+}
+
+// =============================================================================
+// UUID GENERATION
+// =============================================================================
+
+/**
+ * Generate a UUID for client-side item tracking
+ */
+export function generateId(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
+  }
+  // Fallback for older browsers
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
+// =============================================================================
+// FORM HELPERS
+// =============================================================================
+
+/**
+ * Parse a string to a number, returning 0 for invalid input
+ * Handles Swedish decimal format (comma as separator)
+ */
+export function parseAmount(value: string): number {
+  const normalized = value.replace(/\s/g, '').replace(',', '.')
+  const parsed = parseFloat(normalized)
+  return isNaN(parsed) ? 0 : parsed
+}
+
+/**
+ * Format a number for display in an input field
+ * Uses Swedish format with comma as decimal separator
+ */
+export function formatAmountForInput(amount: number): string {
+  return amount.toFixed(2).replace('.', ',')
+}
+```
+
+**Tests for utilities (`src/lib/utils.test.ts`):**
+
+```typescript
+describe('calculateBudgetTotals', () => {
+  it('calculates totals correctly', () => {
+    const income = [{ amount: 50000 }, { amount: 5000 }]
+    const expenses = [{ amount: 30000 }, { amount: 2000 }]
+    const savings = [{ amount: 10000 }, { amount: 8000 }]
+
+    const result = calculateBudgetTotals(income, expenses, savings)
+
+    expect(result.incomeTotal).toBe(55000)
+    expect(result.expensesTotal).toBe(32000)
+    expect(result.savingsTotal).toBe(18000)
+    expect(result.balance).toBe(5000) // 55000 - 32000 - 18000 = 5000
+  })
+
+  it('handles empty arrays', () => {
+    const result = calculateBudgetTotals([], [], [])
+    expect(result.balance).toBe(0)
+  })
+})
+
+describe('isBudgetBalanced', () => {
+  it('returns true for zero', () => {
+    expect(isBudgetBalanced(0)).toBe(true)
+  })
+
+  it('returns true for near-zero (floating point)', () => {
+    expect(isBudgetBalanced(0.001)).toBe(true)
+    expect(isBudgetBalanced(-0.005)).toBe(true)
+  })
+
+  it('returns false for non-zero', () => {
+    expect(isBudgetBalanced(1)).toBe(false)
+    expect(isBudgetBalanced(-50)).toBe(false)
+  })
+})
+
+describe('compareMonthYear', () => {
+  it('compares correctly', () => {
+    expect(compareMonthYear({ month: 3, year: 2025 }, { month: 1, year: 2025 })).toBeGreaterThan(0)
+    expect(compareMonthYear({ month: 1, year: 2025 }, { month: 3, year: 2025 })).toBeLessThan(0)
+    expect(compareMonthYear({ month: 3, year: 2025 }, { month: 3, year: 2025 })).toBe(0)
+    expect(compareMonthYear({ month: 12, year: 2024 }, { month: 1, year: 2025 })).toBeLessThan(0)
+  })
+})
+
+describe('parseAmount', () => {
+  it('parses Swedish format', () => {
+    expect(parseAmount('1 234,56')).toBe(1234.56)
+  })
+
+  it('parses standard format', () => {
+    expect(parseAmount('1234.56')).toBe(1234.56)
+  })
+
+  it('returns 0 for invalid input', () => {
+    expect(parseAmount('abc')).toBe(0)
+    expect(parseAmount('')).toBe(0)
+  })
+})
+```
 
 ---
 
@@ -1674,6 +1902,155 @@ src/
 - [ ] Active nav item is visually highlighted
 - [ ] Clicking outside sidebar on mobile closes it
 - [ ] Page content displays in main area
+- [ ] iOS safe areas handled properly
+- [ ] Mobile modals work correctly (full-screen or bottom sheet)
+
+### Mobile Navigation Implementation
+
+**Breakpoints:**
+- Mobile: < 768px (md)
+- Tablet: 768px - 1023px
+- Desktop: ≥ 1024px (lg)
+
+**Create `src/components/layout/MobileHeader.tsx`:**
+
+```typescript
+import { Menu } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Link } from 'react-router-dom'
+
+interface MobileHeaderProps {
+  onMenuClick: () => void
+}
+
+export function MobileHeader({ onMenuClick }: MobileHeaderProps) {
+  return (
+    <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-gray-200 z-40">
+      <div className="flex items-center justify-between h-full px-4">
+        <Button variant="ghost" size="icon" onClick={onMenuClick} aria-label="Öppna meny">
+          <Menu className="w-6 h-6" />
+        </Button>
+        <Link to="/budgets" className="font-semibold text-lg">Balance</Link>
+        <div className="w-10" /> {/* Spacer to center title */}
+      </div>
+    </header>
+  )
+}
+```
+
+**Create `src/components/layout/MobileSidebar.tsx`:**
+
+```typescript
+import { BarChart3, CreditCard, Repeat } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { cn } from '@/lib/utils'
+
+interface MobileSidebarProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}
+
+const navItems = [
+  { path: '/budgets', label: 'Budgetar', icon: BarChart3 },
+  { path: '/accounts', label: 'Konton', icon: CreditCard },
+  { path: '/recurring-expenses', label: 'Återkommande utgifter', icon: Repeat },
+]
+
+export function MobileSidebar({ open, onOpenChange }: MobileSidebarProps) {
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="left" className="w-72 p-0">
+        <SheetHeader className="p-4 border-b">
+          <SheetTitle className="text-left">Balance</SheetTitle>
+        </SheetHeader>
+        <nav className="p-2">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onClick={() => onOpenChange(false)} // Close on navigation
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors',
+                  isActive
+                    ? 'bg-blue-50 text-blue-700 font-semibold'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                )
+              }
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      </SheetContent>
+    </Sheet>
+  )
+}
+```
+
+**Update `src/components/layout/AppLayout.tsx`:**
+
+```typescript
+import { useState } from 'react'
+import { Outlet } from 'react-router-dom'
+import { Sidebar } from './Sidebar'
+import { MobileHeader } from './MobileHeader'
+import { MobileSidebar } from './MobileSidebar'
+
+export function AppLayout() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Header */}
+      <MobileHeader onMenuClick={() => setIsMobileMenuOpen(true)} />
+
+      {/* Mobile Sidebar Drawer */}
+      <MobileSidebar open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen} />
+
+      {/* Main Content */}
+      <main className="lg:ml-64 pt-14 lg:pt-0">
+        <div className="p-4 lg:p-8">
+          <Outlet />
+        </div>
+      </main>
+    </div>
+  )
+}
+```
+
+**iOS Safe Areas (add to `src/index.css`):**
+
+```css
+@supports (padding-top: env(safe-area-inset-top)) {
+  .mobile-header {
+    padding-top: env(safe-area-inset-top);
+    height: calc(3.5rem + env(safe-area-inset-top));
+  }
+
+  .mobile-sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-content {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+```
+
+**Mobile Modal Behavior:**
+
+```typescript
+// Modals on mobile should be full-screen or bottom sheet
+<DialogContent className="w-full max-w-lg sm:max-w-lg max-h-screen sm:max-h-[90vh] sm:rounded-lg">
+```
 
 ---
 

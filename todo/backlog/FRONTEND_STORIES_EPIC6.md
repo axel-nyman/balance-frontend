@@ -22,19 +22,19 @@ The Budget Detail feature allows users to:
 **Dependencies:** Epic 1 (Infrastructure) must be complete.
 
 **API Endpoints Used:**
-- `GET /api/budgets/:id` — Get budget detail
-- `DELETE /api/budgets/:id` — Delete budget
-- `POST /api/budgets/:id/lock` — Lock budget
-- `POST /api/budgets/:id/unlock` — Unlock budget
-- `POST /api/budgets/:id/income` — Add income item
-- `PUT /api/budgets/:id/income/:itemId` — Update income item
-- `DELETE /api/budgets/:id/income/:itemId` — Delete income item
-- `POST /api/budgets/:id/expenses` — Add expense item
-- `PUT /api/budgets/:id/expenses/:itemId` — Update expense item
-- `DELETE /api/budgets/:id/expenses/:itemId` — Delete expense item
-- `POST /api/budgets/:id/savings` — Add savings item
-- `PUT /api/budgets/:id/savings/:itemId` — Update savings item
-- `DELETE /api/budgets/:id/savings/:itemId` — Delete savings item
+- `GET /api/budgets/{id}` — Get budget detail
+- `DELETE /api/budgets/{id}` — Delete budget
+- `PUT /api/budgets/{id}/lock` — Lock budget
+- `PUT /api/budgets/{id}/unlock` — Unlock budget
+- `POST /api/budgets/{id}/income` — Add income item
+- `PUT /api/budgets/{id}/income/{itemId}` — Update income item
+- `DELETE /api/budgets/{id}/income/{itemId}` — Delete income item
+- `POST /api/budgets/{id}/expenses` — Add expense item
+- `PUT /api/budgets/{id}/expenses/{itemId}` — Update expense item
+- `DELETE /api/budgets/{id}/expenses/{itemId}` — Delete expense item
+- `POST /api/budgets/{id}/savings` — Add savings item
+- `PUT /api/budgets/{id}/savings/{itemId}` — Update savings item
+- `DELETE /api/budgets/{id}/savings/{itemId}` — Delete savings item
 
 ---
 

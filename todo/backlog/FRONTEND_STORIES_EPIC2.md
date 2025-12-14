@@ -1724,7 +1724,109 @@ describe('BalanceHistoryDrawer', () => {
 - [ ] History entries display properly
 - [ ] Source badges show correctly
 - [ ] Update Balance button visible
-- [ ] Pagination works
+- [ ] Pagination works with "Load More" button
+- [ ] Shows count of entries (e.g., "Visar 20 av 150 poster")
+
+### Pagination Implementation
+
+**Update `src/hooks/use-accounts.ts` for infinite query:**
+
+```typescript
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { getBalanceHistory } from '@/api'
+import { queryKeys } from './query-keys'
+
+interface UseBalanceHistoryOptions {
+  accountId: string
+  enabled?: boolean
+  pageSize?: number
+}
+
+export function useBalanceHistory({
+  accountId,
+  enabled = true,
+  pageSize = 20,
+}: UseBalanceHistoryOptions) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.accounts.history(accountId),
+    queryFn: ({ pageParam = 0 }) => getBalanceHistory(accountId, pageParam, pageSize),
+    getNextPageParam: (lastPage) => {
+      const { number, totalPages } = lastPage.page
+      // Return next page number if there are more pages, otherwise undefined
+      return number + 1 < totalPages ? number + 1 : undefined
+    },
+    enabled: enabled && !!accountId,
+    staleTime: 30_000, // 30 seconds
+  })
+}
+```
+
+**Update BalanceHistoryDrawer with pagination:**
+
+```typescript
+const {
+  data,
+  isLoading,
+  isFetchingNextPage,
+  hasNextPage,
+  fetchNextPage,
+} = useBalanceHistory({
+  accountId: account?.id ?? '',
+  enabled: open && !!account,
+})
+
+// Flatten all pages into a single array
+const allEntries = useMemo(() => {
+  if (!data?.pages) return []
+  return data.pages.flatMap(page => page.content)
+}, [data])
+
+// Get pagination info from the last page
+const pageInfo = data?.pages?.[data.pages.length - 1]?.page
+
+// In JSX:
+{/* Load More Button */}
+{hasNextPage && (
+  <Button
+    variant="outline"
+    className="w-full"
+    onClick={() => fetchNextPage()}
+    disabled={isFetchingNextPage}
+  >
+    {isFetchingNextPage ? (
+      <>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        Laddar...
+      </>
+    ) : (
+      'Ladda fler'
+    )}
+  </Button>
+)}
+
+{/* Page Info */}
+{pageInfo && (
+  <p className="text-xs text-center text-gray-400 pt-2">
+    Visar {allEntries.length} av {pageInfo.totalElements} poster
+  </p>
+)}
+```
+
+**Backend API reference:**
+```
+GET /api/bank-accounts/{id}/balance-history?page=0&size=20
+
+Response:
+{
+  "content": [...],
+  "page": {
+    "size": 20,
+    "number": 0,
+    "totalElements": 150,
+    "totalPages": 8
+  }
+}
+```
 
 ---
 

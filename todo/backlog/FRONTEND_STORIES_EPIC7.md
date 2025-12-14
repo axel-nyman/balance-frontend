@@ -21,8 +21,8 @@ Users can check off items as they complete the actual payments/transfers. The to
 **Dependencies:** Epic 6 (Budget Detail) must be complete.
 
 **API Endpoints Used:**
-- `GET /api/budgets/:id/todo` — Get todo list for budget
-- `PUT /api/budgets/:id/todo/:itemId` — Update todo item (toggle completion)
+- `GET /api/budgets/{budgetId}/todo-list` — Get todo list for budget
+- `PUT /api/budgets/{budgetId}/todo-list/items/{id}` — Update todo item (toggle completion)
 
 ---
 

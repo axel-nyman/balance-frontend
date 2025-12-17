@@ -156,29 +156,38 @@ import { http, HttpResponse } from 'msw'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 
 const mockTodoData = {
+  id: 'todolist-1',
   budgetId: '123',
-  month: 3,
-  year: 2025,
+  createdAt: '2025-03-01T00:00:00Z',
   items: [
     {
       id: 'todo-1',
-      type: 'EXPENSE',
-      description: 'Pay Rent',
+      type: 'PAYMENT',
+      name: 'Pay Rent',
       amount: 8000,
       status: 'PENDING',
-      expenseItemId: 'exp-1',
+      fromAccount: { id: 'acc-main', name: 'Main Account' },
+      toAccount: null,
+      completedAt: null,
+      createdAt: '2025-03-01T00:00:00Z',
     },
     {
       id: 'todo-2',
-      type: 'SAVINGS',
-      description: 'Transfer to Savings Account',
+      type: 'TRANSFER',
+      name: 'Transfer to Savings Account',
       amount: 5000,
       status: 'COMPLETED',
-      savingsItemId: 'sav-1',
-      targetAccountId: 'acc-1',
-      targetAccountName: 'Savings Account',
+      fromAccount: { id: 'acc-main', name: 'Main Account' },
+      toAccount: { id: 'acc-savings', name: 'Savings Account' },
+      completedAt: '2025-03-15T10:30:00Z',
+      createdAt: '2025-03-01T00:00:00Z',
     },
   ],
+  summary: {
+    totalItems: 2,
+    pendingItems: 1,
+    completedItems: 1,
+  },
 }
 
 function renderWithRouter(budgetId = '123') {
@@ -194,7 +203,7 @@ function renderWithRouter(budgetId = '123') {
 describe('TodoListPage', () => {
   beforeEach(() => {
     server.use(
-      http.get('/api/budgets/123/todo', () => {
+      http.get('/api/budgets/123/todo-list', () => {
         return HttpResponse.json(mockTodoData)
       })
     )
@@ -355,10 +364,14 @@ import type { TodoItem } from '@/api/types'
 
 const createItem = (status: 'PENDING' | 'COMPLETED'): TodoItem => ({
   id: crypto.randomUUID(),
-  type: 'EXPENSE',
-  description: 'Test',
+  type: 'PAYMENT',
+  name: 'Test Payment',
   amount: 100,
   status,
+  fromAccount: { id: 'acc-1', name: 'Main Account' },
+  toAccount: null,
+  completedAt: status === 'COMPLETED' ? '2025-03-15T10:30:00Z' : null,
+  createdAt: '2025-03-01T00:00:00Z',
 })
 
 describe('TodoProgress', () => {
@@ -448,11 +461,11 @@ describe('TodoProgress', () => {
 ### Acceptance Criteria
 
 - [ ] Shows list of todo items
-- [ ] Each item shows: checkbox, description, amount, type badge
-- [ ] Expense items show "Manual Payment" badge
-- [ ] Savings items show target account name
+- [ ] Each item shows: checkbox, name, amount, type badge
+- [ ] Payment items show "Payment" badge
+- [ ] Transfer items show destination account name
 - [ ] Completed items have strikethrough
-- [ ] Items grouped by type (Expenses first, then Savings)
+- [ ] Items grouped by type (Payments first, then Transfers)
 
 ### Implementation
 
@@ -474,8 +487,8 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
   const [balanceModalItem, setBalanceModalItem] = useState<TodoItem | null>(null)
 
   // Separate items by type
-  const expenseItems = items.filter((item) => item.type === 'EXPENSE')
-  const savingsItems = items.filter((item) => item.type === 'SAVINGS')
+  const paymentItems = items.filter((item) => item.type === 'PAYMENT')
+  const transferItems = items.filter((item) => item.type === 'TRANSFER')
 
   const handleUpdateBalance = (item: TodoItem) => {
     setBalanceModalItem(item)
@@ -483,15 +496,15 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
 
   return (
     <div className="space-y-6">
-      {/* Expense Items */}
-      {expenseItems.length > 0 && (
+      {/* Payment Items */}
+      {paymentItems.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium">Manual Payments</CardTitle>
+            <CardTitle className="text-base font-medium">Payments</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <ul className="divide-y">
-              {expenseItems.map((item) => (
+              {paymentItems.map((item) => (
                 <TodoItemRow
                   key={item.id}
                   budgetId={budgetId}
@@ -503,15 +516,15 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
         </Card>
       )}
 
-      {/* Savings Items */}
-      {savingsItems.length > 0 && (
+      {/* Transfer Items */}
+      {transferItems.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-medium">Savings Transfers</CardTitle>
+            <CardTitle className="text-base font-medium">Transfers</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
             <ul className="divide-y">
-              {savingsItems.map((item) => (
+              {transferItems.map((item) => (
                 <TodoItemRow
                   key={item.id}
                   budgetId={budgetId}
@@ -525,10 +538,10 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
       )}
 
       {/* Update Balance Modal */}
-      {balanceModalItem && (
+      {balanceModalItem && balanceModalItem.toAccount && (
         <UpdateBalanceModal
-          accountId={balanceModalItem.targetAccountId!}
-          accountName={balanceModalItem.targetAccountName!}
+          accountId={balanceModalItem.toAccount.id}
+          accountName={balanceModalItem.toAccount.name}
           suggestedAmount={balanceModalItem.amount}
           open={!!balanceModalItem}
           onOpenChange={(open) => !open && setBalanceModalItem(null)}
@@ -560,13 +573,13 @@ interface TodoItemRowProps {
 
 export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProps) {
   const updateTodo = useUpdateTodoItem()
-  
+
   const isCompleted = item.status === 'COMPLETED'
-  const isSavings = item.type === 'SAVINGS'
+  const isTransfer = item.type === 'TRANSFER'
 
   const handleToggle = async () => {
     const newStatus = isCompleted ? 'PENDING' : 'COMPLETED'
-    
+
     try {
       await updateTodo.mutateAsync({
         budgetId,
@@ -584,19 +597,19 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
         checked={isCompleted}
         onCheckedChange={handleToggle}
         disabled={updateTodo.isPending}
-        aria-label={`Mark "${item.description}" as ${isCompleted ? 'pending' : 'completed'}`}
+        aria-label={`Mark "${item.name}" as ${isCompleted ? 'pending' : 'completed'}`}
       />
-      
+
       <div className="flex-1 min-w-0">
         <p className={cn(
           'font-medium text-gray-900',
           isCompleted && 'line-through text-gray-500'
         )}>
-          {item.description}
+          {item.name}
         </p>
-        {isSavings && item.targetAccountName && (
+        {isTransfer && item.toAccount && (
           <p className="text-sm text-gray-500">
-            To: {item.targetAccountName}
+            To: {item.toAccount.name}
           </p>
         )}
       </div>
@@ -606,9 +619,9 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
           'text-xs',
           isCompleted && 'opacity-50'
         )}>
-          {isSavings ? 'Transfer' : 'Payment'}
+          {isTransfer ? 'Transfer' : 'Payment'}
         </Badge>
-        
+
         <span className={cn(
           'font-medium text-gray-900 tabular-nums',
           isCompleted && 'line-through text-gray-500'
@@ -616,7 +629,7 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
           {formatCurrency(item.amount)}
         </span>
 
-        {isSavings && isCompleted && onUpdateBalance && (
+        {isTransfer && isCompleted && onUpdateBalance && (
           <Button
             variant="ghost"
             size="sm"
@@ -643,51 +656,58 @@ import type { TodoItem } from '@/api/types'
 const mockItems: TodoItem[] = [
   {
     id: 'todo-1',
-    type: 'EXPENSE',
-    description: 'Pay Rent',
+    type: 'PAYMENT',
+    name: 'Pay Rent',
     amount: 8000,
     status: 'PENDING',
-    expenseItemId: 'exp-1',
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: null,
+    completedAt: null,
+    createdAt: '2025-03-01T00:00:00Z',
   },
   {
     id: 'todo-2',
-    type: 'EXPENSE',
-    description: 'Pay Insurance',
+    type: 'PAYMENT',
+    name: 'Pay Insurance',
     amount: 500,
     status: 'COMPLETED',
-    expenseItemId: 'exp-2',
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: null,
+    completedAt: '2025-03-15T10:30:00Z',
+    createdAt: '2025-03-01T00:00:00Z',
   },
   {
     id: 'todo-3',
-    type: 'SAVINGS',
-    description: 'Transfer to Savings',
+    type: 'TRANSFER',
+    name: 'Transfer to Savings',
     amount: 5000,
     status: 'PENDING',
-    savingsItemId: 'sav-1',
-    targetAccountId: 'acc-1',
-    targetAccountName: 'Savings Account',
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: { id: 'acc-savings', name: 'Savings Account' },
+    completedAt: null,
+    createdAt: '2025-03-01T00:00:00Z',
   },
 ]
 
 describe('TodoItemList', () => {
-  it('renders expense items under Manual Payments section', () => {
+  it('renders payment items under Payments section', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
-    
-    expect(screen.getByText('Manual Payments')).toBeInTheDocument()
+
+    expect(screen.getByText('Payments')).toBeInTheDocument()
     expect(screen.getByText('Pay Rent')).toBeInTheDocument()
     expect(screen.getByText('Pay Insurance')).toBeInTheDocument()
   })
 
-  it('renders savings items under Savings Transfers section', () => {
+  it('renders transfer items under Transfers section', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
-    
-    expect(screen.getByText('Savings Transfers')).toBeInTheDocument()
+
+    expect(screen.getByText('Transfers')).toBeInTheDocument()
     expect(screen.getByText('Transfer to Savings')).toBeInTheDocument()
   })
 
-  it('shows target account for savings items', () => {
+  it('shows destination account for transfer items', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
-    
+
     expect(screen.getByText(/to: savings account/i)).toBeInTheDocument()
   })
 
@@ -699,20 +719,20 @@ describe('TodoItemList', () => {
     expect(screen.getByText(/5 000,00 kr/)).toBeInTheDocument()
   })
 
-  it('does not show Manual Payments section when no expenses', () => {
-    const savingsOnly = mockItems.filter((item) => item.type === 'SAVINGS')
-    render(<TodoItemList budgetId="123" items={savingsOnly} />)
-    
-    expect(screen.queryByText('Manual Payments')).not.toBeInTheDocument()
-    expect(screen.getByText('Savings Transfers')).toBeInTheDocument()
+  it('does not show Payments section when no payments', () => {
+    const transfersOnly = mockItems.filter((item) => item.type === 'TRANSFER')
+    render(<TodoItemList budgetId="123" items={transfersOnly} />)
+
+    expect(screen.queryByText('Payments')).not.toBeInTheDocument()
+    expect(screen.getByText('Transfers')).toBeInTheDocument()
   })
 
-  it('does not show Savings Transfers section when no savings', () => {
-    const expensesOnly = mockItems.filter((item) => item.type === 'EXPENSE')
-    render(<TodoItemList budgetId="123" items={expensesOnly} />)
-    
-    expect(screen.getByText('Manual Payments')).toBeInTheDocument()
-    expect(screen.queryByText('Savings Transfers')).not.toBeInTheDocument()
+  it('does not show Transfers section when no transfers', () => {
+    const paymentsOnly = mockItems.filter((item) => item.type === 'PAYMENT')
+    render(<TodoItemList budgetId="123" items={paymentsOnly} />)
+
+    expect(screen.getByText('Payments')).toBeInTheDocument()
+    expect(screen.queryByText('Transfers')).not.toBeInTheDocument()
   })
 })
 ```
@@ -728,127 +748,131 @@ import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'
 import type { TodoItem } from '@/api/types'
 
-const pendingExpense: TodoItem = {
+const pendingPayment: TodoItem = {
   id: 'todo-1',
-  type: 'EXPENSE',
-  description: 'Pay Rent',
+  type: 'PAYMENT',
+  name: 'Pay Rent',
   amount: 8000,
   status: 'PENDING',
-  expenseItemId: 'exp-1',
+  fromAccount: { id: 'acc-main', name: 'Main Account' },
+  toAccount: null,
+  completedAt: null,
+  createdAt: '2025-03-01T00:00:00Z',
 }
 
-const completedSavings: TodoItem = {
+const completedTransfer: TodoItem = {
   id: 'todo-2',
-  type: 'SAVINGS',
-  description: 'Transfer to Savings',
+  type: 'TRANSFER',
+  name: 'Transfer to Savings',
   amount: 5000,
   status: 'COMPLETED',
-  savingsItemId: 'sav-1',
-  targetAccountId: 'acc-1',
-  targetAccountName: 'Savings Account',
+  fromAccount: { id: 'acc-main', name: 'Main Account' },
+  toAccount: { id: 'acc-savings', name: 'Savings Account' },
+  completedAt: '2025-03-15T10:30:00Z',
+  createdAt: '2025-03-01T00:00:00Z',
 }
 
 describe('TodoItemRow', () => {
   beforeEach(() => {
     server.use(
-      http.put('/api/budgets/:budgetId/todo/:itemId', () => {
-        return HttpResponse.json({ status: 'COMPLETED' })
+      http.put('/api/budgets/:budgetId/todo-list/items/:itemId', () => {
+        return HttpResponse.json(pendingPayment)
       })
     )
   })
 
-  it('renders item description', () => {
-    render(<TodoItemRow budgetId="123" item={pendingExpense} />)
-    
+  it('renders item name', () => {
+    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
+
     expect(screen.getByText('Pay Rent')).toBeInTheDocument()
   })
 
   it('renders item amount', () => {
-    render(<TodoItemRow budgetId="123" item={pendingExpense} />)
-    
+    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
+
     expect(screen.getByText(/8 000,00 kr/)).toBeInTheDocument()
   })
 
   it('shows unchecked checkbox for pending items', () => {
-    render(<TodoItemRow budgetId="123" item={pendingExpense} />)
-    
+    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
+
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).not.toBeChecked()
   })
 
   it('shows checked checkbox for completed items', () => {
-    render(<TodoItemRow budgetId="123" item={completedSavings} />)
-    
+    render(<TodoItemRow budgetId="123" item={completedTransfer} />)
+
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).toBeChecked()
   })
 
   it('applies strikethrough to completed items', () => {
-    render(<TodoItemRow budgetId="123" item={completedSavings} />)
-    
-    const description = screen.getByText('Transfer to Savings')
-    expect(description).toHaveClass('line-through')
+    render(<TodoItemRow budgetId="123" item={completedTransfer} />)
+
+    const name = screen.getByText('Transfer to Savings')
+    expect(name).toHaveClass('line-through')
   })
 
-  it('shows Payment badge for expense items', () => {
-    render(<TodoItemRow budgetId="123" item={pendingExpense} />)
-    
+  it('shows Payment badge for payment items', () => {
+    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
+
     expect(screen.getByText('Payment')).toBeInTheDocument()
   })
 
-  it('shows Transfer badge for savings items', () => {
-    render(<TodoItemRow budgetId="123" item={completedSavings} />)
-    
+  it('shows Transfer badge for transfer items', () => {
+    render(<TodoItemRow budgetId="123" item={completedTransfer} />)
+
     expect(screen.getByText('Transfer')).toBeInTheDocument()
   })
 
-  it('shows target account for savings items', () => {
-    render(<TodoItemRow budgetId="123" item={completedSavings} />)
-    
+  it('shows destination account for transfer items', () => {
+    render(<TodoItemRow budgetId="123" item={completedTransfer} />)
+
     expect(screen.getByText(/to: savings account/i)).toBeInTheDocument()
   })
 
   it('calls API when checkbox toggled', async () => {
     let requestBody: unknown
     server.use(
-      http.put('/api/budgets/123/todo/todo-1', async ({ request }) => {
+      http.put('/api/budgets/123/todo-list/items/todo-1', async ({ request }) => {
         requestBody = await request.json()
-        return HttpResponse.json({ status: 'COMPLETED' })
+        return HttpResponse.json({ ...pendingPayment, status: 'COMPLETED' })
       })
     )
 
-    render(<TodoItemRow budgetId="123" item={pendingExpense} />)
-    
+    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
+
     await userEvent.click(screen.getByRole('checkbox'))
-    
+
     await waitFor(() => {
       expect(requestBody).toEqual({ status: 'COMPLETED' })
     })
   })
 
-  it('shows update balance button for completed savings', () => {
+  it('shows update balance button for completed transfers', () => {
     const onUpdateBalance = vi.fn()
     render(
       <TodoItemRow
         budgetId="123"
-        item={completedSavings}
+        item={completedTransfer}
         onUpdateBalance={onUpdateBalance}
       />
     )
-    
+
     expect(screen.getByTitle(/update account balance/i)).toBeInTheDocument()
   })
 
-  it('does not show update balance button for pending savings', () => {
-    const pendingSavings = { ...completedSavings, status: 'PENDING' as const }
+  it('does not show update balance button for pending transfers', () => {
+    const pendingTransfer = { ...completedTransfer, status: 'PENDING' as const, completedAt: null }
     render(
       <TodoItemRow
         budgetId="123"
-        item={pendingSavings}
+        item={pendingTransfer}
         onUpdateBalance={vi.fn()}
       />
     )
-    
+
     expect(screen.queryByTitle(/update account balance/i)).not.toBeInTheDocument()
   })
 
@@ -857,13 +881,13 @@ describe('TodoItemRow', () => {
     render(
       <TodoItemRow
         budgetId="123"
-        item={completedSavings}
+        item={completedTransfer}
         onUpdateBalance={onUpdateBalance}
       />
     )
-    
+
     await userEvent.click(screen.getByTitle(/update account balance/i))
-    
+
     expect(onUpdateBalance).toHaveBeenCalled()
   })
 })
@@ -1262,16 +1286,27 @@ const createWrapper = () => {
 }
 
 describe('useBudgetTodo', () => {
+  const mockTodoItem = {
+    id: 'todo-1',
+    type: 'PAYMENT',
+    name: 'Pay Rent',
+    amount: 8000,
+    status: 'PENDING',
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: null,
+    completedAt: null,
+    createdAt: '2025-03-01T00:00:00Z',
+  }
+
   beforeEach(() => {
     server.use(
-      http.get('/api/budgets/123/todo', () => {
+      http.get('/api/budgets/123/todo-list', () => {
         return HttpResponse.json({
+          id: 'todolist-1',
           budgetId: '123',
-          month: 3,
-          year: 2025,
-          items: [
-            { id: 'todo-1', type: 'EXPENSE', description: 'Pay Rent', amount: 8000, status: 'PENDING' },
-          ],
+          createdAt: '2025-03-01T00:00:00Z',
+          items: [mockTodoItem],
+          summary: { totalItems: 1, pendingItems: 1, completedItems: 0 },
         })
       })
     )
@@ -1287,25 +1322,36 @@ describe('useBudgetTodo', () => {
     })
 
     expect(result.current.data?.items).toHaveLength(1)
-    expect(result.current.data?.items[0].description).toBe('Pay Rent')
+    expect(result.current.data?.items[0].name).toBe('Pay Rent')
   })
 })
 
 describe('useUpdateTodoItem', () => {
+  const mockTodoItem = {
+    id: 'todo-1',
+    type: 'PAYMENT',
+    name: 'Pay Rent',
+    amount: 8000,
+    status: 'PENDING',
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: null,
+    completedAt: null,
+    createdAt: '2025-03-01T00:00:00Z',
+  }
+
   beforeEach(() => {
     server.use(
-      http.get('/api/budgets/123/todo', () => {
+      http.get('/api/budgets/123/todo-list', () => {
         return HttpResponse.json({
+          id: 'todolist-1',
           budgetId: '123',
-          month: 3,
-          year: 2025,
-          items: [
-            { id: 'todo-1', type: 'EXPENSE', description: 'Pay Rent', amount: 8000, status: 'PENDING' },
-          ],
+          createdAt: '2025-03-01T00:00:00Z',
+          items: [mockTodoItem],
+          summary: { totalItems: 1, pendingItems: 1, completedItems: 0 },
         })
       }),
-      http.put('/api/budgets/123/todo/todo-1', () => {
-        return HttpResponse.json({ id: 'todo-1', status: 'COMPLETED' })
+      http.put('/api/budgets/123/todo-list/items/todo-1', () => {
+        return HttpResponse.json({ ...mockTodoItem, status: 'COMPLETED', completedAt: '2025-03-15T10:30:00Z' })
       })
     )
   })
@@ -1320,12 +1366,11 @@ describe('useUpdateTodoItem', () => {
 
     // Pre-populate the cache
     queryClient.setQueryData(['budgets', '123', 'todo'], {
+      id: 'todolist-1',
       budgetId: '123',
-      month: 3,
-      year: 2025,
-      items: [
-        { id: 'todo-1', type: 'EXPENSE', description: 'Pay Rent', amount: 8000, status: 'PENDING' },
-      ],
+      createdAt: '2025-03-01T00:00:00Z',
+      items: [mockTodoItem],
+      summary: { totalItems: 1, pendingItems: 1, completedItems: 0 },
     })
 
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -1351,7 +1396,7 @@ describe('useUpdateTodoItem', () => {
 
   it('reverts on error', async () => {
     server.use(
-      http.put('/api/budgets/123/todo/todo-1', () => {
+      http.put('/api/budgets/123/todo-list/items/todo-1', () => {
         return HttpResponse.json({ error: 'Failed' }, { status: 500 })
       })
     )
@@ -1365,12 +1410,11 @@ describe('useUpdateTodoItem', () => {
 
     // Pre-populate the cache
     queryClient.setQueryData(['budgets', '123', 'todo'], {
+      id: 'todolist-1',
       budgetId: '123',
-      month: 3,
-      year: 2025,
-      items: [
-        { id: 'todo-1', type: 'EXPENSE', description: 'Pay Rent', amount: 8000, status: 'PENDING' },
-      ],
+      createdAt: '2025-03-01T00:00:00Z',
+      items: [mockTodoItem],
+      summary: { totalItems: 1, pendingItems: 1, completedItems: 0 },
     })
 
     const wrapper = ({ children }: { children: ReactNode }) => (
@@ -1433,49 +1477,61 @@ src/
 
 ```typescript
 import { apiGet, apiPut } from './client'
-import type { TodoList } from './types'
+import type { TodoList, TodoItem, UpdateTodoItemRequest } from './types'
 
 export async function getTodoList(budgetId: string): Promise<TodoList> {
-  return apiGet<TodoList>(`/api/budgets/${budgetId}/todo`)
+  return apiGet<TodoList>(`/budgets/${budgetId}/todo-list`)
 }
 
 export async function updateTodoItem(
   budgetId: string,
   itemId: string,
-  data: { status: 'PENDING' | 'COMPLETED' }
-): Promise<{ id: string; status: string }> {
-  return apiPut<{ id: string; status: string }>(
-    `/api/budgets/${budgetId}/todo/${itemId}`,
+  data: UpdateTodoItemRequest
+): Promise<TodoItem> {
+  return apiPut<TodoItem>(
+    `/budgets/${budgetId}/todo-list/items/${itemId}`,
     data
   )
 }
 ```
 
-**Add types to `src/api/types.ts`:**
+**Note:** The TodoItem and TodoList types are already defined in Epic 1 (`src/api/types.ts`). Epic 7 uses these existing types:
 
 ```typescript
-// Add to existing types.ts
+// Already defined in Epic 1 - DO NOT DUPLICATE
 
-export type TodoItemType = 'EXPENSE' | 'SAVINGS'
+export type TodoItemType = 'TRANSFER' | 'PAYMENT'
 export type TodoItemStatus = 'PENDING' | 'COMPLETED'
+
+export interface TodoItemAccount {
+  id: string
+  name: string
+}
 
 export interface TodoItem {
   id: string
-  type: TodoItemType
-  description: string
-  amount: number
+  name: string
   status: TodoItemStatus
-  expenseItemId?: string
-  savingsItemId?: string
-  targetAccountId?: string
-  targetAccountName?: string
+  type: TodoItemType
+  amount: number
+  fromAccount: TodoItemAccount
+  toAccount: TodoItemAccount | null
+  completedAt: string | null
+  createdAt: string
+}
+
+export interface TodoListSummary {
+  totalItems: number
+  pendingItems: number
+  completedItems: number
 }
 
 export interface TodoList {
+  id: string
   budgetId: string
-  month: number
-  year: number
+  createdAt: string
   items: TodoItem[]
+  summary: TodoListSummary
 }
 ```
 
@@ -1520,38 +1576,57 @@ Add these handlers to `src/test/mocks/handlers.ts`:
 
 ```typescript
 // Get todo list
-http.get('/api/budgets/:id/todo', ({ params }) => {
+http.get('/api/budgets/:id/todo-list', ({ params }) => {
   return HttpResponse.json({
+    id: 'todolist-1',
     budgetId: params.id,
-    month: 3,
-    year: 2025,
+    createdAt: '2025-03-01T00:00:00Z',
     items: [
       {
         id: 'todo-1',
-        type: 'EXPENSE',
-        description: 'Pay Rent',
+        type: 'PAYMENT',
+        name: 'Pay Rent',
         amount: 8000,
         status: 'PENDING',
-        expenseItemId: 'exp-1',
+        fromAccount: { id: 'acc-main', name: 'Main Account' },
+        toAccount: null,
+        completedAt: null,
+        createdAt: '2025-03-01T00:00:00Z',
       },
       {
         id: 'todo-2',
-        type: 'SAVINGS',
-        description: 'Transfer to Savings',
+        type: 'TRANSFER',
+        name: 'Transfer to Savings',
         amount: 5000,
         status: 'COMPLETED',
-        savingsItemId: 'sav-1',
-        targetAccountId: 'acc-1',
-        targetAccountName: 'Savings Account',
+        fromAccount: { id: 'acc-main', name: 'Main Account' },
+        toAccount: { id: 'acc-savings', name: 'Savings Account' },
+        completedAt: '2025-03-15T10:30:00Z',
+        createdAt: '2025-03-01T00:00:00Z',
       },
     ],
+    summary: {
+      totalItems: 2,
+      pendingItems: 1,
+      completedItems: 1,
+    },
   })
 }),
 
 // Update todo item
-http.put('/api/budgets/:budgetId/todo/:itemId', async ({ request }) => {
+http.put('/api/budgets/:budgetId/todo-list/items/:itemId', async ({ request, params }) => {
   const body = await request.json() as { status: string }
-  return HttpResponse.json({ id: 'todo-1', status: body.status })
+  return HttpResponse.json({
+    id: params.itemId,
+    type: 'PAYMENT',
+    name: 'Pay Rent',
+    amount: 8000,
+    status: body.status,
+    fromAccount: { id: 'acc-main', name: 'Main Account' },
+    toAccount: null,
+    completedAt: body.status === 'COMPLETED' ? new Date().toISOString() : null,
+    createdAt: '2025-03-01T00:00:00Z',
+  })
 }),
 ```
 

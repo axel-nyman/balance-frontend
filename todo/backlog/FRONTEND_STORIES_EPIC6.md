@@ -165,17 +165,22 @@ const mockBudget = {
   id: '123',
   month: 3,
   year: 2025,
-  status: 'DRAFT',
-  incomeItems: [
-    { id: 'i1', source: 'Salary', amount: 50000 }
+  status: 'UNLOCKED',
+  createdAt: '2025-03-01T00:00:00Z',
+  lockedAt: null,
+  income: [
+    { id: 'i1', name: 'Salary', amount: 50000, bankAccount: { id: 'acc-1', name: 'Main Account' } }
   ],
-  expenseItems: [
-    { id: 'e1', name: 'Rent', amount: 8000 }
+  expenses: [
+    { id: 'e1', name: 'Rent', amount: 8000, bankAccount: { id: 'acc-1', name: 'Main Account' }, recurringExpenseId: null, deductedAt: null, isManual: false }
   ],
-  savingsItems: [],
-  totalIncome: 50000,
-  totalExpenses: 8000,
-  totalSavings: 0,
+  savings: [],
+  totals: {
+    income: 50000,
+    expenses: 8000,
+    savings: 0,
+    balance: 42000,
+  },
 }
 
 function renderWithRouter(budgetId = '123') {
@@ -2218,8 +2223,8 @@ describe('BudgetActions', () => {
 
   it('locks budget when confirmed', async () => {
     server.use(
-      http.post('/api/budgets/123/lock', () => {
-        return HttpResponse.json({ status: 'LOCKED' })
+      http.put('/api/budgets/123/lock', () => {
+        return HttpResponse.json({ ...mockBudget, status: 'LOCKED', lockedAt: new Date().toISOString() })
       })
     )
 
@@ -2246,8 +2251,8 @@ describe('BudgetActions', () => {
 
   it('unlocks budget when confirmed', async () => {
     server.use(
-      http.post('/api/budgets/123/unlock', () => {
-        return HttpResponse.json({ status: 'DRAFT' })
+      http.put('/api/budgets/123/unlock', () => {
+        return HttpResponse.json({ ...mockBudget, status: 'UNLOCKED', lockedAt: null })
       })
     )
 
@@ -2666,13 +2671,27 @@ Add these handlers to `src/test/mocks/handlers.ts`:
 
 ```typescript
 // Lock budget
-http.post('/api/budgets/:id/lock', () => {
-  return HttpResponse.json({ status: 'LOCKED' })
+http.put('/api/budgets/:id/lock', ({ params }) => {
+  return HttpResponse.json({
+    id: params.id,
+    month: 3,
+    year: 2025,
+    status: 'LOCKED',
+    lockedAt: new Date().toISOString(),
+    totals: { income: 50000, expenses: 30000, savings: 20000, balance: 0 },
+  })
 }),
 
 // Unlock budget
-http.post('/api/budgets/:id/unlock', () => {
-  return HttpResponse.json({ status: 'DRAFT' })
+http.put('/api/budgets/:id/unlock', ({ params }) => {
+  return HttpResponse.json({
+    id: params.id,
+    month: 3,
+    year: 2025,
+    status: 'UNLOCKED',
+    lockedAt: null,
+    totals: { income: 50000, expenses: 30000, savings: 20000, balance: 0 },
+  })
 }),
 
 // Delete budget

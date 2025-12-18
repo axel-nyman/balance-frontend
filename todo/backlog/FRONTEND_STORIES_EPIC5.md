@@ -29,7 +29,7 @@ The Budget Wizard guides users through creating a new monthly budget:
 - `POST /api/budgets/:id/income` — Add income items
 - `POST /api/budgets/:id/expenses` — Add expense items
 - `POST /api/budgets/:id/savings` — Add savings items
-- `POST /api/budgets/:id/lock` — Lock budget (optional)
+- `PUT /api/budgets/:id/lock` — Lock budget (optional)
 - `GET /api/recurring-expenses` — Get templates for quick-add
 
 ---

@@ -230,7 +230,7 @@ The app uses **Swedish Krona (SEK)** as the currency. Format amounts as:
 
 4. **Balance history**: Automatically updated when budgets lock/unlock. Manual updates also supported.
 
-5. **Recurring expense tracking**: `lastUsedInBudgetMonth` field helps identify which recurring expenses are due.
+5. **Recurring expense tracking**: `lastUsedBudgetId` and `lastUsedDate` fields help identify which recurring expenses are due.
 
 6. **Todo generation logic**: Backend generates todos when budget locks. Frontend just displays and toggles completion.
 

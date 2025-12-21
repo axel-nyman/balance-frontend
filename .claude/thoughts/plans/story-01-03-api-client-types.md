@@ -6,12 +6,12 @@
 
 ## Acceptance Criteria
 
-- [ ] All API response types defined as TypeScript interfaces
-- [ ] All API request types defined as TypeScript interfaces
-- [ ] Fetch wrapper with error handling
-- [ ] API client functions for all endpoints
-- [ ] User-friendly error messages mapped from API errors
-- [ ] Currency formatting utility for SEK
+- [x] All API response types defined as TypeScript interfaces
+- [x] All API request types defined as TypeScript interfaces
+- [x] Fetch wrapper with error handling
+- [x] API client functions for all endpoints
+- [x] User-friendly error messages mapped from API errors
+- [x] Currency formatting utility for SEK
 
 ## Type Definitions
 
@@ -652,13 +652,13 @@ src/
 
 ## Definition of Done
 
-- [ ] All types compile without errors
-- [ ] API client functions can be imported
-- [ ] `formatCurrency(1234.56)` returns `"1 234,56 kr"`
-- [ ] `formatMonthYear(3, 2025)` returns `"mars 2025"` (or similar Swedish format)
-- [ ] Error mapping works (manual test with mock response)
-- [ ] Budget balance calculation utilities work correctly
-- [ ] Month/year comparison utilities work correctly
+- [x] All types compile without errors
+- [x] API client functions can be imported
+- [x] `formatCurrency(1234.56)` returns `"1 234,56 kr"`
+- [x] `formatMonthYear(3, 2025)` returns `"mars 2025"` (or similar Swedish format)
+- [x] Error mapping works (manual test with mock response)
+- [x] Budget balance calculation utilities work correctly
+- [x] Month/year comparison utilities work correctly
 
 ## Additional Utility Functions
 

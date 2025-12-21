@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ROUTES } from './routes'
+import { AppLayout } from './components/layout'
 import {
   AccountsPage,
   RecurringExpensesPage,
@@ -27,13 +28,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.BUDGETS} replace />} />
-          <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
-          <Route path={ROUTES.RECURRING_EXPENSES} element={<RecurringExpensesPage />} />
-          <Route path={ROUTES.BUDGETS} element={<BudgetsPage />} />
-          <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
-          <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
-          <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
+          <Route element={<AppLayout />}>
+            <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.BUDGETS} replace />} />
+            <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
+            <Route path={ROUTES.RECURRING_EXPENSES} element={<RecurringExpensesPage />} />
+            <Route path={ROUTES.BUDGETS} element={<BudgetsPage />} />
+            <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
+            <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
+            <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
+          </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

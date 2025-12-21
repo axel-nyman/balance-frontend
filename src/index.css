@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  .mobile-header {
+    padding-top: env(safe-area-inset-top);
+    height: calc(3.5rem + env(safe-area-inset-top));
+  }
+
+  .mobile-sidebar {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-content {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}

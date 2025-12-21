@@ -6,10 +6,10 @@
 
 ## Acceptance Criteria
 
-- [ ] shadcn/ui initialized and configured
-- [ ] Core shadcn components installed (Button, Dialog, Sheet, Input, Select, etc.)
-- [ ] Custom app components created: PageHeader, LoadingState, ErrorState, EmptyState, ConfirmDialog
-- [ ] Sonner toast library configured
+- [x] shadcn/ui initialized and configured
+- [x] Core shadcn components installed (Button, Dialog, Sheet, Input, Select, etc.)
+- [x] Custom app components created: PageHeader, LoadingState, ErrorState, EmptyState, ConfirmDialog
+- [x] Sonner toast library configured
 
 ## Implementation Steps
 
@@ -305,13 +305,13 @@ src/
 
 ## Definition of Done
 
-- [ ] All shadcn components installed without errors
-- [ ] PageHeader renders title and optional action button
-- [ ] LoadingState shows skeleton UI
-- [ ] ErrorState shows error message with retry button
-- [ ] EmptyState shows message with CTA
-- [ ] ConfirmDialog opens and closes properly
-- [ ] Toast notifications work (`toast.success('Test')` shows toast)
+- [x] All shadcn components installed without errors
+- [x] PageHeader renders title and optional action button
+- [x] LoadingState shows skeleton UI
+- [x] ErrorState shows error message with retry button
+- [x] EmptyState shows message with CTA
+- [x] ConfirmDialog opens and closes properly
+- [x] Toast notifications work (`toast.success('Test')` shows toast)
 
 ## Testing
 

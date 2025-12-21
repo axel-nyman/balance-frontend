@@ -29,7 +29,11 @@
       "WebFetch(domain:typescript-eslint.io)",
       "WebFetch(domain:markus.oberlehner.net)",
       "Bash(git rm:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(npx shadcn@latest init --defaults)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add button dialog sheet input label select checkbox card accordion skeleton table badge sonner alert-dialog -y)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

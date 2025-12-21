@@ -6,11 +6,11 @@
 
 ## Acceptance Criteria
 
-- [ ] QueryClient configured with sensible defaults
-- [ ] QueryClientProvider wraps the app
-- [ ] React Query DevTools available in development
-- [ ] Query key constants defined
-- [ ] Custom hooks created for each data domain
+- [x] QueryClient configured with sensible defaults
+- [x] QueryClientProvider wraps the app
+- [x] React Query DevTools available in development
+- [x] Query key constants defined
+- [x] Custom hooks created for each data domain
 
 ## Implementation Steps
 
@@ -510,6 +510,6 @@ src/
 ## Definition of Done
 
 - [ ] React Query DevTools visible in browser (bottom-right icon)
-- [ ] Hooks can be imported from `@/hooks`
-- [ ] No TypeScript errors
+- [x] Hooks can be imported from `@/hooks`
+- [x] No TypeScript errors
 - [ ] `useAccounts()` hook works (will show loading state until backend is available)

@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ROUTES } from './routes'
 import {
   AccountsPage,
@@ -10,20 +12,33 @@ import {
   NotFoundPage,
 } from './pages'
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60, // 1 minute
+      refetchOnWindowFocus: true,
+      retry: 1,
+    },
+  },
+})
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.BUDGETS} replace />} />
-        <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
-        <Route path={ROUTES.RECURRING_EXPENSES} element={<RecurringExpensesPage />} />
-        <Route path={ROUTES.BUDGETS} element={<BudgetsPage />} />
-        <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
-        <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
-        <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.BUDGETS} replace />} />
+          <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
+          <Route path={ROUTES.RECURRING_EXPENSES} element={<RecurringExpensesPage />} />
+          <Route path={ROUTES.BUDGETS} element={<BudgetsPage />} />
+          <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
+          <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
+          <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </BrowserRouter>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   )
 }
 

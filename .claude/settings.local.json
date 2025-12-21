@@ -28,7 +28,8 @@
       "WebFetch(domain:www.npmjs.com)",
       "WebFetch(domain:typescript-eslint.io)",
       "WebFetch(domain:markus.oberlehner.net)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": [],
     "ask": []

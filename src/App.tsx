@@ -1,17 +1,29 @@
-import { cn } from '@/lib/utils'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { ROUTES } from './routes'
+import {
+  AccountsPage,
+  RecurringExpensesPage,
+  BudgetsPage,
+  BudgetWizardPage,
+  BudgetDetailPage,
+  TodoListPage,
+  NotFoundPage,
+} from './pages'
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <h1 className={cn('text-4xl font-bold text-blue-600', 'mb-4')}>
-          Balance
-        </h1>
-        <p className="text-gray-600">
-          Personal budgeting for couples
-        </p>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.BUDGETS} replace />} />
+        <Route path={ROUTES.ACCOUNTS} element={<AccountsPage />} />
+        <Route path={ROUTES.RECURRING_EXPENSES} element={<RecurringExpensesPage />} />
+        <Route path={ROUTES.BUDGETS} element={<BudgetsPage />} />
+        <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
+        <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
+        <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

@@ -6,11 +6,11 @@
 
 ### Acceptance Criteria
 
-- [ ] Page renders at `/accounts` route
-- [ ] Page header shows "Accounts" title
-- [ ] "New Account" button visible in header
-- [ ] Summary card placeholder for total balance
-- [ ] Main content area ready for account list
+- [x] Page renders at `/accounts` route
+- [x] Page header shows "Accounts" title
+- [x] "New Account" button visible in header
+- [x] Summary card placeholder for total balance
+- [x] Main content area ready for account list
 
 ### Implementation
 
@@ -73,8 +73,8 @@ describe('AccountsPage', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Page renders at `/accounts`
-- [ ] Header and button visible
+- [x] Tests pass
+- [x] Page renders at `/accounts`
+- [x] Header and button visible (manual verification)
 
 ---

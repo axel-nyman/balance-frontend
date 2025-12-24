@@ -6,14 +6,14 @@
 
 ### Acceptance Criteria
 
-- [ ] Displays total balance across all accounts
-- [ ] Shows account count
-- [ ] Lists all accounts in a table (desktop) or cards (mobile)
-- [ ] Each account shows: name, description, balance
-- [ ] Shows loading state while fetching
-- [ ] Shows empty state when no accounts exist
-- [ ] Shows error state with retry on failure
-- [ ] Clicking a row opens balance history drawer
+- [x] Displays total balance across all accounts
+- [x] Shows account count
+- [x] Lists all accounts in a table (desktop) or cards (mobile)
+- [x] Each account shows: name, description, balance
+- [x] Shows loading state while fetching
+- [x] Shows empty state when no accounts exist
+- [x] Shows error state with retry on failure
+- [x] Clicking a row opens balance history drawer (handler ready, drawer implemented in story 2.5)
 
 ### Components to Create
 
@@ -541,11 +541,11 @@ describe('AccountsList', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Summary card shows total balance and count
-- [ ] Table view works on desktop
-- [ ] Card view works on mobile
-- [ ] Loading, error, and empty states work
-- [ ] Click handlers fire correctly
+- [x] All tests pass
+- [x] Summary card shows total balance and count
+- [x] Table view works on desktop
+- [x] Card view works on mobile
+- [x] Loading, error, and empty states work
+- [x] Click handlers fire correctly
 
 ---

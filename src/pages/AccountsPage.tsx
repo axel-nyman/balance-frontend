@@ -1,12 +1,14 @@
+import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
-import { AccountsSummary, AccountsList } from '@/components/accounts'
+import { AccountsSummary, AccountsList, CreateAccountModal } from '@/components/accounts'
 import { useAccounts } from '@/hooks'
 import type { BankAccount } from '@/api/types'
 
 export function AccountsPage() {
   const { data, isLoading, isError, refetch } = useAccounts()
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAccountClick = (_account: BankAccount) => {
@@ -24,7 +26,7 @@ export function AccountsPage() {
   }
 
   const handleCreateNew = () => {
-    // TODO: Open create modal (story 2.3)
+    setIsCreateModalOpen(true)
   }
 
   return (
@@ -57,6 +59,11 @@ export function AccountsPage() {
         onDelete={handleDelete}
         onClick={handleAccountClick}
         onCreateNew={handleCreateNew}
+      />
+
+      <CreateAccountModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
       />
     </div>
   )

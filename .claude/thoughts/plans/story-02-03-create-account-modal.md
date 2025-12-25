@@ -6,13 +6,13 @@
 
 ### Acceptance Criteria
 
-- [ ] Modal opens when "New Account" button is clicked
-- [ ] Form has fields: Name (required), Description (optional), Initial Balance (optional, default 0)
-- [ ] Validation: Name is required, Initial Balance must be non-negative
-- [ ] Submit creates account via API
-- [ ] Success: Close modal, show toast, refresh list
-- [ ] Error: Show error message inline
-- [ ] Cancel closes modal without changes
+- [x] Modal opens when "New Account" button is clicked
+- [x] Form has fields: Name (required), Description (optional), Initial Balance (optional, default 0)
+- [x] Validation: Name is required, Initial Balance must be non-negative
+- [x] Submit creates account via API
+- [x] Success: Close modal, show toast, refresh list
+- [x] Error: Show error message inline
+- [x] Cancel closes modal without changes
 
 ### Form Schema
 
@@ -337,11 +337,11 @@ export * from './schemas'
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Modal opens/closes correctly
-- [ ] Form validation works
-- [ ] Successful submission creates account
-- [ ] Error messages display
-- [ ] Auto-focus on name field
+- [x] All tests pass
+- [x] Modal opens/closes correctly
+- [x] Form validation works
+- [x] Successful submission creates account
+- [x] Error messages display
+- [x] Auto-focus on name field
 
 ---

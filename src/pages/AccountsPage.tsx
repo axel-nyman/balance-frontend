@@ -2,22 +2,22 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
-import { AccountsSummary, AccountsList, CreateAccountModal } from '@/components/accounts'
+import { AccountsSummary, AccountsList, CreateAccountModal, EditAccountModal } from '@/components/accounts'
 import { useAccounts } from '@/hooks'
 import type { BankAccount } from '@/api/types'
 
 export function AccountsPage() {
   const { data, isLoading, isError, refetch } = useAccounts()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAccountClick = (_account: BankAccount) => {
     // TODO: Open balance history drawer (story 2.5)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleEdit = (_account: BankAccount) => {
-    // TODO: Open edit modal (story 2.4)
+  const handleEdit = (account: BankAccount) => {
+    setEditingAccount(account)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -64,6 +64,11 @@ export function AccountsPage() {
       <CreateAccountModal
         open={isCreateModalOpen}
         onOpenChange={setIsCreateModalOpen}
+      />
+
+      <EditAccountModal
+        account={editingAccount}
+        onClose={() => setEditingAccount(null)}
       />
     </div>
   )

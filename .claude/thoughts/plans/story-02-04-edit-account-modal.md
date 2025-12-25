@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Modal opens when edit button is clicked
-- [ ] Form pre-filled with current values
-- [ ] Can update name and description only (not balance)
-- [ ] Validation: Name is required
-- [ ] Success: Close modal, show toast, refresh list
-- [ ] Error: Show error message inline
+- [x] Modal opens when edit button is clicked
+- [x] Form pre-filled with current values
+- [x] Can update name and description only (not balance)
+- [x] Validation: Name is required
+- [x] Success: Close modal, show toast, refresh list
+- [x] Error: Show error message inline
 
 ### Implementation
 
@@ -228,10 +228,10 @@ describe('EditAccountModal', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Modal shows when account provided
-- [ ] Form pre-fills with current values
-- [ ] Updates save correctly
-- [ ] Balance field is not present
+- [x] All tests pass
+- [x] Modal shows when account provided
+- [x] Form pre-fills with current values
+- [x] Updates save correctly
+- [x] Balance field is not present
 
 ---

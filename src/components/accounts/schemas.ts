@@ -16,7 +16,7 @@ export const updateAccountSchema = z.object({
 })
 
 export const updateBalanceSchema = z.object({
-  newBalance: z.number({ error: 'Must be a number' }),
+  newBalance: z.number({ message: 'Must be a number' }),
   date: z.string().min(1, 'Date is required'),
   comment: z.string().optional(),
 })

@@ -33,7 +33,12 @@
       "Bash(npx shadcn@latest init --defaults)",
       "Bash(npx shadcn@latest init:*)",
       "Bash(npx shadcn@latest add button dialog sheet input label select checkbox card accordion skeleton table badge sonner alert-dialog -y)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Skill(research_codebase)",
+      "Bash(git rev-parse:*)",
+      "WebFetch(domain:ui.shadcn.com)",
+      "WebFetch(domain:www.radix-ui.com)",
+      "Bash(npx types-react-codemod@latest preset-19:*)"
     ],
     "deny": [],
     "ask": []

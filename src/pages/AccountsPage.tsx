@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
-import { AccountsSummary, AccountsList, CreateAccountModal, EditAccountModal } from '@/components/accounts'
+import { AccountsSummary, AccountsList, CreateAccountModal, EditAccountModal, DeleteAccountDialog } from '@/components/accounts'
 import { useAccounts } from '@/hooks'
 import type { BankAccount } from '@/api/types'
 
@@ -10,6 +10,7 @@ export function AccountsPage() {
   const { data, isLoading, isError, refetch } = useAccounts()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null)
+  const [deletingAccount, setDeletingAccount] = useState<BankAccount | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleAccountClick = (_account: BankAccount) => {
@@ -20,9 +21,8 @@ export function AccountsPage() {
     setEditingAccount(account)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleDelete = (_account: BankAccount) => {
-    // TODO: Open delete confirmation (story 2.4)
+  const handleDelete = (account: BankAccount) => {
+    setDeletingAccount(account)
   }
 
   const handleCreateNew = () => {
@@ -69,6 +69,11 @@ export function AccountsPage() {
       <EditAccountModal
         account={editingAccount}
         onClose={() => setEditingAccount(null)}
+      />
+
+      <DeleteAccountDialog
+        account={deletingAccount}
+        onClose={() => setDeletingAccount(null)}
       />
     </div>
   )

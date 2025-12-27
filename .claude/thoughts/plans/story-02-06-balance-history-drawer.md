@@ -6,15 +6,15 @@
 
 ### Acceptance Criteria
 
-- [ ] Drawer slides in when account row is clicked
-- [ ] Shows account name and current balance
-- [ ] Lists balance history entries (newest first)
-- [ ] Each entry shows: date, balance, change amount, source badge
-- [ ] MANUAL entries show comment
-- [ ] AUTOMATIC entries show linked budget
-- [ ] "Load More" pagination
-- [ ] "Update Balance" button opens update modal
-- [ ] Close via X, clicking outside, or Escape
+- [x] Drawer slides in when account row is clicked
+- [x] Shows account name and current balance
+- [x] Lists balance history entries (newest first)
+- [x] Each entry shows: date, balance, change amount, source badge
+- [x] MANUAL entries show comment
+- [x] AUTOMATIC entries show linked budget
+- [x] "Load More" pagination
+- [ ] "Update Balance" button opens update modal (requires Story 02-07)
+- [x] Close via X, clicking outside, or Escape
 
 ### Implementation
 
@@ -312,13 +312,13 @@ describe('BalanceHistoryDrawer', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Drawer opens/closes correctly
-- [ ] History entries display properly
-- [ ] Source badges show correctly
-- [ ] Update Balance button visible
-- [ ] Pagination works with "Load More" button
-- [ ] Shows count of entries (e.g., "Visar 20 av 150 poster")
+- [x] All tests pass
+- [x] Drawer opens/closes correctly
+- [x] History entries display properly
+- [x] Source badges show correctly
+- [x] Update Balance button visible
+- [x] Pagination works with "Load More" button
+- [x] Shows count of entries (e.g., "Showing 20 of 150 entries")
 
 ### Pagination Implementation
 

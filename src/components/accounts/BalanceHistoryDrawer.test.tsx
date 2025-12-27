@@ -183,7 +183,7 @@ describe('BalanceHistoryDrawer', () => {
     })
   })
 
-  it('shows Load More button when more pages exist', async () => {
+  it('shows entry count when more pages exist', async () => {
     server.use(
       http.get('/api/bank-accounts/123/balance-history', () => {
         return HttpResponse.json({
@@ -201,8 +201,10 @@ describe('BalanceHistoryDrawer', () => {
       />
     )
 
+    // With infinite scroll, we no longer have a "Load More" button
+    // Instead, we verify the entry count shows there are more entries to load
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /load more/i })).toBeInTheDocument()
+      expect(screen.getByText(/Showing 2 of 40 entries/)).toBeInTheDocument()
     })
   })
 

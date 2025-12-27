@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import {
   Sheet,
@@ -65,6 +65,32 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
   // Get pagination info from the last page
   const pageInfo = data?.pages?.[data.pages.length - 1]?.page
 
+  // Sentinel ref for infinite scroll
+  const sentinelRef = useRef<HTMLDivElement>(null)
+
+  // Set up IntersectionObserver for automatic loading
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      {
+        root: null,
+        rootMargin: '100px',
+        threshold: 0,
+      }
+    )
+
+    observer.observe(sentinel)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
@@ -106,23 +132,12 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
                 <HistoryEntry key={entry.id} entry={entry} />
               ))}
 
+              {/* Infinite scroll sentinel and loading indicator */}
               {hasNextPage && (
-                <div className="p-4">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => fetchNextPage()}
-                    disabled={isFetchingNextPage}
-                  >
-                    {isFetchingNextPage ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      'Load More'
-                    )}
-                  </Button>
+                <div ref={sentinelRef} className="p-4 flex justify-center">
+                  {isFetchingNextPage && (
+                    <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                  )}
                 </div>
               )}
 

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './query-keys'
 import {
   getAccounts,
@@ -21,11 +21,16 @@ export function useAccounts() {
   })
 }
 
-export function useBalanceHistory(accountId: string, page: number = 0) {
-  return useQuery({
-    queryKey: [...queryKeys.accounts.history(accountId), page],
-    queryFn: () => getBalanceHistory(accountId, page),
-    enabled: !!accountId,
+export function useBalanceHistory(accountId: string, enabled: boolean = true) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.accounts.history(accountId),
+    queryFn: ({ pageParam = 0 }) => getBalanceHistory(accountId, pageParam),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      const { number, totalPages } = lastPage.page
+      return number + 1 < totalPages ? number + 1 : undefined
+    },
+    enabled: enabled && !!accountId,
   })
 }
 

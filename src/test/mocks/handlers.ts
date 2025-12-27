@@ -14,6 +14,14 @@ export const handlers = [
     })
   }),
 
+  // Balance history (default empty response)
+  http.get('/api/bank-accounts/:id/balance-history', () => {
+    return HttpResponse.json({
+      content: [],
+      page: { size: 20, number: 0, totalElements: 0, totalPages: 0 },
+    })
+  }),
+
   // Recurring expenses
   http.get('/api/recurring-expenses', () => {
     return HttpResponse.json({

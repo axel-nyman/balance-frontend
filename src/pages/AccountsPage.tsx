@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
-import { AccountsSummary, AccountsList, CreateAccountModal, EditAccountModal, DeleteAccountDialog } from '@/components/accounts'
+import { AccountsSummary, AccountsList, CreateAccountModal, EditAccountModal, DeleteAccountDialog, BalanceHistoryDrawer } from '@/components/accounts'
 import { useAccounts } from '@/hooks'
 import type { BankAccount } from '@/api/types'
 
@@ -11,10 +11,10 @@ export function AccountsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null)
   const [deletingAccount, setDeletingAccount] = useState<BankAccount | null>(null)
+  const [historyAccount, setHistoryAccount] = useState<BankAccount | null>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleAccountClick = (_account: BankAccount) => {
-    // TODO: Open balance history drawer (story 2.5)
+  const handleAccountClick = (account: BankAccount) => {
+    setHistoryAccount(account)
   }
 
   const handleEdit = (account: BankAccount) => {
@@ -74,6 +74,12 @@ export function AccountsPage() {
       <DeleteAccountDialog
         account={deletingAccount}
         onClose={() => setDeletingAccount(null)}
+      />
+
+      <BalanceHistoryDrawer
+        account={historyAccount}
+        open={historyAccount !== null}
+        onOpenChange={(open) => !open && setHistoryAccount(null)}
       />
     </div>
   )

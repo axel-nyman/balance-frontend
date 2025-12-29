@@ -2,9 +2,12 @@ import { useNavigate } from 'react-router-dom'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
+import { BudgetGrid } from '@/components/budgets'
+import { useBudgets } from '@/hooks/use-budgets'
 
 export function BudgetsPage() {
   const navigate = useNavigate()
+  const { data, isLoading, isError, refetch } = useBudgets()
 
   return (
     <div>
@@ -19,10 +22,13 @@ export function BudgetsPage() {
         }
       />
 
-      {/* Budget Grid - to be implemented in 4.2 */}
-      <div>
-        {/* BudgetGrid component will go here */}
-      </div>
+      <BudgetGrid
+        budgets={data?.budgets ?? []}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        onCreateNew={() => navigate('/budgets/new')}
+      />
     </div>
   )
 }

@@ -430,11 +430,11 @@ describe('BudgetGrid', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Grid displays budget cards
-- [ ] Cards sorted by date descending
-- [ ] Responsive grid layout works
-- [ ] Loading, error, and empty states work
-- [ ] Clicking card navigates to detail
+- [x] All tests pass
+- [x] Grid displays budget cards
+- [x] Cards sorted by date descending
+- [x] Responsive grid layout works
+- [x] Loading, error, and empty states work
+- [x] Clicking card navigates to detail
 
 ---

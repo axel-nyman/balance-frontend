@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
 import {
   Sheet,
@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useBalanceHistory } from '@/hooks'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { UpdateBalanceModal } from './UpdateBalanceModal'
 import type { BankAccount, BalanceHistoryEntry } from '@/api/types'
 
 interface BalanceHistoryDrawerProps {
@@ -48,6 +49,8 @@ function HistoryEntry({ entry }: { entry: BalanceHistoryEntry }) {
 }
 
 export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHistoryDrawerProps) {
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+
   const {
     data,
     isLoading,
@@ -106,10 +109,9 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
           )}
         </SheetHeader>
 
-        {/* TODO: UpdateBalanceModal will be implemented in Story 02-07 */}
         <Button
           className="w-full mb-4"
-          disabled
+          onClick={() => setIsUpdateModalOpen(true)}
         >
           Update Balance
         </Button>
@@ -149,6 +151,14 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
             </>
           )}
         </div>
+
+        {account && (
+          <UpdateBalanceModal
+            account={account}
+            open={isUpdateModalOpen}
+            onOpenChange={setIsUpdateModalOpen}
+          />
+        )}
       </SheetContent>
     </Sheet>
   )

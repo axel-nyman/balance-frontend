@@ -22,6 +22,17 @@ export const handlers = [
     })
   }),
 
+  // Update balance
+  http.post('/api/bank-accounts/:id/balance', async ({ request, params }) => {
+    const body = (await request.json()) as { newBalance: number }
+    return HttpResponse.json({
+      id: params.id,
+      currentBalance: body.newBalance,
+      previousBalance: 0,
+      changeAmount: body.newBalance,
+    })
+  }),
+
   // Recurring expenses
   http.get('/api/recurring-expenses', () => {
     return HttpResponse.json({

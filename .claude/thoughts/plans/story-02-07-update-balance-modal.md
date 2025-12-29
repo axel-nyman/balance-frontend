@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Modal opens from Balance History drawer
-- [ ] Shows account name and current balance (read-only)
-- [ ] Form fields: New Balance (required), Date (required, defaults to today), Comment (optional)
-- [ ] Date cannot be in the future
-- [ ] Success: Close modal, show toast, refresh drawer and list
-- [ ] Error: Show error message inline
+- [x] Modal opens from Balance History drawer
+- [x] Shows account name and current balance (read-only)
+- [x] Form fields: New Balance (required), Date (required, defaults to today), Comment (optional)
+- [x] Date cannot be in the future
+- [x] Success: Close modal, show toast, refresh drawer and list
+- [x] Error: Show error message inline
 
 ### Implementation
 
@@ -308,12 +308,12 @@ describe('UpdateBalanceModal', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Shows current account info
-- [ ] Date defaults to today
-- [ ] Cannot select future dates
-- [ ] Successful update refreshes data
-- [ ] Error messages display correctly
+- [x] All tests pass
+- [x] Shows current account info
+- [x] Date defaults to today
+- [x] Cannot select future dates
+- [x] Successful update refreshes data
+- [x] Error messages display correctly
 
 ---
 

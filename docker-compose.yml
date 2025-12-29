@@ -25,8 +25,7 @@ services:
       - DATABASE_URL=jdbc:postgresql://db:5432/mydatabase
       - DATABASE_USERNAME=user
       - DATABASE_PASSWORD=password
-      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
-      - JWT_EXPIRATION=86400000
+      - TZ=Europe/Stockholm
     depends_on:
       db:
         condition: service_healthy

@@ -38,7 +38,10 @@
       "Bash(git rev-parse:*)",
       "WebFetch(domain:ui.shadcn.com)",
       "WebFetch(domain:www.radix-ui.com)",
-      "Bash(npx types-react-codemod@latest preset-19:*)"
+      "Bash(npx types-react-codemod@latest preset-19:*)",
+      "Bash(python3:*)",
+      "Bash(git log:*)",
+      "WebFetch(domain:localhost)"
     ],
     "deny": [],
     "ask": []

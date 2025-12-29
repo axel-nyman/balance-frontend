@@ -6,10 +6,10 @@
 
 ### Acceptance Criteria
 
-- [ ] Confirmation dialog shows when delete clicked
-- [ ] Dialog shows expense name
-- [ ] Clarifies that existing budget expenses are not affected
-- [ ] Successful delete: Close dialog, show toast, refresh list
+- [x] Confirmation dialog shows when delete clicked
+- [x] Dialog shows expense name
+- [x] Clarifies that existing budget expenses are not affected
+- [x] Successful delete: Close dialog, show toast, refresh list
 
 ### Implementation
 
@@ -139,10 +139,10 @@ describe('DeleteRecurringExpenseDialog', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Confirmation dialog shows expense name
-- [ ] Message clarifies existing expenses unaffected
-- [ ] Successful deletion removes template
+- [x] All tests pass
+- [x] Confirmation dialog shows expense name
+- [x] Message clarifies existing expenses unaffected
+- [x] Successful deletion removes template
 
 ---
 
@@ -319,8 +319,8 @@ http.delete('/api/recurring-expenses/:id', () => {
 
 After completing Epic 3:
 
-1. Run all tests: `npm test`
-2. Test manually in browser
+1. [x] Run all tests: `npm test`
+2. [x] Test manually in browser
 3. Verify due status indicators display correctly
 4. Verify sorting (due items first)
 5. Proceed to Epic 4: Budget List

@@ -1,45 +1,22 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { PageHeader, ConfirmDialog } from '@/components/shared'
-import { RecurringExpensesList, CreateRecurringExpenseModal, EditRecurringExpenseModal } from '@/components/recurring-expenses'
-import { useRecurringExpenses, useDeleteRecurringExpense } from '@/hooks/use-recurring-expenses'
-import { toast } from 'sonner'
+import { PageHeader } from '@/components/shared'
+import {
+  RecurringExpensesList,
+  CreateRecurringExpenseModal,
+  EditRecurringExpenseModal,
+  DeleteRecurringExpenseDialog,
+} from '@/components/recurring-expenses'
+import { useRecurringExpenses } from '@/hooks'
 import type { RecurringExpense } from '@/api/types'
 
 export function RecurringExpensesPage() {
   const { data, isLoading, isError, refetch } = useRecurringExpenses()
-  const deleteExpense = useDeleteRecurringExpense()
 
-  const [expenseToDelete, setExpenseToDelete] = useState<RecurringExpense | null>(null)
-  const [expenseToEdit, setExpenseToEdit] = useState<RecurringExpense | null>(null)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-
-  const handleCreateNew = () => {
-    setIsCreateModalOpen(true)
-  }
-
-  const handleEdit = (expense: RecurringExpense) => {
-    setExpenseToEdit(expense)
-  }
-
-  const handleDelete = (expense: RecurringExpense) => {
-    setExpenseToDelete(expense)
-  }
-
-  const handleConfirmDelete = () => {
-    if (!expenseToDelete) return
-
-    deleteExpense.mutate(expenseToDelete.id, {
-      onSuccess: () => {
-        toast.success(`${expenseToDelete.name} deleted`)
-        setExpenseToDelete(null)
-      },
-      onError: () => {
-        toast.error('Failed to delete recurring expense')
-      },
-    })
-  }
+  const [editingExpense, setEditingExpense] = useState<RecurringExpense | null>(null)
+  const [deletingExpense, setDeletingExpense] = useState<RecurringExpense | null>(null)
 
   return (
     <div>
@@ -47,7 +24,7 @@ export function RecurringExpensesPage() {
         title="Recurring Expenses"
         description="Manage templates for regular expenses"
         action={
-          <Button onClick={handleCreateNew}>
+          <Button onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2" />
             New Recurring Expense
           </Button>
@@ -59,20 +36,9 @@ export function RecurringExpensesPage() {
         isLoading={isLoading}
         isError={isError}
         onRetry={refetch}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onCreateNew={handleCreateNew}
-      />
-
-      <ConfirmDialog
-        open={expenseToDelete !== null}
-        onOpenChange={(open) => !open && setExpenseToDelete(null)}
-        title="Delete recurring expense?"
-        description={`Are you sure you want to delete "${expenseToDelete?.name}"? This action cannot be undone.`}
-        confirmLabel="Delete"
-        variant="destructive"
-        onConfirm={handleConfirmDelete}
-        loading={deleteExpense.isPending}
+        onEdit={setEditingExpense}
+        onDelete={setDeletingExpense}
+        onCreateNew={() => setIsCreateModalOpen(true)}
       />
 
       <CreateRecurringExpenseModal
@@ -81,8 +47,13 @@ export function RecurringExpensesPage() {
       />
 
       <EditRecurringExpenseModal
-        expense={expenseToEdit}
-        onClose={() => setExpenseToEdit(null)}
+        expense={editingExpense}
+        onClose={() => setEditingExpense(null)}
+      />
+
+      <DeleteRecurringExpenseDialog
+        expense={deletingExpense}
+        onClose={() => setDeletingExpense(null)}
       />
     </div>
   )

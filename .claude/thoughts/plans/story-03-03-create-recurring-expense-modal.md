@@ -6,14 +6,14 @@
 
 ### Acceptance Criteria
 
-- [ ] Modal opens when "New Recurring Expense" button is clicked
-- [ ] Form has fields: Name (required), Amount (required), Interval (required), Manual Payment checkbox
-- [ ] Interval dropdown: Monthly, Quarterly, Biannually, Yearly
-- [ ] Validation: Name required, Amount must be positive
-- [ ] Submit creates template via API
-- [ ] Success: Close modal, show toast, refresh list
-- [ ] Error: Show error message inline
-- [ ] Cancel closes modal without changes
+- [x] Modal opens when "New Recurring Expense" button is clicked
+- [x] Form has fields: Name (required), Amount (required), Interval (required), Manual Payment checkbox
+- [x] Interval dropdown: Monthly, Quarterly, Biannually, Yearly
+- [x] Validation: Name required, Amount must be positive
+- [x] Submit creates template via API
+- [x] Success: Close modal, show toast, refresh list
+- [x] Error: Show error message inline
+- [x] Cancel closes modal without changes
 
 ### Form Schema
 
@@ -362,12 +362,12 @@ describe('CreateRecurringExpenseModal', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Modal opens/closes correctly
-- [ ] Form validation works
-- [ ] Interval dropdown works
-- [ ] Manual payment checkbox works
-- [ ] Successful submission creates expense
-- [ ] Error messages display
+- [x] All tests pass
+- [x] Modal opens/closes correctly
+- [x] Form validation works
+- [x] Interval dropdown works
+- [x] Manual payment checkbox works
+- [x] Successful submission creates expense
+- [x] Error messages display
 
 ---

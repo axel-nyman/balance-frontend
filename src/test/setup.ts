@@ -23,6 +23,23 @@ class MockIntersectionObserver implements IntersectionObserver {
 }
 globalThis.IntersectionObserver = MockIntersectionObserver
 
+// Mock ResizeObserver for tests (required by Radix UI components)
+class MockResizeObserver implements ResizeObserver {
+  constructor(_callback: ResizeObserverCallback) {}
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+}
+globalThis.ResizeObserver = MockResizeObserver
+
+// Mock pointer capture APIs for Radix UI components
+Element.prototype.hasPointerCapture = () => false
+Element.prototype.setPointerCapture = () => {}
+Element.prototype.releasePointerCapture = () => {}
+
+// Mock scrollIntoView for Radix UI Select component
+Element.prototype.scrollIntoView = () => {}
+
 // Start MSW server before all tests
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 

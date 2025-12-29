@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader, ConfirmDialog } from '@/components/shared'
-import { RecurringExpensesList } from '@/components/recurring-expenses'
+import { RecurringExpensesList, CreateRecurringExpenseModal } from '@/components/recurring-expenses'
 import { useRecurringExpenses, useDeleteRecurringExpense } from '@/hooks/use-recurring-expenses'
 import { toast } from 'sonner'
 import type { RecurringExpense } from '@/api/types'
@@ -12,10 +12,10 @@ export function RecurringExpensesPage() {
   const deleteExpense = useDeleteRecurringExpense()
 
   const [expenseToDelete, setExpenseToDelete] = useState<RecurringExpense | null>(null)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
-  // TODO: Implement create modal (Story 3.3)
   const handleCreateNew = () => {
-    // Will open create modal when implemented
+    setIsCreateModalOpen(true)
   }
 
   // TODO: Implement edit modal (Story 3.4)
@@ -74,6 +74,11 @@ export function RecurringExpensesPage() {
         variant="destructive"
         onConfirm={handleConfirmDelete}
         loading={deleteExpense.isPending}
+      />
+
+      <CreateRecurringExpenseModal
+        open={isCreateModalOpen}
+        onOpenChange={setIsCreateModalOpen}
       />
     </div>
   )

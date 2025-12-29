@@ -6,10 +6,10 @@
 
 ### Acceptance Criteria
 
-- [ ] Page renders at `/recurring-expenses` route
-- [ ] Page header shows "Recurring Expenses" title
-- [ ] "New Recurring Expense" button visible in header
-- [ ] Main content area ready for list
+- [x] Page renders at `/recurring-expenses` route
+- [x] Page header shows "Recurring Expenses" title
+- [x] "New Recurring Expense" button visible in header
+- [x] Main content area ready for list
 
 ### Implementation
 
@@ -67,8 +67,8 @@ describe('RecurringExpensesPage', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Page renders at `/recurring-expenses`
-- [ ] Header and button visible
+- [x] Tests pass
+- [x] Page renders at `/recurring-expenses`
+- [x] Header and button visible
 
 ---

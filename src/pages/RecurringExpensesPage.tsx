@@ -1,8 +1,25 @@
+import { Plus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { PageHeader } from '@/components/shared'
+
 export function RecurringExpensesPage() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold">Recurring Expenses</h1>
-      <p className="text-gray-500">Recurring expense templates</p>
+    <div>
+      <PageHeader
+        title="Recurring Expenses"
+        description="Manage templates for regular expenses"
+        action={
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            New Recurring Expense
+          </Button>
+        }
+      />
+
+      {/* List - to be implemented in 3.2 */}
+      <div>
+        {/* RecurringExpensesList component will go here */}
+      </div>
     </div>
   )
 }

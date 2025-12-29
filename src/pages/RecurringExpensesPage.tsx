@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PageHeader, ConfirmDialog } from '@/components/shared'
-import { RecurringExpensesList, CreateRecurringExpenseModal } from '@/components/recurring-expenses'
+import { RecurringExpensesList, CreateRecurringExpenseModal, EditRecurringExpenseModal } from '@/components/recurring-expenses'
 import { useRecurringExpenses, useDeleteRecurringExpense } from '@/hooks/use-recurring-expenses'
 import { toast } from 'sonner'
 import type { RecurringExpense } from '@/api/types'
@@ -12,16 +12,15 @@ export function RecurringExpensesPage() {
   const deleteExpense = useDeleteRecurringExpense()
 
   const [expenseToDelete, setExpenseToDelete] = useState<RecurringExpense | null>(null)
+  const [expenseToEdit, setExpenseToEdit] = useState<RecurringExpense | null>(null)
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const handleCreateNew = () => {
     setIsCreateModalOpen(true)
   }
 
-  // TODO: Implement edit modal (Story 3.4)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleEdit = (_expense: RecurringExpense) => {
-    // Will open edit modal when implemented
+  const handleEdit = (expense: RecurringExpense) => {
+    setExpenseToEdit(expense)
   }
 
   const handleDelete = (expense: RecurringExpense) => {
@@ -79,6 +78,11 @@ export function RecurringExpensesPage() {
       <CreateRecurringExpenseModal
         open={isCreateModalOpen}
         onOpenChange={setIsCreateModalOpen}
+      />
+
+      <EditRecurringExpenseModal
+        expense={expenseToEdit}
+        onClose={() => setExpenseToEdit(null)}
       />
     </div>
   )

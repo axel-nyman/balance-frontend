@@ -94,9 +94,9 @@ describe('BudgetsPage', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Page renders at `/budgets`
-- [ ] Header and button visible
-- [ ] Navigation to wizard works
+- [x] Tests pass
+- [x] Page renders at `/budgets`
+- [x] Header and button visible
+- [x] Navigation to wizard works
 
 ---

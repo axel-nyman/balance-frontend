@@ -6,10 +6,10 @@
 
 ### Acceptance Criteria
 
-- [ ] Page integrates BudgetGrid component
-- [ ] Fetches budgets from API on mount
-- [ ] Handles loading/error/empty states
-- [ ] "New Budget" button works in both header and empty state
+- [x] Page integrates BudgetGrid component
+- [x] Fetches budgets from API on mount
+- [x] Handles loading/error/empty states
+- [x] "New Budget" button works in both header and empty state
 
 ### Implementation
 
@@ -187,10 +187,10 @@ describe('BudgetsPage', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Page fetches and displays budgets
-- [ ] Navigation works from both header and empty state
-- [ ] Error handling and retry work
+- [x] All tests pass
+- [x] Page fetches and displays budgets
+- [x] Navigation works from both header and empty state
+- [x] Error handling and retry work
 
 ---
 
@@ -286,10 +286,10 @@ lg:grid-cols-3
 
 After completing Epic 4:
 
-1. Run all tests: `npm test`
-2. Test manually in browser
-3. Verify grid responsiveness
-4. Verify card click navigation
+1. ~~Run all tests: `npm test`~~ ✅
+2. ~~Test manually in browser~~ ✅
+3. ~~Verify grid responsiveness~~ ✅
+4. ~~Verify card click navigation~~ ✅
 5. Proceed to Epic 5: Budget Wizard (most complex epic!)
 
 ---

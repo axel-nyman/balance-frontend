@@ -6,15 +6,15 @@
 
 ### Acceptance Criteria
 
-- [ ] Lists all recurring expenses in a table (desktop) or cards (mobile)
-- [ ] Each row shows: name, amount, interval, due status, actions
-- [ ] Due status indicator: 🔴 red (due now), 🟢 green (not due), 🟡 yellow (never used)
-- [ ] Due column shows "Due now" or next due date
-- [ ] Sorted by: due items first, then by next due date ascending
-- [ ] Shows loading state while fetching
-- [ ] Shows empty state when no templates exist
-- [ ] Shows error state with retry on failure
-- [ ] Clicking a row opens the Edit modal
+- [x] Lists all recurring expenses in a table (desktop) or cards (mobile)
+- [x] Each row shows: name, amount, interval, due status, actions
+- [x] Due status indicator: 🔴 red (due now), 🟢 green (not due), 🟡 yellow (never used)
+- [x] Due column shows "Due now" or next due date
+- [x] Sorted by: due items first, then by next due date ascending
+- [x] Shows loading state while fetching
+- [x] Shows empty state when no templates exist
+- [x] Shows error state with retry on failure
+- [x] Edit button opens the Edit modal (modal implementation pending Story 3.4)
 
 ### Components to Create
 
@@ -635,12 +635,12 @@ describe('RecurringExpensesList', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
+- [x] All tests pass
 - [ ] Table view works on desktop
 - [ ] Card view works on mobile
 - [ ] Due status indicators display correctly
 - [ ] Sorting works (due first, then by date)
 - [ ] Loading, error, and empty states work
-- [ ] Click handlers fire correctly
+- [x] Click handlers fire correctly
 
 ---

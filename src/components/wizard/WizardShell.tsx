@@ -1,0 +1,148 @@
+import { useEffect } from 'react'
+import { useWizard } from './WizardContext'
+import { ProgressHeader } from './ProgressHeader'
+import { SectionHeader } from './SectionHeader'
+import { WizardNavigation } from './WizardNavigation'
+import { WIZARD_STEPS } from './types'
+
+// Step components (placeholders for now)
+import { StepMonthYear } from './steps/StepMonthYear'
+import { StepIncome } from './steps/StepIncome'
+import { StepExpenses } from './steps/StepExpenses'
+import { StepSavings } from './steps/StepSavings'
+import { StepReview } from './steps/StepReview'
+
+export function WizardShell() {
+  const { state, dispatch, isStepValid, getStepStatus, completionPercentage } = useWizard()
+
+  // Warn before leaving the page with unsaved changes (browser navigation/refresh)
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (state.isDirty && !state.isSubmitting) {
+        e.preventDefault()
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [state.isDirty, state.isSubmitting])
+
+  const handleBack = () => {
+    dispatch({ type: 'PREV_STEP' })
+  }
+
+  const handleNext = () => {
+    dispatch({ type: 'NEXT_STEP' })
+  }
+
+  const handleGoToStep = (step: number) => {
+    // Only allow going to completed steps or current step
+    if (step <= state.currentStep) {
+      dispatch({ type: 'GO_TO_STEP', step })
+    }
+  }
+
+  const getSectionSummary = (step: number): string | undefined => {
+    switch (step) {
+      case 1:
+        if (state.month && state.year) {
+          const monthName = new Date(state.year, state.month - 1).toLocaleString('en-US', {
+            month: 'long',
+          })
+          return `${monthName} ${state.year}`
+        }
+        return undefined
+      case 2:
+        if (state.incomeItems.length > 0) {
+          return `${state.incomeItems.length} income source${state.incomeItems.length > 1 ? 's' : ''}`
+        }
+        return undefined
+      case 3:
+        if (state.expenseItems.length > 0) {
+          return `${state.expenseItems.length} expense${state.expenseItems.length > 1 ? 's' : ''}`
+        }
+        return undefined
+      case 4:
+        if (state.savingsItems.length > 0) {
+          return `${state.savingsItems.length} savings goal${state.savingsItems.length > 1 ? 's' : ''}`
+        }
+        return undefined
+      default:
+        return undefined
+    }
+  }
+
+  const renderStepContent = (step: number) => {
+    switch (step) {
+      case 1:
+        return <StepMonthYear />
+      case 2:
+        return <StepIncome />
+      case 3:
+        return <StepExpenses />
+      case 4:
+        return <StepSavings />
+      case 5:
+        return <StepReview />
+      default:
+        return null
+    }
+  }
+
+  const currentStepData = WIZARD_STEPS.find((s) => s.id === state.currentStep)
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <ProgressHeader
+        percentage={completionPercentage}
+        currentStepTitle={currentStepData?.title ?? ''}
+      />
+
+      {/* Sections */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        {WIZARD_STEPS.map((step) => {
+          const status = getStepStatus(step.id)
+          const isExpanded = step.id === state.currentStep
+
+          return (
+            <div
+              key={step.id}
+              className={step.id < WIZARD_STEPS.length ? 'border-b border-gray-100' : ''}
+            >
+              <SectionHeader
+                title={step.title}
+                description={step.description}
+                status={status}
+                summary={getSectionSummary(step.id)}
+                isExpanded={isExpanded}
+                onClick={() => handleGoToStep(step.id)}
+              />
+
+              {/* Expandable content with CSS Grid animation */}
+              <div
+                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
+                  isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="px-4 pb-4">
+                    {renderStepContent(step.id)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Navigation */}
+      <WizardNavigation
+        currentStep={state.currentStep}
+        canProceed={isStepValid(state.currentStep)}
+        isSubmitting={state.isSubmitting}
+        onBack={handleBack}
+        onNext={handleNext}
+      />
+    </div>
+  )
+}

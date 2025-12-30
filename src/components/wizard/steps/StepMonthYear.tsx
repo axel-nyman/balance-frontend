@@ -1,4 +1,6 @@
-import { useWizard } from '../WizardContext'
+import { useEffect, useState } from 'react'
+import { AlertCircle } from 'lucide-react'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -6,7 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useWizard } from '../WizardContext'
+import { useBudgets } from '@/hooks'
 
 const MONTHS = [
   { value: 1, label: 'January' },
@@ -23,22 +27,91 @@ const MONTHS = [
   { value: 12, label: 'December' },
 ]
 
+function getYearOptions(): number[] {
+  const currentYear = new Date().getFullYear()
+  return [currentYear - 1, currentYear, currentYear + 1]
+}
+
+function getMonthLabel(month: number): string {
+  return MONTHS.find(m => m.value === month)?.label ?? ''
+}
+
+function getDefaultMonthYear(existingBudgets: Array<{ month: number; year: number }>) {
+  const now = new Date()
+  const currentMonth = now.getMonth() + 1
+  const currentYear = now.getFullYear()
+
+  // Default to next month
+  let defaultMonth = currentMonth === 12 ? 1 : currentMonth + 1
+  let defaultYear = currentMonth === 12 ? currentYear + 1 : currentYear
+
+  // If next month already has a budget, find the next available month
+  const nextMonthExists = existingBudgets.some(
+    (b) => b.month === defaultMonth && b.year === defaultYear
+  )
+
+  if (nextMonthExists) {
+    // Find the next available month
+    for (let i = 0; i < 24; i++) {
+      defaultMonth++
+      if (defaultMonth > 12) {
+        defaultMonth = 1
+        defaultYear++
+      }
+      const exists = existingBudgets.some(
+        (b) => b.month === defaultMonth && b.year === defaultYear
+      )
+      if (!exists) break
+    }
+  }
+
+  return { month: defaultMonth, year: defaultYear }
+}
+
 export function StepMonthYear() {
   const { state, dispatch } = useWizard()
+  const { data: budgetsData } = useBudgets()
+  const [budgetExists, setBudgetExists] = useState(false)
 
-  const currentYear = new Date().getFullYear()
-  const years = [currentYear, currentYear + 1]
+  const existingBudgets = budgetsData?.budgets ?? []
+  const yearOptions = getYearOptions()
+
+  // Set defaults on mount
+  useEffect(() => {
+    if (state.month === null || state.year === null) {
+      const defaults = getDefaultMonthYear(existingBudgets)
+      dispatch({
+        type: 'SET_MONTH_YEAR',
+        month: defaults.month,
+        year: defaults.year,
+      })
+    }
+  }, [existingBudgets, state.month, state.year, dispatch])
+
+  // Check if budget exists for selected month/year
+  useEffect(() => {
+    if (state.month && state.year) {
+      const exists = existingBudgets.some(
+        (b) => b.month === state.month && b.year === state.year
+      )
+      setBudgetExists(exists)
+    }
+  }, [state.month, state.year, existingBudgets])
 
   const handleMonthChange = (value: string) => {
-    const month = parseInt(value, 10)
-    const year = state.year ?? currentYear
-    dispatch({ type: 'SET_MONTH_YEAR', month, year })
+    dispatch({
+      type: 'SET_MONTH_YEAR',
+      month: parseInt(value, 10),
+      year: state.year ?? new Date().getFullYear(),
+    })
   }
 
   const handleYearChange = (value: string) => {
-    const year = parseInt(value, 10)
-    const month = state.month ?? new Date().getMonth() + 1
-    dispatch({ type: 'SET_MONTH_YEAR', month, year })
+    dispatch({
+      type: 'SET_MONTH_YEAR',
+      month: state.month ?? new Date().getMonth() + 1,
+      year: parseInt(value, 10),
+    })
   }
 
   return (
@@ -77,7 +150,7 @@ export function StepMonthYear() {
               <SelectValue placeholder="Select year" />
             </SelectTrigger>
             <SelectContent>
-              {years.map((year) => (
+              {yearOptions.map((year) => (
                 <SelectItem key={year} value={year.toString()}>
                   {year}
                 </SelectItem>
@@ -86,6 +159,16 @@ export function StepMonthYear() {
           </Select>
         </div>
       </div>
+
+      {budgetExists && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            A budget already exists for {state.month && getMonthLabel(state.month)} {state.year}.
+            Please select a different month or year.
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   )
 }

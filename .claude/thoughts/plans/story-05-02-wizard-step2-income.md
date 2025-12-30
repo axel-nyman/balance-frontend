@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Month dropdown with all 12 months
-- [ ] Year dropdown with current year ± 1 year
-- [ ] Defaults to current month/year if no budgets exist
-- [ ] Defaults to next month if current month has a budget
-- [ ] Shows warning if budget already exists for selected month/year
-- [ ] Cannot proceed if budget already exists
+- [x] Month dropdown with all 12 months
+- [x] Year dropdown with current year ± 1 year
+- [x] Defaults to next month if no budgets exist
+- [x] Defaults to next available month if next month has a budget
+- [x] Shows warning if budget already exists for selected month/year
+- [x] Cannot proceed if budget already exists
 
 ### Implementation
 
@@ -299,13 +299,13 @@ describe('StepMonthYear', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Month/year dropdowns work
-- [ ] Defaults are set correctly
-- [ ] Warning shows for existing budgets
-- [ ] Cannot proceed when budget exists
-- [ ] Gap-filling validation works (can create Feb if March exists)
-- [ ] Unlocked budget check prevents creating new budget
+- [x] All tests pass
+- [x] Month/year dropdowns work
+- [x] Defaults are set correctly
+- [x] Warning shows for existing budgets
+- [x] Cannot proceed when budget exists
+- [x] Gap-filling validation works (can create Feb if March exists)
+- [x] Unlocked budget check prevents creating new budget
 
 ### Additional Validation Logic
 

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Plus, Trash2, Copy } from 'lucide-react'
+import { useState, useMemo } from 'react'
+import { Plus, Trash2, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -19,31 +19,43 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useWizard } from '../WizardContext'
-import { useAccounts, useBudgets } from '@/hooks'
-import { formatCurrency, generateId } from '@/lib/utils'
-import { CopyFromLastBudgetModal } from '../CopyFromLastBudgetModal'
+import { useAccounts } from '@/hooks'
+import { useLastBudget } from '@/hooks/use-last-budget'
+import { cn, formatCurrency, generateId } from '@/lib/utils'
 import type { BudgetIncome } from '@/api/types'
 import type { WizardIncomeItem } from '../types'
 
 export function StepIncome() {
   const { state, dispatch } = useWizard()
   const { data: accountsData } = useAccounts()
-  const { data: budgetsData } = useBudgets()
-  const [showCopyModal, setShowCopyModal] = useState(false)
+  const { lastBudget } = useLastBudget()
+  const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
+  const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
 
   const accounts = accountsData?.accounts ?? []
 
-  // Find the most recent budget to copy from (sort by year, then month, descending)
-  const sortedBudgets = [...(budgetsData?.budgets ?? [])].sort((a, b) => {
-    if (a.year !== b.year) return b.year - a.year
-    return b.month - a.month
-  })
-  const lastBudget = sortedBudgets[0]
+  // Compute items available for copying from last budget
+  // Keep items in the list while they're animating (copyingIds) even if already added to state
+  const availableItems = useMemo(() => {
+    if (!lastBudget) return []
+    const existingNames = new Set(
+      state.incomeItems.map((i) => i.name.toLowerCase())
+    )
+    return lastBudget.income.filter(
+      (item) =>
+        !existingNames.has(item.name.toLowerCase()) || copyingIds.has(item.id)
+    )
+  }, [lastBudget, state.incomeItems, copyingIds])
 
   const totalIncome = state.incomeItems.reduce(
     (sum, item) => sum + (item.amount || 0),
     0
   )
+
+  // Check if all remaining available items are being copied (header should collapse)
+  const isLastItemsCopying =
+    availableItems.length > 0 &&
+    availableItems.every((item) => copyingIds.has(item.id))
 
   const handleAddItem = () => {
     dispatch({
@@ -86,24 +98,51 @@ export function StepIncome() {
     dispatch({ type: 'REMOVE_INCOME_ITEM', id })
   }
 
-  const handleCopyFromLast = (items: BudgetIncome[]) => {
-    const existingNames = new Set(
-      state.incomeItems.map((i) => i.name.toLowerCase())
-    )
+  const handleCopyItem = (item: BudgetIncome) => {
+    // Prevent double-clicks
+    if (copyingIds.has(item.id)) return
 
-    const newItems: WizardIncomeItem[] = items
-      .filter((item) => !existingNames.has(item.name.toLowerCase()))
-      .map((item) => ({
-        id: generateId(),
-        name: item.name,
-        amount: item.amount,
-        bankAccountId: item.bankAccount.id,
-        bankAccountName: item.bankAccount.name,
-      }))
+    // Start animation phase (icon pop + green highlight)
+    setCopyingIds((prev) => new Set(prev).add(item.id))
 
-    for (const item of newItems) {
-      dispatch({ type: 'ADD_INCOME_ITEM', item })
-    }
+    // Generate new ID for the item
+    const newId = generateId()
+
+    // Delay adding the item until collapse starts (250ms)
+    // This syncs the new item appearance with the source row disappearing
+    setTimeout(() => {
+      setNewlyAddedIds((prev) => new Set(prev).add(newId))
+
+      dispatch({
+        type: 'ADD_INCOME_ITEM',
+        item: {
+          id: newId,
+          name: item.name,
+          amount: item.amount,
+          bankAccountId: item.bankAccount.id,
+          bankAccountName: item.bankAccount.name,
+        },
+      })
+
+      // Clear newly added state after entrance animation (250ms)
+      setTimeout(() => {
+        setNewlyAddedIds((prev) => {
+          const next = new Set(prev)
+          next.delete(newId)
+          return next
+        })
+      }, 250)
+    }, 250)
+
+    // Clean up copying state after collapse animation completes
+    // Icon pop: 200ms + pause: 250ms + collapse: 250ms = 700ms total
+    setTimeout(() => {
+      setCopyingIds((prev) => {
+        const next = new Set(prev)
+        next.delete(item.id)
+        return next
+      })
+    }, 700)
   }
 
   return (
@@ -115,16 +154,6 @@ export function StepIncome() {
             Add your expected income sources for this month.
           </p>
         </div>
-        {lastBudget && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowCopyModal(true)}
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            Copy from Last Budget
-          </Button>
-        )}
       </div>
 
       <div className="border rounded-lg">
@@ -138,7 +167,7 @@ export function StepIncome() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {state.incomeItems.length === 0 ? (
+            {state.incomeItems.length === 0 && availableItems.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={4}
@@ -148,64 +177,163 @@ export function StepIncome() {
                 </TableCell>
               </TableRow>
             ) : (
-              state.incomeItems.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <Input
-                      value={item.name}
-                      onChange={(e) =>
-                        handleUpdateItem(item.id, 'name', e.target.value)
-                      }
-                      placeholder="e.g., Salary, Freelance"
-                      className="border-0 shadow-none focus-visible:ring-0 px-0"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={item.bankAccountId}
-                      onValueChange={(value) =>
-                        handleUpdateItem(item.id, 'bankAccountId', value)
-                      }
+              <>
+                {state.incomeItems.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    className={cn(
+                      newlyAddedIds.has(item.id) && 'animate-fade-in-subtle'
+                    )}
+                  >
+                    <TableCell>
+                      <Input
+                        value={item.name}
+                        onChange={(e) =>
+                          handleUpdateItem(item.id, 'name', e.target.value)
+                        }
+                        placeholder="e.g., Salary, Freelance"
+                        className="border-0 shadow-none focus-visible:ring-0 px-0"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Select
+                        value={item.bankAccountId}
+                        onValueChange={(value) =>
+                          handleUpdateItem(item.id, 'bankAccountId', value)
+                        }
+                      >
+                        <SelectTrigger className="border-0 shadow-none focus:ring-0 px-0">
+                          <SelectValue placeholder="Select account" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {accounts.map((account) => (
+                            <SelectItem key={account.id} value={account.id}>
+                              {account.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Input
+                        type="number"
+                        value={item.amount || ''}
+                        onChange={(e) =>
+                          handleUpdateItem(
+                            item.id,
+                            'amount',
+                            parseFloat(e.target.value) || 0
+                          )
+                        }
+                        placeholder="0"
+                        className="border-0 shadow-none focus-visible:ring-0 px-0 text-right"
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemoveItem(item.id)}
+                        aria-label="Remove item"
+                      >
+                        <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+                {/* Separator row - only show if there are available items */}
+                {availableItems.length > 0 && (
+                  <TableRow className="bg-gray-50 hover:bg-gray-50">
+                    <TableCell colSpan={4} className="p-0">
+                      <div
+                        className={cn(
+                          'grid overflow-hidden',
+                          isLastItemsCopying
+                            ? 'animate-collapse-row'
+                            : 'grid-rows-[1fr]'
+                        )}
+                      >
+                        <div className="overflow-hidden min-h-0">
+                          <div className="py-2 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                            From last budget
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {/* Available items from last budget */}
+                {availableItems.map((item) => {
+                  const isCopying = copyingIds.has(item.id)
+                  return (
+                    <TableRow
+                      key={`available-${item.id}`}
+                      className="contents"
                     >
-                      <SelectTrigger className="border-0 shadow-none focus:ring-0 px-0">
-                        <SelectValue placeholder="Select account" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {accounts.map((account) => (
-                          <SelectItem key={account.id} value={account.id}>
-                            {account.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Input
-                      type="number"
-                      value={item.amount || ''}
-                      onChange={(e) =>
-                        handleUpdateItem(
-                          item.id,
-                          'amount',
-                          parseFloat(e.target.value) || 0
-                        )
-                      }
-                      placeholder="0"
-                      className="border-0 shadow-none focus-visible:ring-0 px-0 text-right"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveItem(item.id)}
-                      aria-label="Remove item"
-                    >
-                      <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
+                      <td colSpan={4} className="p-0">
+                        <div
+                          className={cn(
+                            'grid overflow-hidden',
+                            isCopying
+                              ? 'animate-collapse-row'
+                              : 'grid-rows-[1fr]'
+                          )}
+                        >
+                          <div className="overflow-hidden min-h-0">
+                            <div
+                              className={cn(
+                                'flex items-center px-4 py-3 border-b border-gray-100 transition-colors duration-150',
+                                isCopying && 'bg-green-50'
+                              )}
+                            >
+                              <div className="flex-1 min-w-0 grid grid-cols-[35%_30%_1fr_50px] items-center gap-0">
+                                <span className="text-gray-400">
+                                  {item.name}
+                                </span>
+                                <span className="text-gray-400">
+                                  {item.bankAccount.name}
+                                </span>
+                                <span className="text-right text-gray-400">
+                                  {formatCurrency(item.amount)}
+                                </span>
+                                <div className="flex justify-center">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleCopyItem(item)}
+                                    disabled={isCopying}
+                                    aria-label="Add item"
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <div className="relative w-4 h-4">
+                                      <Plus
+                                        className={cn(
+                                          'w-4 h-4 text-gray-400 absolute inset-0 transition-all duration-100',
+                                          isCopying && 'opacity-0 rotate-90 scale-0'
+                                        )}
+                                      />
+                                      <Check
+                                        className={cn(
+                                          'w-4 h-4 text-green-600 absolute inset-0',
+                                          isCopying
+                                            ? 'animate-pop-check'
+                                            : 'opacity-0 scale-0'
+                                        )}
+                                      />
+                                    </div>
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </TableRow>
+                  )
+                })}
+              </>
             )}
           </TableBody>
           {state.incomeItems.length > 0 && (
@@ -234,13 +362,6 @@ export function StepIncome() {
           Add at least one income source to continue.
         </p>
       )}
-
-      <CopyFromLastBudgetModal
-        open={showCopyModal}
-        onOpenChange={setShowCopyModal}
-        itemType="income"
-        onCopy={handleCopyFromLast}
-      />
     </div>
   )
 }

@@ -6,30 +6,30 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows running balance (Income - Expenses - Savings so far)
-- [ ] Dropdown to select target account
-- [ ] Amount field for savings
-- [ ] "Add Savings" button
-- [ ] Shows total savings
-- [ ] Warning if savings would make balance negative
-- [ ] "Copy from Last Budget" button
+- [x] Shows running balance (Income - Expenses - Savings so far)
+- [x] Dropdown to select target account
+- [x] Amount field for savings
+- [x] "Add Savings" button
+- [x] Shows total savings
+- [x] Warning if savings would make balance negative
+- [x] "Copy from Last Budget" feature (check out income implementation)
 
 ### Implementation
 
 **Create `src/components/wizard/steps/StepSavings.tsx`:**
 
 ```typescript
-import { useState } from 'react'
-import { Plus, Trash2, Copy, AlertTriangle } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useState } from "react";
+import { Plus, Trash2, Copy, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -38,111 +38,126 @@ import {
   TableHeader,
   TableRow,
   TableFooter,
-} from '@/components/ui/table'
-import { Alert, AlertDescription } from '@/components/ui/alert'
-import { useWizard } from '../WizardContext'
-import { useBudgets, useAccounts } from '@/hooks'
-import { formatCurrency } from '@/lib/utils'
-import { cn } from '@/lib/utils'
-import type { SavingsItem } from '../types'
+} from "@/components/ui/table";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useWizard } from "../WizardContext";
+import { useBudgets, useAccounts } from "@/hooks";
+import { formatCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import type { SavingsItem } from "../types";
 
 function generateId(): string {
-  return crypto.randomUUID()
+  return crypto.randomUUID();
 }
 
 export function StepSavings() {
-  const { state, dispatch } = useWizard()
-  const { data: budgetsData } = useBudgets()
-  const { data: accountsData } = useAccounts()
-  const [isCopying, setIsCopying] = useState(false)
+  const { state, dispatch } = useWizard();
+  const { data: budgetsData } = useBudgets();
+  const { data: accountsData } = useAccounts();
+  const [isCopying, setIsCopying] = useState(false);
 
-  const accounts = accountsData?.accounts ?? []
+  const accounts = accountsData?.accounts ?? [];
 
   // Find last budget for copy feature
   const sortedBudgets = [...(budgetsData?.budgets ?? [])].sort((a, b) => {
-    if (a.year !== b.year) return b.year - a.year
-    return b.month - a.month
-  })
-  const lastBudget = sortedBudgets[0]
+    if (a.year !== b.year) return b.year - a.year;
+    return b.month - a.month;
+  });
+  const lastBudget = sortedBudgets[0];
 
   // Calculate totals
-  const totalIncome = state.incomeItems.reduce((sum, item) => sum + (item.amount || 0), 0)
-  const totalExpenses = state.expenseItems.reduce((sum, item) => sum + (item.amount || 0), 0)
-  const totalSavings = state.savingsItems.reduce((sum, item) => sum + (item.amount || 0), 0)
-  const remainingBalance = totalIncome - totalExpenses - totalSavings
+  const totalIncome = state.incomeItems.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  );
+  const totalExpenses = state.expenseItems.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  );
+  const totalSavings = state.savingsItems.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  );
+  const remainingBalance = totalIncome - totalExpenses - totalSavings;
 
   const handleAddItem = () => {
     dispatch({
-      type: 'ADD_SAVINGS_ITEM',
+      type: "ADD_SAVINGS_ITEM",
       item: {
         id: generateId(),
-        targetAccountId: '',
-        targetAccountName: '',
+        targetAccountId: "",
+        targetAccountName: "",
         amount: 0,
       },
-    })
-  }
+    });
+  };
 
   const handleUpdateAccount = (id: string, accountId: string) => {
-    const account = accounts.find((a) => a.id === accountId)
+    const account = accounts.find((a) => a.id === accountId);
     dispatch({
-      type: 'UPDATE_SAVINGS_ITEM',
+      type: "UPDATE_SAVINGS_ITEM",
       id,
       updates: {
         targetAccountId: accountId,
-        targetAccountName: account?.name ?? '',
+        targetAccountName: account?.name ?? "",
       },
-    })
-  }
+    });
+  };
 
   const handleUpdateAmount = (id: string, amount: number) => {
     dispatch({
-      type: 'UPDATE_SAVINGS_ITEM',
+      type: "UPDATE_SAVINGS_ITEM",
       id,
       updates: { amount },
-    })
-  }
+    });
+  };
 
   const handleRemoveItem = (id: string) => {
-    dispatch({ type: 'REMOVE_SAVINGS_ITEM', id })
-  }
+    dispatch({ type: "REMOVE_SAVINGS_ITEM", id });
+  };
 
   const handleCopyFromLast = async () => {
-    if (!lastBudget) return
+    if (!lastBudget) return;
 
-    setIsCopying(true)
+    setIsCopying(true);
     try {
-      const response = await fetch(`/api/budgets/${lastBudget.id}`)
-      const budget = await response.json()
+      const response = await fetch(`/api/budgets/${lastBudget.id}`);
+      const budget = await response.json();
 
       if (budget.savingsItems && budget.savingsItems.length > 0) {
         const copiedItems: SavingsItem[] = budget.savingsItems
-          .filter((item: { targetAccountId: string }) => 
+          .filter((item: { targetAccountId: string }) =>
             // Only copy if account still exists
             accounts.some((a) => a.id === item.targetAccountId)
           )
-          .map((item: { targetAccountId: string; targetAccountName: string; amount: number }) => ({
-            id: generateId(),
-            targetAccountId: item.targetAccountId,
-            targetAccountName: item.targetAccountName,
-            amount: item.amount,
-          }))
-        dispatch({ type: 'SET_SAVINGS_ITEMS', items: copiedItems })
+          .map(
+            (item: {
+              targetAccountId: string;
+              targetAccountName: string;
+              amount: number;
+            }) => ({
+              id: generateId(),
+              targetAccountId: item.targetAccountId,
+              targetAccountName: item.targetAccountName,
+              amount: item.amount,
+            })
+          );
+        dispatch({ type: "SET_SAVINGS_ITEMS", items: copiedItems });
       }
     } catch (error) {
-      console.error('Failed to copy from last budget:', error)
+      console.error("Failed to copy from last budget:", error);
     } finally {
-      setIsCopying(false)
+      setIsCopying(false);
     }
-  }
+  };
 
   // Get accounts not already used
   const getAvailableAccounts = (currentItemId: string) => {
     const usedAccountIds = state.savingsItems
       .filter((item) => item.id !== currentItemId)
-      .map((item) => item.targetAccountId)
-    return accounts.filter((account) => !usedAccountIds.includes(account.id))
-  }
+      .map((item) => item.targetAccountId);
+    return accounts.filter((account) => !usedAccountIds.includes(account.id));
+  };
 
   return (
     <div className="space-y-6">
@@ -161,7 +176,7 @@ export function StepSavings() {
             disabled={isCopying}
           >
             <Copy className="w-4 h-4 mr-2" />
-            {isCopying ? 'Copying...' : 'Copy from Last Budget'}
+            {isCopying ? "Copying..." : "Copy from Last Budget"}
           </Button>
         )}
       </div>
@@ -170,22 +185,30 @@ export function StepSavings() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
         <div>
           <p className="text-xs text-gray-500 uppercase">Income</p>
-          <p className="text-lg font-semibold text-green-600">{formatCurrency(totalIncome)}</p>
+          <p className="text-lg font-semibold text-green-600">
+            {formatCurrency(totalIncome)}
+          </p>
         </div>
         <div>
           <p className="text-xs text-gray-500 uppercase">Expenses</p>
-          <p className="text-lg font-semibold text-red-600">{formatCurrency(totalExpenses)}</p>
+          <p className="text-lg font-semibold text-red-600">
+            {formatCurrency(totalExpenses)}
+          </p>
         </div>
         <div>
           <p className="text-xs text-gray-500 uppercase">Savings</p>
-          <p className="text-lg font-semibold text-blue-600">{formatCurrency(totalSavings)}</p>
+          <p className="text-lg font-semibold text-blue-600">
+            {formatCurrency(totalSavings)}
+          </p>
         </div>
         <div>
           <p className="text-xs text-gray-500 uppercase">Remaining</p>
-          <p className={cn(
-            'text-lg font-semibold',
-            remainingBalance >= 0 ? 'text-green-600' : 'text-red-600'
-          )}>
+          <p
+            className={cn(
+              "text-lg font-semibold",
+              remainingBalance >= 0 ? "text-green-600" : "text-red-600"
+            )}
+          >
             {formatCurrency(remainingBalance)}
           </p>
         </div>
@@ -195,8 +218,9 @@ export function StepSavings() {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Your planned savings exceed your remaining balance by {formatCurrency(Math.abs(remainingBalance))}.
-            Consider reducing your savings or expenses.
+            Your planned savings exceed your remaining balance by{" "}
+            {formatCurrency(Math.abs(remainingBalance))}. Consider reducing your
+            savings or expenses.
           </AlertDescription>
         </Alert>
       )}
@@ -204,7 +228,8 @@ export function StepSavings() {
       {accounts.length === 0 ? (
         <Alert>
           <AlertDescription>
-            No bank accounts found. Create accounts in the Accounts page to add savings.
+            No bank accounts found. Create accounts in the Accounts page to add
+            savings.
           </AlertDescription>
         </Alert>
       ) : (
@@ -222,7 +247,10 @@ export function StepSavings() {
               <TableBody>
                 {state.savingsItems.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center text-gray-500 py-8">
+                    <TableCell
+                      colSpan={3}
+                      className="text-center text-gray-500 py-8"
+                    >
                       No savings planned yet. Savings are optional.
                     </TableCell>
                   </TableRow>
@@ -232,7 +260,9 @@ export function StepSavings() {
                       <TableCell>
                         <Select
                           value={item.targetAccountId}
-                          onValueChange={(value) => handleUpdateAccount(item.id, value)}
+                          onValueChange={(value) =>
+                            handleUpdateAccount(item.id, value)
+                          }
                         >
                           <SelectTrigger className="border-0 shadow-none">
                             <SelectValue placeholder="Select account" />
@@ -244,19 +274,27 @@ export function StepSavings() {
                               </SelectItem>
                             ))}
                             {/* Also show current selection if it's set */}
-                            {item.targetAccountId && !getAvailableAccounts(item.id).find(a => a.id === item.targetAccountId) && (
-                              <SelectItem value={item.targetAccountId}>
-                                {item.targetAccountName}
-                              </SelectItem>
-                            )}
+                            {item.targetAccountId &&
+                              !getAvailableAccounts(item.id).find(
+                                (a) => a.id === item.targetAccountId
+                              ) && (
+                                <SelectItem value={item.targetAccountId}>
+                                  {item.targetAccountName}
+                                </SelectItem>
+                              )}
                           </SelectContent>
                         </Select>
                       </TableCell>
                       <TableCell className="text-right">
                         <Input
                           type="number"
-                          value={item.amount || ''}
-                          onChange={(e) => handleUpdateAmount(item.id, parseFloat(e.target.value) || 0)}
+                          value={item.amount || ""}
+                          onChange={(e) =>
+                            handleUpdateAmount(
+                              item.id,
+                              parseFloat(e.target.value) || 0
+                            )
+                          }
                           placeholder="0"
                           className="border-0 shadow-none focus-visible:ring-0 px-0 text-right"
                         />
@@ -292,46 +330,53 @@ export function StepSavings() {
           <Button
             variant="outline"
             onClick={handleAddItem}
-            disabled={getAvailableAccounts('').length === 0}
+            disabled={getAvailableAccounts("").length === 0}
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Savings
           </Button>
 
-          {getAvailableAccounts('').length === 0 && state.savingsItems.length > 0 && (
-            <p className="text-sm text-gray-500">
-              All accounts have been assigned savings.
-            </p>
-          )}
+          {getAvailableAccounts("").length === 0 &&
+            state.savingsItems.length > 0 && (
+              <p className="text-sm text-gray-500">
+                All accounts have been assigned savings.
+              </p>
+            )}
         </>
       )}
     </div>
-  )
+  );
 }
 ```
 
 ### Test File: `src/components/wizard/steps/StepSavings.test.tsx`
 
 ```typescript
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@/test/test-utils'
-import userEvent from '@testing-library/user-event'
-import { WizardProvider, useWizard } from '../WizardContext'
-import { StepSavings } from './StepSavings'
-import { server } from '@/test/mocks/server'
-import { http, HttpResponse } from 'msw'
-import { useEffect } from 'react'
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, waitFor } from "@/test/test-utils";
+import userEvent from "@testing-library/user-event";
+import { WizardProvider, useWizard } from "../WizardContext";
+import { StepSavings } from "./StepSavings";
+import { server } from "@/test/mocks/server";
+import { http, HttpResponse } from "msw";
+import { useEffect } from "react";
 
 // Helper to set up wizard state with income/expenses
 function WizardWithState({ children }: { children: React.ReactNode }) {
-  const { dispatch } = useWizard()
-  
+  const { dispatch } = useWizard();
+
   useEffect(() => {
-    dispatch({ type: 'SET_INCOME_ITEMS', items: [{ id: '1', source: 'Salary', amount: 50000 }] })
-    dispatch({ type: 'SET_EXPENSE_ITEMS', items: [{ id: '1', name: 'Rent', amount: 20000 }] })
-  }, [dispatch])
-  
-  return <>{children}</>
+    dispatch({
+      type: "SET_INCOME_ITEMS",
+      items: [{ id: "1", source: "Salary", amount: 50000 }],
+    });
+    dispatch({
+      type: "SET_EXPENSE_ITEMS",
+      items: [{ id: "1", name: "Rent", amount: 20000 }],
+    });
+  }, [dispatch]);
+
+  return <>{children}</>;
 }
 
 function renderWithWizard(withState = false) {
@@ -342,141 +387,147 @@ function renderWithWizard(withState = false) {
           <StepSavings />
         </WizardWithState>
       </WizardProvider>
-    )
+    );
   }
   return render(
     <WizardProvider>
       <StepSavings />
     </WizardProvider>
-  )
+  );
 }
 
-describe('StepSavings', () => {
+describe("StepSavings", () => {
   beforeEach(() => {
     server.use(
-      http.get('/api/budgets', () => {
-        return HttpResponse.json({ budgets: [] })
+      http.get("/api/budgets", () => {
+        return HttpResponse.json({ budgets: [] });
       }),
-      http.get('/api/bank-accounts', () => {
+      http.get("/api/bank-accounts", () => {
         return HttpResponse.json({
           totalBalance: 10000,
           accountCount: 2,
           accounts: [
-            { id: '1', name: 'Savings Account', currentBalance: 5000 },
-            { id: '2', name: 'Emergency Fund', currentBalance: 5000 },
-          ]
-        })
+            { id: "1", name: "Savings Account", currentBalance: 5000 },
+            { id: "2", name: "Emergency Fund", currentBalance: 5000 },
+          ],
+        });
       })
-    )
-  })
+    );
+  });
 
-  it('renders savings table', async () => {
-    renderWithWizard()
-    
+  it("renders savings table", async () => {
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByText('Account')).toBeInTheDocument()
-      expect(screen.getByText('Amount')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("Account")).toBeInTheDocument();
+      expect(screen.getByText("Amount")).toBeInTheDocument();
+    });
+  });
 
-  it('shows running balance summary', async () => {
-    renderWithWizard(true)
-    
+  it("shows running balance summary", async () => {
+    renderWithWizard(true);
+
     await waitFor(() => {
-      expect(screen.getByText('Income')).toBeInTheDocument()
-      expect(screen.getByText('Expenses')).toBeInTheDocument()
-      expect(screen.getByText('Savings')).toBeInTheDocument()
-      expect(screen.getByText('Remaining')).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText("Income")).toBeInTheDocument();
+      expect(screen.getByText("Expenses")).toBeInTheDocument();
+      expect(screen.getByText("Savings")).toBeInTheDocument();
+      expect(screen.getByText("Remaining")).toBeInTheDocument();
+    });
+  });
 
-  it('calculates remaining balance correctly', async () => {
-    renderWithWizard(true)
-    
+  it("calculates remaining balance correctly", async () => {
+    renderWithWizard(true);
+
     await waitFor(() => {
       // Income 50000 - Expenses 20000 - Savings 0 = 30000 remaining
-      expect(screen.getByText(/30 000,00 kr/)).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText(/30 000,00 kr/)).toBeInTheDocument();
+    });
+  });
 
-  it('adds savings item when button clicked', async () => {
-    renderWithWizard()
-    
+  it("adds savings item when button clicked", async () => {
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add savings/i })).toBeInTheDocument()
-    })
+      expect(
+        screen.getByRole("button", { name: /add savings/i })
+      ).toBeInTheDocument();
+    });
 
-    await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
-    
-    expect(screen.getByText(/select account/i)).toBeInTheDocument()
-  })
+    await userEvent.click(screen.getByRole("button", { name: /add savings/i }));
 
-  it('shows account dropdown with available accounts', async () => {
-    renderWithWizard()
-    
+    expect(screen.getByText(/select account/i)).toBeInTheDocument();
+  });
+
+  it("shows account dropdown with available accounts", async () => {
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add savings/i })).toBeInTheDocument()
-    })
+      expect(
+        screen.getByRole("button", { name: /add savings/i })
+      ).toBeInTheDocument();
+    });
 
-    await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
-    await userEvent.click(screen.getByText(/select account/i))
-    
-    expect(screen.getByText('Savings Account')).toBeInTheDocument()
-    expect(screen.getByText('Emergency Fund')).toBeInTheDocument()
-  })
+    await userEvent.click(screen.getByRole("button", { name: /add savings/i }));
+    await userEvent.click(screen.getByText(/select account/i));
 
-  it('removes savings item when delete clicked', async () => {
-    renderWithWizard()
-    
+    expect(screen.getByText("Savings Account")).toBeInTheDocument();
+    expect(screen.getByText("Emergency Fund")).toBeInTheDocument();
+  });
+
+  it("removes savings item when delete clicked", async () => {
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add savings/i })).toBeInTheDocument()
-    })
+      expect(
+        screen.getByRole("button", { name: /add savings/i })
+      ).toBeInTheDocument();
+    });
 
-    await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
-    expect(screen.getByText(/select account/i)).toBeInTheDocument()
-    
-    await userEvent.click(screen.getByRole('button', { name: /remove/i }))
-    
-    expect(screen.queryByText(/select account/i)).not.toBeInTheDocument()
-  })
+    await userEvent.click(screen.getByRole("button", { name: /add savings/i }));
+    expect(screen.getByText(/select account/i)).toBeInTheDocument();
 
-  it('shows warning when no accounts exist', async () => {
+    await userEvent.click(screen.getByRole("button", { name: /remove/i }));
+
+    expect(screen.queryByText(/select account/i)).not.toBeInTheDocument();
+  });
+
+  it("shows warning when no accounts exist", async () => {
     server.use(
-      http.get('/api/bank-accounts', () => {
+      http.get("/api/bank-accounts", () => {
         return HttpResponse.json({
           totalBalance: 0,
           accountCount: 0,
-          accounts: []
-        })
+          accounts: [],
+        });
       })
-    )
+    );
 
-    renderWithWizard()
-    
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByText(/no bank accounts found/i)).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText(/no bank accounts found/i)).toBeInTheDocument();
+    });
+  });
 
-  it('shows empty state message', async () => {
-    renderWithWizard()
-    
+  it("shows empty state message", async () => {
+    renderWithWizard();
+
     await waitFor(() => {
-      expect(screen.getByText(/no savings planned/i)).toBeInTheDocument()
-    })
-  })
+      expect(screen.getByText(/no savings planned/i)).toBeInTheDocument();
+    });
+  });
 
-  it('shows warning when balance goes negative', async () => {
+  it("shows warning when balance goes negative", async () => {
     // Set up with more expenses than income
     server.use(
-      http.get('/api/bank-accounts', () => {
+      http.get("/api/bank-accounts", () => {
         return HttpResponse.json({
           totalBalance: 5000,
           accountCount: 1,
-          accounts: [{ id: '1', name: 'Savings', currentBalance: 5000 }]
-        })
+          accounts: [{ id: "1", name: "Savings", currentBalance: 5000 }],
+        });
       })
-    )
+    );
 
     render(
       <WizardProvider>
@@ -484,34 +535,36 @@ describe('StepSavings', () => {
           <StepSavings />
         </WizardWithState>
       </WizardProvider>
-    )
+    );
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add savings/i })).toBeInTheDocument()
-    })
+      expect(
+        screen.getByRole("button", { name: /add savings/i })
+      ).toBeInTheDocument();
+    });
 
     // Add savings that exceeds remaining balance
-    await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
-    await userEvent.click(screen.getByText(/select account/i))
-    await userEvent.click(screen.getByText('Savings'))
-    
-    const amountInput = screen.getByPlaceholderText('0')
-    await userEvent.type(amountInput, '40000') // More than 30000 remaining
-    
+    await userEvent.click(screen.getByRole("button", { name: /add savings/i }));
+    await userEvent.click(screen.getByText(/select account/i));
+    await userEvent.click(screen.getByText("Savings"));
+
+    const amountInput = screen.getByPlaceholderText("0");
+    await userEvent.type(amountInput, "40000"); // More than 30000 remaining
+
     await waitFor(() => {
-      expect(screen.getByText(/exceed/i)).toBeInTheDocument()
-    })
-  })
-})
+      expect(screen.getByText(/exceed/i)).toBeInTheDocument();
+    });
+  });
+});
 ```
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Running balance displays correctly
-- [ ] Can add/edit/remove savings items
-- [ ] Account dropdown works
-- [ ] Warning shows for negative balance
-- [ ] Each account can only be used once
+- [x] All tests pass
+- [x] Running balance displays correctly
+- [x] Can add/edit/remove savings items
+- [x] Account dropdown works
+- [x] Warning shows for negative balance
+- [x] Multiple savings items per account allowed
 
 ---

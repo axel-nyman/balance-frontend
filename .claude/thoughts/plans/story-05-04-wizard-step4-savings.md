@@ -6,15 +6,15 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows table of expense items (name, amount)
-- [ ] "Add Expense" button for manual entry
-- [ ] Quick-add section with recurring expense templates
-- [ ] Due recurring expenses highlighted
-- [ ] Clicking template adds it to expenses table
-- [ ] Already-added templates show checkmark
-- [ ] Delete button per row
-- [ ] Shows total expenses
-- [ ] "Copy from Last Budget" button
+- [x] Shows table of expense items (name, amount)
+- [x] "Add Expense" button for manual entry
+- [x] Quick-add section with recurring expense templates
+- [x] Due recurring expenses highlighted
+- [x] Clicking template adds it to expenses table
+- [x] Already-added templates show checkmark (removed from list)
+- [x] Delete button per row
+- [x] Shows total expenses
+- [ ] ~~"Copy from Last Budget" button~~ (skipped - recurring templates solve same use case)
 
 ### Implementation
 
@@ -429,13 +429,13 @@ describe('StepExpenses', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Can add/edit/remove expense items
-- [ ] Quick-add shows recurring expenses
-- [ ] Due expenses highlighted
-- [ ] Added templates show checkmark (filtered from list)
-- [ ] Total displays correctly
-- [ ] Recurring expenses are removed from Quick-Add list when added to budget
+- [x] All tests pass
+- [x] Can add/edit/remove expense items
+- [x] Quick-add shows recurring expenses
+- [x] Due expenses highlighted
+- [x] Added templates show checkmark (filtered from list)
+- [x] Total displays correctly
+- [x] Recurring expenses are removed from Quick-Add list when added to budget
 
 ### Quick-Add State Tracking Implementation
 

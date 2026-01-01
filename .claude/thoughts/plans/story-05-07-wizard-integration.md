@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Save button creates budget and all items via API
-- [ ] Shows loading state during save
-- [ ] Shows error if any step fails
-- [ ] Navigates to budget detail on success
-- [ ] If "Lock" checked, locks budget after creation
-- [ ] Toast notification on success/failure
+- [x] Save button creates budget and all items via API
+- [x] Shows loading state during save
+- [x] Shows error if any step fails
+- [x] Navigates to budget detail on success
+- [x] If "Lock" checked, locks budget after creation
+- [x] Toast notification on success/failure
 
 ### Implementation
 
@@ -293,10 +293,10 @@ describe('Wizard Integration', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Full wizard flow works end-to-end
-- [ ] Error handling works
-- [ ] Navigation after save works
+- [x] All tests pass
+- [x] Full wizard flow works end-to-end
+- [x] Error handling works
+- [x] Navigation after save works
 
 ---
 

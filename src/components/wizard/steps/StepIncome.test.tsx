@@ -116,29 +116,7 @@ describe('StepIncome', () => {
     expect(screen.queryByText(/add at least one/i)).not.toBeInTheDocument()
   })
 
-  it('shows copy from last budget button when budget exists', async () => {
-    server.use(
-      http.get('/api/budgets', () => {
-        return HttpResponse.json({
-          budgets: [{ id: 'budget-1', month: 1, year: 2025, status: 'LOCKED' }],
-        })
-      })
-    )
-
-    renderWithWizard()
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /copy from last/i })).toBeInTheDocument()
-    })
-  })
-
-  it('does not show copy button when no previous budgets', () => {
-    renderWithWizard()
-
-    expect(screen.queryByRole('button', { name: /copy from last/i })).not.toBeInTheDocument()
-  })
-
-  it('opens copy modal when copy button clicked', async () => {
+  it('shows "From last budget" section when previous budget exists', async () => {
     server.use(
       http.get('/api/budgets', () => {
         return HttpResponse.json({
@@ -163,18 +141,62 @@ describe('StepIncome', () => {
 
     renderWithWizard()
 
+    // Wait for "From last budget" section to appear
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /copy from last/i })).toBeInTheDocument()
+      expect(screen.getByText(/from last budget/i)).toBeInTheDocument()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: /copy from last/i }))
-
-    await waitFor(() => {
-      expect(screen.getByText(/copy income from last budget/i)).toBeInTheDocument()
-    })
+    // Should show the item from last budget
+    expect(screen.getByText('Salary')).toBeInTheDocument()
   })
 
-  it('copies selected income items from modal', async () => {
+  it('does not show "From last budget" section when no previous budgets', () => {
+    renderWithWizard()
+
+    expect(screen.queryByText(/from last budget/i)).not.toBeInTheDocument()
+  })
+
+  it('copies item when plus button is clicked', async () => {
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [{ id: 'budget-1', month: 1, year: 2025, status: 'LOCKED' }],
+        })
+      }),
+      http.get('/api/budgets/budget-1', () => {
+        return HttpResponse.json({
+          id: 'budget-1',
+          month: 1,
+          year: 2025,
+          status: 'LOCKED',
+          income: [
+            { id: 'inc-1', name: 'Salary', amount: 50000, bankAccount: { id: 'acc-1', name: 'Checking' } },
+          ],
+          expenses: [],
+          savings: [],
+          totals: { income: 50000, expenses: 0, savings: 0, balance: 50000 },
+        })
+      })
+    )
+
+    renderWithWizard()
+
+    // Wait for item to appear
+    await waitFor(() => {
+      expect(screen.getByText('Salary')).toBeInTheDocument()
+    })
+
+    // Click the "Add item" button (plus icon) for this item
+    const addButton = screen.getByRole('button', { name: /add item/i })
+    await userEvent.click(addButton)
+
+    // Wait for the item to be copied to the income list (appears as editable input)
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Salary')).toBeInTheDocument()
+    }, { timeout: 2000 })
+  })
+
+  it('removes copied item from "From last budget" section after copying', async () => {
     server.use(
       http.get('/api/budgets', () => {
         return HttpResponse.json({
@@ -200,34 +222,23 @@ describe('StepIncome', () => {
 
     renderWithWizard()
 
+    // Wait for items to appear
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /copy from last/i })).toBeInTheDocument()
+      expect(screen.getByText('Salary')).toBeInTheDocument()
+      expect(screen.getByText('Side gig')).toBeInTheDocument()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: /copy from last/i }))
+    // Click the first "Add item" button
+    const addButtons = screen.getAllByRole('button', { name: /add item/i })
+    await userEvent.click(addButtons[0])
 
-    // Wait for modal content to load - look for "Select all" which indicates items loaded
-    await waitFor(() => {
-      expect(screen.getByText(/select all/i)).toBeInTheDocument()
-    })
-
-    // Select both items using "Select all" checkbox
-    const checkboxes = screen.getAllByRole('checkbox')
-    await userEvent.click(checkboxes[0]) // First checkbox is "Select all"
-
-    // Wait for Copy button to show count
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /copy \(2\)/i })).toBeInTheDocument()
-    })
-
-    // Click copy button
-    await userEvent.click(screen.getByRole('button', { name: /copy \(2\)/i }))
-
-    // Verify items were added
+    // Wait for the item to be copied (appears as editable input)
     await waitFor(() => {
       expect(screen.getByDisplayValue('Salary')).toBeInTheDocument()
-      expect(screen.getByDisplayValue('Side gig')).toBeInTheDocument()
-    })
+    }, { timeout: 2000 })
+
+    // The "From last budget" section should still show Side gig
+    expect(screen.getByText('Side gig')).toBeInTheDocument()
   })
 
   it('allows selecting account for income item', async () => {

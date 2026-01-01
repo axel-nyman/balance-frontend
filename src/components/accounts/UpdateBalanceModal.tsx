@@ -60,8 +60,8 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
         comment: '',
       })
       onOpenChange(false)
-    } catch (error) {
-      // Error displayed inline
+    } catch {
+      // Error displayed inline via mutation.error
     }
   }
 

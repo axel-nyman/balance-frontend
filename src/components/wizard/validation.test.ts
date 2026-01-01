@@ -105,8 +105,8 @@ describe('getDefaultMonthYear', () => {
     const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear
 
     // Next month and month after next have budgets
-    let monthAfterNext = nextMonth === 12 ? 1 : nextMonth + 1
-    let yearAfterNext = nextMonth === 12 ? nextYear + 1 : nextYear
+    const monthAfterNext = nextMonth === 12 ? 1 : nextMonth + 1
+    const yearAfterNext = nextMonth === 12 ? nextYear + 1 : nextYear
 
     const budgets = [
       { month: nextMonth, year: nextYear },

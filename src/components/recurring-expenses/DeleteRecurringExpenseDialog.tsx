@@ -19,7 +19,7 @@ export function DeleteRecurringExpenseDialog({ expense, onClose }: DeleteRecurri
       await deleteExpense.mutateAsync(expense.id)
       toast.success('Recurring expense deleted')
       onClose()
-    } catch (error) {
+    } catch {
       toast.error(deleteExpense.error?.message || 'Failed to delete recurring expense')
     }
   }

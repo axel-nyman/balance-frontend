@@ -12,7 +12,10 @@ class MockIntersectionObserver implements IntersectionObserver {
   constructor(
     _callback: IntersectionObserverCallback,
     _options?: IntersectionObserverInit
-  ) {}
+  ) {
+    void _callback
+    void _options
+  }
 
   observe(): void {}
   unobserve(): void {}
@@ -25,7 +28,9 @@ globalThis.IntersectionObserver = MockIntersectionObserver
 
 // Mock ResizeObserver for tests (required by Radix UI components)
 class MockResizeObserver implements ResizeObserver {
-  constructor(_callback: ResizeObserverCallback) {}
+  constructor(_callback: ResizeObserverCallback) {
+    void _callback
+  }
   observe(): void {}
   unobserve(): void {}
   disconnect(): void {}

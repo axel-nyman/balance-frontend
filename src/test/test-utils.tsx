@@ -31,7 +31,7 @@ function AllProviders({ children }: WrapperProps) {
 }
 
 function customRender(
-  ui: ReactElement<any>,
+  ui: ReactElement<unknown>,
   options?: Omit<RenderOptions, 'wrapper'>
 ) {
   return render(ui, { wrapper: AllProviders, ...options })

@@ -1,11 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { useWizard } from './WizardContext'
 import { ProgressHeader } from './ProgressHeader'
 import { SectionHeader } from './SectionHeader'
 import { WizardNavigation } from './WizardNavigation'
-import { WIZARD_STEPS } from './types'
+import { WIZARD_STEPS, toIncomeRequest, toExpenseRequest, toSavingsRequest } from './types'
+import { createBudget, addIncome, addExpense, addSavings, lockBudget } from '@/api/budgets'
 
-// Step components (placeholders for now)
+// Step components
 import { StepMonthYear } from './steps/StepMonthYear'
 import { StepIncome } from './steps/StepIncome'
 import { StepExpenses } from './steps/StepExpenses'
@@ -13,7 +16,9 @@ import { StepSavings } from './steps/StepSavings'
 import { StepReview } from './steps/StepReview'
 
 export function WizardShell() {
+  const navigate = useNavigate()
   const { state, dispatch, isStepValid, getStepStatus, completionPercentage } = useWizard()
+  const [lockAfterSave, setLockAfterSave] = useState(false)
 
   // Warn before leaving the page with unsaved changes (browser navigation/refresh)
   useEffect(() => {
@@ -39,6 +44,50 @@ export function WizardShell() {
     // Only allow going to completed steps or current step
     if (step <= state.currentStep) {
       dispatch({ type: 'GO_TO_STEP', step })
+    }
+  }
+
+  const handleSave = async () => {
+    if (!state.month || !state.year) return
+
+    dispatch({ type: 'SET_SUBMITTING', isSubmitting: true })
+    dispatch({ type: 'SET_ERROR', error: null })
+
+    try {
+      // Step 1: Create the budget
+      const budget = await createBudget({ month: state.month, year: state.year })
+      const budgetId = budget.id
+
+      // Step 2: Add income items
+      for (const item of state.incomeItems) {
+        await addIncome(budgetId, toIncomeRequest(item))
+      }
+
+      // Step 3: Add expense items
+      for (const item of state.expenseItems) {
+        await addExpense(budgetId, toExpenseRequest(item))
+      }
+
+      // Step 4: Add savings items
+      for (const item of state.savingsItems) {
+        await addSavings(budgetId, toSavingsRequest(item))
+      }
+
+      // Step 5: Lock if requested
+      if (lockAfterSave) {
+        await lockBudget(budgetId)
+        toast.success('Budget created and locked')
+      } else {
+        toast.success('Budget created')
+      }
+
+      dispatch({ type: 'RESET' })
+      navigate(`/budgets/${budgetId}`)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to save budget'
+      dispatch({ type: 'SET_ERROR', error: message })
+      toast.error(message)
+      dispatch({ type: 'SET_SUBMITTING', isSubmitting: false })
     }
   }
 
@@ -83,7 +132,12 @@ export function WizardShell() {
       case 4:
         return <StepSavings />
       case 5:
-        return <StepReview />
+        return (
+          <StepReview
+            lockAfterSave={lockAfterSave}
+            onLockAfterSaveChange={setLockAfterSave}
+          />
+        )
       default:
         return null
     }
@@ -142,6 +196,7 @@ export function WizardShell() {
         isSubmitting={state.isSubmitting}
         onBack={handleBack}
         onNext={handleNext}
+        onSave={handleSave}
       />
     </div>
   )

@@ -6,13 +6,13 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows budget month/year
-- [ ] Collapsible sections for Income, Expenses, Savings
-- [ ] Each section shows items and totals
-- [ ] Shows final balance summary
-- [ ] "Save Budget" button
-- [ ] Optional "Save and Lock" checkbox
-- [ ] Error display if save fails
+- [x] Shows budget month/year
+- [x] Collapsible sections for Income, Expenses, Savings
+- [x] Each section shows items and totals
+- [x] Shows final balance summary
+- [x] "Save Budget" button
+- [x] Optional "Save and Lock" checkbox
+- [x] Error display if save fails
 
 ### Implementation
 
@@ -634,11 +634,11 @@ describe('StepReview', () => {
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Shows all budget data in collapsible sections
-- [ ] Calculates totals correctly
-- [ ] Lock checkbox works
-- [ ] Save triggers API calls
-- [ ] Navigates to budget detail on success
+- [x] All tests pass
+- [x] Shows all budget data in collapsible sections
+- [x] Calculates totals correctly
+- [x] Lock checkbox works
+- [x] Save triggers API calls
+- [x] Navigates to budget detail on success
 
 ---

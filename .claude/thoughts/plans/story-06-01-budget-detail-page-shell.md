@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Page renders at `/budgets/:id` route
-- [ ] Shows budget month/year as title
-- [ ] Shows status badge (Draft/Locked)
-- [ ] Shows loading state while fetching
-- [ ] Shows error state if budget not found
-- [ ] Action buttons in header (based on status)
+- [x] Page renders at `/budgets/:id` route
+- [x] Shows budget month/year as title
+- [x] Shows status badge (Draft/Locked)
+- [x] Shows loading state while fetching
+- [x] Shows error state if budget not found
+- [x] Action buttons in header (based on status)
 
 ### Implementation
 
@@ -231,10 +231,10 @@ describe('BudgetDetailPage', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Page loads budget data
-- [ ] Title shows month/year
-- [ ] Status badge displays correctly
-- [ ] Loading and error states work
+- [x] Tests pass
+- [x] Page loads budget data
+- [x] Title shows month/year
+- [x] Status badge displays correctly
+- [x] Loading and error states work
 
 ---

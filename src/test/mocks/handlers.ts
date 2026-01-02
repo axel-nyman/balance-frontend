@@ -78,7 +78,7 @@ export const handlers = [
 
   // Add income
   http.post('/api/budgets/:id/income', async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     return HttpResponse.json(
       {
         id: crypto.randomUUID(),
@@ -90,7 +90,7 @@ export const handlers = [
 
   // Add expense
   http.post('/api/budgets/:id/expenses', async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     return HttpResponse.json(
       {
         id: crypto.randomUUID(),
@@ -102,7 +102,7 @@ export const handlers = [
 
   // Add savings
   http.post('/api/budgets/:id/savings', async ({ request }) => {
-    const body = await request.json()
+    const body = (await request.json()) as Record<string, unknown>
     return HttpResponse.json(
       {
         id: crypto.randomUUID(),

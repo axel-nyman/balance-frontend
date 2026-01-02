@@ -6,13 +6,13 @@
 
 ### Acceptance Criteria
 
-- [ ] "Lock Budget" button shown for draft budgets
-- [ ] Confirmation dialog explains what locking does
-- [ ] Lock applies savings to account balances
-- [ ] Lock creates todo list for manual payments
-- [ ] "Unlock Budget" button shown for locked budgets
-- [ ] Unlock reverts savings from account balances
-- [ ] Success refreshes the page
+- [x] "Lock Budget" button shown for draft budgets
+- [x] Confirmation dialog explains what locking does
+- [x] Lock applies savings to account balances
+- [x] Lock creates todo list for manual payments
+- [x] "Unlock Budget" button shown for locked budgets
+- [x] Unlock reverts savings from account balances
+- [x] Success refreshes the page
 
 ### Implementation
 
@@ -279,10 +279,10 @@ describe('BudgetActions', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Lock/Unlock buttons show based on status
-- [ ] Confirmation dialogs explain consequences
-- [ ] API calls succeed
-- [ ] Delete navigates back to list
+- [x] Tests pass
+- [x] Lock/Unlock buttons show based on status
+- [x] Confirmation dialogs explain consequences
+- [x] API calls succeed
+- [x] Delete navigates back to list
 
 ---

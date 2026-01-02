@@ -10,6 +10,7 @@ import { BudgetSection } from '@/components/budget-detail/BudgetSection'
 import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
 import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
 import { SavingsItemModal } from '@/components/budget-detail/SavingsItemModal'
+import { BudgetActions } from '@/components/budget-detail/BudgetActions'
 import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
@@ -209,6 +210,7 @@ export function BudgetDetailPage() {
                 Todo List
               </Button>
             )}
+            <BudgetActions budgetId={id!} status={budget.status} />
           </div>
         }
       />

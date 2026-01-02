@@ -41,7 +41,8 @@
       "Bash(npx types-react-codemod@latest preset-19:*)",
       "Bash(python3:*)",
       "Bash(git log:*)",
-      "WebFetch(domain:localhost)"
+      "WebFetch(domain:localhost)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

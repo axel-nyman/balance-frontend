@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { Lock, ListTodo } from 'lucide-react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { PageHeader, LoadingState, ErrorState } from '@/components/shared'
+import { PageHeader, LoadingState, ErrorState, ConfirmDialog } from '@/components/shared'
 import { BudgetSummary } from '@/components/budget-detail/BudgetSummary'
 import { BudgetSection } from '@/components/budget-detail/BudgetSection'
-import { useBudget } from '@/hooks'
+import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
+import { useBudget, useDeleteIncome } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
 
@@ -40,6 +43,43 @@ export function BudgetDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { data: budget, isLoading, isError, refetch } = useBudget(id!)
+  const deleteIncome = useDeleteIncome(id!)
+
+  // Income modal state
+  const [incomeModalOpen, setIncomeModalOpen] = useState(false)
+  const [editingIncome, setEditingIncome] = useState<BudgetIncome | null>(null)
+  const [deleteIncomeDialogOpen, setDeleteIncomeDialogOpen] = useState(false)
+  const [deletingIncomeId, setDeletingIncomeId] = useState<string | null>(null)
+
+  const handleAddIncome = () => {
+    setEditingIncome(null)
+    setIncomeModalOpen(true)
+  }
+
+  const handleEditIncome = (incomeId: string) => {
+    const income = budget?.income.find((i) => i.id === incomeId)
+    if (income) {
+      setEditingIncome(income)
+      setIncomeModalOpen(true)
+    }
+  }
+
+  const handleDeleteIncomeClick = (incomeId: string) => {
+    setDeletingIncomeId(incomeId)
+    setDeleteIncomeDialogOpen(true)
+  }
+
+  const handleConfirmDeleteIncome = async () => {
+    if (!deletingIncomeId) return
+    try {
+      await deleteIncome.mutateAsync(deletingIncomeId)
+      toast.success('Income deleted')
+      setDeleteIncomeDialogOpen(false)
+      setDeletingIncomeId(null)
+    } catch {
+      // Error handled by mutation
+    }
+  }
 
   if (isLoading) {
     return (
@@ -111,9 +151,9 @@ export function BudgetDetailPage() {
           totalColor="green"
           isEditable={!isLocked}
           emptyMessage="No income sources"
-          onAdd={() => {/* TODO: Open add income modal */}}
-          onEdit={() => {/* TODO: Open edit income modal */}}
-          onDelete={() => {/* TODO: Open delete confirmation */}}
+          onAdd={handleAddIncome}
+          onEdit={handleEditIncome}
+          onDelete={handleDeleteIncomeClick}
         />
 
         <BudgetSection
@@ -140,6 +180,26 @@ export function BudgetDetailPage() {
           onDelete={() => {/* TODO: Open delete confirmation */}}
         />
       </div>
+
+      {/* Income Modal */}
+      <IncomeItemModal
+        budgetId={id!}
+        item={editingIncome}
+        open={incomeModalOpen}
+        onOpenChange={setIncomeModalOpen}
+      />
+
+      {/* Delete Income Confirmation */}
+      <ConfirmDialog
+        open={deleteIncomeDialogOpen}
+        onOpenChange={setDeleteIncomeDialogOpen}
+        title="Delete Income"
+        description="Are you sure you want to delete this income? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={handleConfirmDeleteIncome}
+        loading={deleteIncome.isPending}
+      />
     </div>
   )
 }

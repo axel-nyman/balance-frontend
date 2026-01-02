@@ -332,10 +332,10 @@ describe('IncomeItemModal', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Create mode works
-- [ ] Edit mode pre-fills and updates
-- [ ] Validation works
-- [ ] API calls succeed
+- [x] Tests pass
+- [x] Create mode works
+- [x] Edit mode pre-fills and updates
+- [x] Validation works
+- [x] API calls succeed
 
 ---

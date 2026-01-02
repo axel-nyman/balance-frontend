@@ -1,94 +1,3 @@
-# Story 6.7: Delete Item Dialogs
-
-**As a** user  
-**I want to** delete items from my budget  
-**So that** I can remove incorrect entries
-
-### Implementation
-
-**Create `src/components/budget-detail/DeleteItemDialog.tsx`:**
-
-```typescript
-import { toast } from 'sonner'
-import { ConfirmDialog } from '@/components/shared'
-import {
-  useDeleteBudgetIncome,
-  useDeleteBudgetExpense,
-  useDeleteBudgetSavings,
-} from '@/hooks'
-
-type ItemType = 'income' | 'expense' | 'savings'
-
-interface DeleteItemDialogProps {
-  budgetId: string
-  itemId: string | null
-  itemName: string
-  itemType: ItemType
-  onClose: () => void
-}
-
-export function DeleteItemDialog({
-  budgetId,
-  itemId,
-  itemName,
-  itemType,
-  onClose,
-}: DeleteItemDialogProps) {
-  const deleteIncome = useDeleteBudgetIncome()
-  const deleteExpense = useDeleteBudgetExpense()
-  const deleteSavings = useDeleteBudgetSavings()
-
-  const isOpen = itemId !== null
-
-  const getMutation = () => {
-    switch (itemType) {
-      case 'income':
-        return deleteIncome
-      case 'expense':
-        return deleteExpense
-      case 'savings':
-        return deleteSavings
-    }
-  }
-
-  const mutation = getMutation()
-
-  const handleConfirm = async () => {
-    if (!itemId) return
-
-    try {
-      await mutation.mutateAsync({ budgetId, itemId })
-      toast.success(`${itemType.charAt(0).toUpperCase() + itemType.slice(1)} deleted`)
-      onClose()
-    } catch (error) {
-      toast.error(`Failed to delete ${itemType}`)
-    }
-  }
-
-  const typeLabels: Record<ItemType, string> = {
-    income: 'Income',
-    expense: 'Expense',
-    savings: 'Savings',
-  }
-
-  return (
-    <ConfirmDialog
-      open={isOpen}
-      onOpenChange={(open) => !open && onClose()}
-      title={`Delete ${typeLabels[itemType]}`}
-      description={`Are you sure you want to delete "${itemName}"? This action cannot be undone.`}
-      confirmLabel="Delete"
-      variant="destructive"
-      onConfirm={handleConfirm}
-      loading={mutation.isPending}
-    />
-  )
-}
-```
-
-### Test File: `src/components/budget-detail/DeleteItemDialog.test.tsx`
-
-```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
@@ -111,7 +20,7 @@ describe('DeleteItemDialog', () => {
         onClose={vi.fn()}
       />
     )
-    
+
     expect(screen.getByText(/delete income/i)).toBeInTheDocument()
   })
 
@@ -125,7 +34,7 @@ describe('DeleteItemDialog', () => {
         onClose={vi.fn()}
       />
     )
-    
+
     expect(screen.queryByText(/delete income/i)).not.toBeInTheDocument()
   })
 
@@ -139,7 +48,7 @@ describe('DeleteItemDialog', () => {
         onClose={vi.fn()}
       />
     )
-    
+
     expect(screen.getByText(/Rent/)).toBeInTheDocument()
   })
 
@@ -160,9 +69,9 @@ describe('DeleteItemDialog', () => {
         onClose={onClose}
       />
     )
-    
+
     await userEvent.click(screen.getByRole('button', { name: /delete/i }))
-    
+
     await waitFor(() => {
       expect(onClose).toHaveBeenCalled()
     })
@@ -185,9 +94,9 @@ describe('DeleteItemDialog', () => {
         onClose={onClose}
       />
     )
-    
+
     await userEvent.click(screen.getByRole('button', { name: /delete/i }))
-    
+
     await waitFor(() => {
       expect(onClose).toHaveBeenCalled()
     })
@@ -210,9 +119,9 @@ describe('DeleteItemDialog', () => {
         onClose={onClose}
       />
     )
-    
+
     await userEvent.click(screen.getByRole('button', { name: /delete/i }))
-    
+
     await waitFor(() => {
       expect(onClose).toHaveBeenCalled()
     })
@@ -229,19 +138,9 @@ describe('DeleteItemDialog', () => {
         onClose={onClose}
       />
     )
-    
+
     await userEvent.click(screen.getByRole('button', { name: /cancel/i }))
-    
+
     expect(onClose).toHaveBeenCalled()
   })
 })
-```
-
-### Definition of Done
-
-- [x] Tests pass
-- [x] Delete works for all three item types
-- [x] Confirmation dialog shows item name
-- [x] Manual testing complete
-
----

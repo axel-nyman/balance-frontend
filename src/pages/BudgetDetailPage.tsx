@@ -4,8 +4,37 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PageHeader, LoadingState, ErrorState } from '@/components/shared'
 import { BudgetSummary } from '@/components/budget-detail/BudgetSummary'
+import { BudgetSection } from '@/components/budget-detail/BudgetSection'
 import { useBudget } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
+import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
+
+function mapIncomeToSectionItems(income: BudgetIncome[]) {
+  return income.map((item) => ({
+    id: item.id,
+    label: item.name,
+    amount: item.amount,
+    sublabel: item.bankAccount.name,
+  }))
+}
+
+function mapExpensesToSectionItems(expenses: BudgetExpense[]) {
+  return expenses.map((item) => ({
+    id: item.id,
+    label: item.name,
+    amount: item.amount,
+    sublabel: item.bankAccount.name,
+  }))
+}
+
+function mapSavingsToSectionItems(savings: BudgetSavings[]) {
+  return savings.map((item) => ({
+    id: item.id,
+    label: item.name,
+    amount: item.amount,
+    sublabel: item.bankAccount.name,
+  }))
+}
 
 export function BudgetDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -68,17 +97,48 @@ export function BudgetDetailPage() {
         }
       />
 
-      {/* Budget sections will go here */}
       <div className="space-y-6">
         <BudgetSummary
           totalIncome={budget.totals.income}
           totalExpenses={budget.totals.expenses}
           totalSavings={budget.totals.savings}
         />
-        {/* IncomeSection */}
-        {/* ExpensesSection */}
-        {/* SavingsSection */}
-        {/* BudgetActions */}
+
+        <BudgetSection
+          title="Income"
+          items={mapIncomeToSectionItems(budget.income)}
+          total={budget.totals.income}
+          totalColor="green"
+          isEditable={!isLocked}
+          emptyMessage="No income sources"
+          onAdd={() => {/* TODO: Open add income modal */}}
+          onEdit={() => {/* TODO: Open edit income modal */}}
+          onDelete={() => {/* TODO: Open delete confirmation */}}
+        />
+
+        <BudgetSection
+          title="Expenses"
+          items={mapExpensesToSectionItems(budget.expenses)}
+          total={budget.totals.expenses}
+          totalColor="red"
+          isEditable={!isLocked}
+          emptyMessage="No expenses"
+          onAdd={() => {/* TODO: Open add expense modal */}}
+          onEdit={() => {/* TODO: Open edit expense modal */}}
+          onDelete={() => {/* TODO: Open delete confirmation */}}
+        />
+
+        <BudgetSection
+          title="Savings"
+          items={mapSavingsToSectionItems(budget.savings)}
+          total={budget.totals.savings}
+          totalColor="blue"
+          isEditable={!isLocked}
+          emptyMessage="No savings planned"
+          onAdd={() => {/* TODO: Open add savings modal */}}
+          onEdit={() => {/* TODO: Open edit savings modal */}}
+          onDelete={() => {/* TODO: Open delete confirmation */}}
+        />
       </div>
     </div>
   )

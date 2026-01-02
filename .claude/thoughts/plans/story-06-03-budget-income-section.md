@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Three collapsible sections: Income, Expenses, Savings
-- [ ] Each shows item count and total in header
-- [ ] Expanded by default
-- [ ] Lists all items when expanded
-- [ ] "Add" button in each section header (draft only)
-- [ ] Edit/Delete buttons per item (draft only)
+- [x] Three collapsible sections: Income, Expenses, Savings
+- [x] Each shows item count and total in header
+- [x] Expanded by default
+- [x] Lists all items when expanded
+- [x] "Add" button in each section header (draft only)
+- [x] Edit/Delete buttons per item (draft only)
 
 ### Implementation
 
@@ -382,10 +382,10 @@ describe('BudgetSection', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Sections render with items
-- [ ] Collapse/expand works
-- [ ] Add/Edit/Delete buttons show only when editable
-- [ ] Callbacks fire correctly
+- [x] Tests pass
+- [x] Sections render with items (integrated into BudgetDetailPage)
+- [x] Collapse/expand works
+- [x] Add/Edit/Delete buttons show only when editable
+- [x] Callbacks fire correctly
 
 ---

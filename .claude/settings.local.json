@@ -42,7 +42,8 @@
       "Bash(python3:*)",
       "Bash(git log:*)",
       "WebFetch(domain:localhost)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npx shadcn@latest add progress -y)"
     ],
     "deny": [],
     "ask": []

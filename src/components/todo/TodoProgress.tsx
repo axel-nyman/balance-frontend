@@ -1,3 +1,7 @@
+import { CheckCircle2 } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
+import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import type { TodoItem } from '@/api/types'
 
 interface TodoProgressProps {
@@ -5,24 +9,39 @@ interface TodoProgressProps {
 }
 
 export function TodoProgress({ items }: TodoProgressProps) {
-  const completed = items.filter((item) => item.status === 'COMPLETED').length
   const total = items.length
+  const completed = items.filter((item) => item.status === 'COMPLETED').length
   const percentage = total > 0 ? Math.round((completed / total) * 100) : 0
+  const isComplete = completed === total && total > 0
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700">Progress</span>
-        <span className="text-sm text-gray-500">
-          {completed} of {total} completed
-        </span>
-      </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
-        <div
-          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-          style={{ width: `${percentage}%` }}
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className={cn(
+              'w-5 h-5',
+              isComplete ? 'text-green-600' : 'text-gray-400'
+            )} />
+            <span className="font-medium text-gray-900">
+              {completed} of {total} completed
+            </span>
+          </div>
+          <span className={cn(
+            'text-sm font-semibold',
+            isComplete ? 'text-green-600' : 'text-gray-600'
+          )}>
+            {percentage}%
+          </span>
+        </div>
+        <Progress
+          value={percentage}
+          className={cn(
+            'h-2',
+            isComplete && '[&>[data-slot=progress-indicator]]:bg-green-600'
+          )}
         />
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

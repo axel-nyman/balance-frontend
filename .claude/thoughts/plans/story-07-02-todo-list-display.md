@@ -6,11 +6,11 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows progress bar
-- [ ] Shows "X of Y completed" text
-- [ ] Shows percentage
-- [ ] Progress bar fills based on completion
-- [ ] Green color when 100% complete
+- [x] Shows progress bar
+- [x] Shows "X of Y completed" text
+- [x] Shows percentage
+- [x] Progress bar fills based on completion
+- [x] Green color when 100% complete
 
 ### Implementation
 
@@ -156,10 +156,10 @@ describe('TodoProgress', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Progress bar renders
-- [ ] Completion count accurate
-- [ ] Percentage calculated correctly
-- [ ] Green styling at 100%
+- [x] Tests pass
+- [x] Progress bar renders
+- [x] Completion count accurate
+- [x] Percentage calculated correctly
+- [x] Green styling at 100%
 
 ---

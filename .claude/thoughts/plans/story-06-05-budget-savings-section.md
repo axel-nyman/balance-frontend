@@ -264,8 +264,8 @@ describe('ExpenseItemModal', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Create and edit modes work
-- [ ] API calls succeed
+- [x] Tests pass
+- [x] Create and edit modes work (integrated into BudgetDetailPage)
+- [x] API calls succeed
 
 ---

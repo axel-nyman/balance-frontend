@@ -8,7 +8,8 @@ import { PageHeader, LoadingState, ErrorState, ConfirmDialog } from '@/component
 import { BudgetSummary } from '@/components/budget-detail/BudgetSummary'
 import { BudgetSection } from '@/components/budget-detail/BudgetSection'
 import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
-import { useBudget, useDeleteIncome } from '@/hooks'
+import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
+import { useBudget, useDeleteIncome, useDeleteExpense } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
 
@@ -44,12 +45,19 @@ export function BudgetDetailPage() {
   const navigate = useNavigate()
   const { data: budget, isLoading, isError, refetch } = useBudget(id!)
   const deleteIncome = useDeleteIncome(id!)
+  const deleteExpense = useDeleteExpense(id!)
 
   // Income modal state
   const [incomeModalOpen, setIncomeModalOpen] = useState(false)
   const [editingIncome, setEditingIncome] = useState<BudgetIncome | null>(null)
   const [deleteIncomeDialogOpen, setDeleteIncomeDialogOpen] = useState(false)
   const [deletingIncomeId, setDeletingIncomeId] = useState<string | null>(null)
+
+  // Expense modal state
+  const [expenseModalOpen, setExpenseModalOpen] = useState(false)
+  const [editingExpense, setEditingExpense] = useState<BudgetExpense | null>(null)
+  const [deleteExpenseDialogOpen, setDeleteExpenseDialogOpen] = useState(false)
+  const [deletingExpenseId, setDeletingExpenseId] = useState<string | null>(null)
 
   const handleAddIncome = () => {
     setEditingIncome(null)
@@ -76,6 +84,36 @@ export function BudgetDetailPage() {
       toast.success('Income deleted')
       setDeleteIncomeDialogOpen(false)
       setDeletingIncomeId(null)
+    } catch {
+      // Error handled by mutation
+    }
+  }
+
+  const handleAddExpense = () => {
+    setEditingExpense(null)
+    setExpenseModalOpen(true)
+  }
+
+  const handleEditExpense = (expenseId: string) => {
+    const expense = budget?.expenses.find((e) => e.id === expenseId)
+    if (expense) {
+      setEditingExpense(expense)
+      setExpenseModalOpen(true)
+    }
+  }
+
+  const handleDeleteExpenseClick = (expenseId: string) => {
+    setDeletingExpenseId(expenseId)
+    setDeleteExpenseDialogOpen(true)
+  }
+
+  const handleConfirmDeleteExpense = async () => {
+    if (!deletingExpenseId) return
+    try {
+      await deleteExpense.mutateAsync(deletingExpenseId)
+      toast.success('Expense deleted')
+      setDeleteExpenseDialogOpen(false)
+      setDeletingExpenseId(null)
     } catch {
       // Error handled by mutation
     }
@@ -163,9 +201,9 @@ export function BudgetDetailPage() {
           totalColor="red"
           isEditable={!isLocked}
           emptyMessage="No expenses"
-          onAdd={() => {/* TODO: Open add expense modal */}}
-          onEdit={() => {/* TODO: Open edit expense modal */}}
-          onDelete={() => {/* TODO: Open delete confirmation */}}
+          onAdd={handleAddExpense}
+          onEdit={handleEditExpense}
+          onDelete={handleDeleteExpenseClick}
         />
 
         <BudgetSection
@@ -199,6 +237,26 @@ export function BudgetDetailPage() {
         variant="destructive"
         onConfirm={handleConfirmDeleteIncome}
         loading={deleteIncome.isPending}
+      />
+
+      {/* Expense Modal */}
+      <ExpenseItemModal
+        budgetId={id!}
+        item={editingExpense}
+        open={expenseModalOpen}
+        onOpenChange={setExpenseModalOpen}
+      />
+
+      {/* Delete Expense Confirmation */}
+      <ConfirmDialog
+        open={deleteExpenseDialogOpen}
+        onOpenChange={setDeleteExpenseDialogOpen}
+        title="Delete Expense"
+        description="Are you sure you want to delete this expense? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={handleConfirmDeleteExpense}
+        loading={deleteExpense.isPending}
       />
     </div>
   )

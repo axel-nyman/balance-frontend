@@ -333,9 +333,9 @@ describe('SavingsItemModal', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Account dropdown shows available accounts
-- [ ] Already-used accounts are filtered
-- [ ] Create and edit modes work
+- [x] Tests pass
+- [x] Account dropdown shows available accounts
+- [x] Already-used accounts are filtered
+- [x] Create and edit modes work
 
 ---

@@ -9,7 +9,8 @@ import { BudgetSummary } from '@/components/budget-detail/BudgetSummary'
 import { BudgetSection } from '@/components/budget-detail/BudgetSection'
 import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
 import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
-import { useBudget, useDeleteIncome, useDeleteExpense } from '@/hooks'
+import { SavingsItemModal } from '@/components/budget-detail/SavingsItemModal'
+import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
 
@@ -46,6 +47,7 @@ export function BudgetDetailPage() {
   const { data: budget, isLoading, isError, refetch } = useBudget(id!)
   const deleteIncome = useDeleteIncome(id!)
   const deleteExpense = useDeleteExpense(id!)
+  const deleteSavings = useDeleteSavings(id!)
 
   // Income modal state
   const [incomeModalOpen, setIncomeModalOpen] = useState(false)
@@ -58,6 +60,12 @@ export function BudgetDetailPage() {
   const [editingExpense, setEditingExpense] = useState<BudgetExpense | null>(null)
   const [deleteExpenseDialogOpen, setDeleteExpenseDialogOpen] = useState(false)
   const [deletingExpenseId, setDeletingExpenseId] = useState<string | null>(null)
+
+  // Savings modal state
+  const [savingsModalOpen, setSavingsModalOpen] = useState(false)
+  const [editingSavings, setEditingSavings] = useState<BudgetSavings | null>(null)
+  const [deleteSavingsDialogOpen, setDeleteSavingsDialogOpen] = useState(false)
+  const [deletingSavingsId, setDeletingSavingsId] = useState<string | null>(null)
 
   const handleAddIncome = () => {
     setEditingIncome(null)
@@ -114,6 +122,36 @@ export function BudgetDetailPage() {
       toast.success('Expense deleted')
       setDeleteExpenseDialogOpen(false)
       setDeletingExpenseId(null)
+    } catch {
+      // Error handled by mutation
+    }
+  }
+
+  const handleAddSavings = () => {
+    setEditingSavings(null)
+    setSavingsModalOpen(true)
+  }
+
+  const handleEditSavings = (savingsId: string) => {
+    const savings = budget?.savings.find((s) => s.id === savingsId)
+    if (savings) {
+      setEditingSavings(savings)
+      setSavingsModalOpen(true)
+    }
+  }
+
+  const handleDeleteSavingsClick = (savingsId: string) => {
+    setDeletingSavingsId(savingsId)
+    setDeleteSavingsDialogOpen(true)
+  }
+
+  const handleConfirmDeleteSavings = async () => {
+    if (!deletingSavingsId) return
+    try {
+      await deleteSavings.mutateAsync(deletingSavingsId)
+      toast.success('Savings deleted')
+      setDeleteSavingsDialogOpen(false)
+      setDeletingSavingsId(null)
     } catch {
       // Error handled by mutation
     }
@@ -213,9 +251,9 @@ export function BudgetDetailPage() {
           totalColor="blue"
           isEditable={!isLocked}
           emptyMessage="No savings planned"
-          onAdd={() => {/* TODO: Open add savings modal */}}
-          onEdit={() => {/* TODO: Open edit savings modal */}}
-          onDelete={() => {/* TODO: Open delete confirmation */}}
+          onAdd={handleAddSavings}
+          onEdit={handleEditSavings}
+          onDelete={handleDeleteSavingsClick}
         />
       </div>
 
@@ -257,6 +295,26 @@ export function BudgetDetailPage() {
         variant="destructive"
         onConfirm={handleConfirmDeleteExpense}
         loading={deleteExpense.isPending}
+      />
+
+      {/* Savings Modal */}
+      <SavingsItemModal
+        budgetId={id!}
+        item={editingSavings}
+        open={savingsModalOpen}
+        onOpenChange={setSavingsModalOpen}
+      />
+
+      {/* Delete Savings Confirmation */}
+      <ConfirmDialog
+        open={deleteSavingsDialogOpen}
+        onOpenChange={setDeleteSavingsDialogOpen}
+        title="Delete Savings"
+        description="Are you sure you want to delete this savings? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="destructive"
+        onConfirm={handleConfirmDeleteSavings}
+        loading={deleteSavings.isPending}
       />
     </div>
   )

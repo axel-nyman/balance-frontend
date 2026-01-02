@@ -6,10 +6,10 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows total income, expenses, savings
-- [ ] Shows calculated balance
-- [ ] Color-coded (green positive, red negative)
-- [ ] Compact card layout
+- [x] Shows total income, expenses, savings
+- [x] Shows calculated balance
+- [x] Color-coded (green positive, red negative)
+- [x] Compact card layout
 
 ### Implementation
 
@@ -133,9 +133,9 @@ describe('BudgetSummary', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Shows all four values
-- [ ] Balance calculated correctly
-- [ ] Colors applied correctly
+- [x] Tests pass
+- [x] Shows all four values
+- [x] Balance calculated correctly
+- [x] Colors applied correctly
 
 ---

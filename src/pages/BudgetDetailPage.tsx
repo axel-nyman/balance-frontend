@@ -3,6 +3,7 @@ import { Lock, ListTodo } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PageHeader, LoadingState, ErrorState } from '@/components/shared'
+import { BudgetSummary } from '@/components/budget-detail/BudgetSummary'
 import { useBudget } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 
@@ -69,7 +70,11 @@ export function BudgetDetailPage() {
 
       {/* Budget sections will go here */}
       <div className="space-y-6">
-        {/* BudgetSummary */}
+        <BudgetSummary
+          totalIncome={budget.totals.income}
+          totalExpenses={budget.totals.expenses}
+          totalSavings={budget.totals.savings}
+        />
         {/* IncomeSection */}
         {/* ExpensesSection */}
         {/* SavingsSection */}

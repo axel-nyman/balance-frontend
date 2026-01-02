@@ -9,12 +9,12 @@
 **Update `src/pages/BudgetDetailPage.tsx`:**
 
 ```typescript
-import { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { Lock, ListTodo } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { PageHeader, LoadingState, ErrorState } from '@/components/shared'
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { Lock, ListTodo } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PageHeader, LoadingState, ErrorState } from "@/components/shared";
 import {
   BudgetSummary,
   BudgetSection,
@@ -23,35 +23,43 @@ import {
   ExpenseItemModal,
   SavingsItemModal,
   DeleteItemDialog,
-} from '@/components/budget-detail'
-import { useBudgetDetail } from '@/hooks'
-import { formatMonthYear } from '@/lib/utils'
-import { BudgetStatus } from '@/api/types'
-import type { BudgetIncomeItem, BudgetExpenseItem, BudgetSavingsItem } from '@/api/types'
+} from "@/components/budget-detail";
+import { useBudgetDetail } from "@/hooks";
+import { formatMonthYear } from "@/lib/utils";
+import { BudgetStatus } from "@/api/types";
+import type {
+  BudgetIncomeItem,
+  BudgetExpenseItem,
+  BudgetSavingsItem,
+} from "@/api/types";
 
 type DeleteTarget = {
-  id: string
-  name: string
-  type: 'income' | 'expense' | 'savings'
-} | null
+  id: string;
+  name: string;
+  type: "income" | "expense" | "savings";
+} | null;
 
 export function BudgetDetailPage() {
-  const { id } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const { data: budget, isLoading, isError, refetch } = useBudgetDetail(id!)
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: budget, isLoading, isError, refetch } = useBudgetDetail(id!);
 
   // Modal state
-  const [incomeModalOpen, setIncomeModalOpen] = useState(false)
-  const [expenseModalOpen, setExpenseModalOpen] = useState(false)
-  const [savingsModalOpen, setSavingsModalOpen] = useState(false)
-  
+  const [incomeModalOpen, setIncomeModalOpen] = useState(false);
+  const [expenseModalOpen, setExpenseModalOpen] = useState(false);
+  const [savingsModalOpen, setSavingsModalOpen] = useState(false);
+
   // Edit item state
-  const [editingIncome, setEditingIncome] = useState<BudgetIncomeItem | null>(null)
-  const [editingExpense, setEditingExpense] = useState<BudgetExpenseItem | null>(null)
-  const [editingSavings, setEditingSavings] = useState<BudgetSavingsItem | null>(null)
-  
+  const [editingIncome, setEditingIncome] = useState<BudgetIncomeItem | null>(
+    null
+  );
+  const [editingExpense, setEditingExpense] =
+    useState<BudgetExpenseItem | null>(null);
+  const [editingSavings, setEditingSavings] =
+    useState<BudgetSavingsItem | null>(null);
+
   // Delete state
-  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null)
+  const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);
 
   if (isLoading) {
     return (
@@ -59,7 +67,7 @@ export function BudgetDetailPage() {
         <PageHeader title="Loading..." />
         <LoadingState variant="detail" />
       </div>
-    )
+    );
   }
 
   if (isError || !budget) {
@@ -72,119 +80,132 @@ export function BudgetDetailPage() {
           onRetry={refetch}
         />
       </div>
-    )
+    );
   }
 
-  const isLocked = budget.status === BudgetStatus.LOCKED
-  const isEditable = !isLocked
-  const title = formatMonthYear(budget.month, budget.year)
+  const isLocked = budget.status === BudgetStatus.LOCKED;
+  const isEditable = !isLocked;
+  const title = formatMonthYear(budget.month, budget.year);
 
   // Transform items for BudgetSection
   const incomeItems = budget.incomeItems.map((item) => ({
     id: item.id,
     label: item.source,
     amount: item.amount,
-  }))
+  }));
 
   const expenseItems = budget.expenseItems.map((item) => ({
     id: item.id,
     label: item.name,
     amount: item.amount,
-    sublabel: item.recurringExpenseId ? 'From recurring' : undefined,
-  }))
+    sublabel: item.recurringExpenseId ? "From recurring" : undefined,
+  }));
 
   const savingsItems = budget.savingsItems.map((item) => ({
     id: item.id,
     label: item.targetAccountName,
     amount: item.amount,
-  }))
+  }));
 
   // Calculate totals
-  const totalIncome = budget.incomeItems.reduce((sum, item) => sum + item.amount, 0)
-  const totalExpenses = budget.expenseItems.reduce((sum, item) => sum + item.amount, 0)
-  const totalSavings = budget.savingsItems.reduce((sum, item) => sum + item.amount, 0)
+  const totalIncome = budget.incomeItems.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
+  const totalExpenses = budget.expenseItems.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
+  const totalSavings = budget.savingsItems.reduce(
+    (sum, item) => sum + item.amount,
+    0
+  );
 
   // Get existing account IDs for savings modal
   const existingSavingsAccountIds = budget.savingsItems
     .filter((item) => item.id !== editingSavings?.id)
-    .map((item) => item.targetAccountId)
+    .map((item) => item.targetAccountId);
 
   // Handlers for income
   const handleAddIncome = () => {
-    setEditingIncome(null)
-    setIncomeModalOpen(true)
-  }
+    setEditingIncome(null);
+    setIncomeModalOpen(true);
+  };
 
   const handleEditIncome = (itemId: string) => {
-    const item = budget.incomeItems.find((i) => i.id === itemId)
+    const item = budget.incomeItems.find((i) => i.id === itemId);
     if (item) {
-      setEditingIncome(item)
-      setIncomeModalOpen(true)
+      setEditingIncome(item);
+      setIncomeModalOpen(true);
     }
-  }
+  };
 
   const handleDeleteIncome = (itemId: string) => {
-    const item = budget.incomeItems.find((i) => i.id === itemId)
+    const item = budget.incomeItems.find((i) => i.id === itemId);
     if (item) {
-      setDeleteTarget({ id: itemId, name: item.source, type: 'income' })
+      setDeleteTarget({ id: itemId, name: item.source, type: "income" });
     }
-  }
+  };
 
   // Handlers for expenses
   const handleAddExpense = () => {
-    setEditingExpense(null)
-    setExpenseModalOpen(true)
-  }
+    setEditingExpense(null);
+    setExpenseModalOpen(true);
+  };
 
   const handleEditExpense = (itemId: string) => {
-    const item = budget.expenseItems.find((i) => i.id === itemId)
+    const item = budget.expenseItems.find((i) => i.id === itemId);
     if (item) {
-      setEditingExpense(item)
-      setExpenseModalOpen(true)
+      setEditingExpense(item);
+      setExpenseModalOpen(true);
     }
-  }
+  };
 
   const handleDeleteExpense = (itemId: string) => {
-    const item = budget.expenseItems.find((i) => i.id === itemId)
+    const item = budget.expenseItems.find((i) => i.id === itemId);
     if (item) {
-      setDeleteTarget({ id: itemId, name: item.name, type: 'expense' })
+      setDeleteTarget({ id: itemId, name: item.name, type: "expense" });
     }
-  }
+  };
 
   // Handlers for savings
   const handleAddSavings = () => {
-    setEditingSavings(null)
-    setSavingsModalOpen(true)
-  }
+    setEditingSavings(null);
+    setSavingsModalOpen(true);
+  };
 
   const handleEditSavings = (itemId: string) => {
-    const item = budget.savingsItems.find((i) => i.id === itemId)
+    const item = budget.savingsItems.find((i) => i.id === itemId);
     if (item) {
-      setEditingSavings(item)
-      setSavingsModalOpen(true)
+      setEditingSavings(item);
+      setSavingsModalOpen(true);
     }
-  }
+  };
 
   const handleDeleteSavings = (itemId: string) => {
-    const item = budget.savingsItems.find((i) => i.id === itemId)
+    const item = budget.savingsItems.find((i) => i.id === itemId);
     if (item) {
-      setDeleteTarget({ id: itemId, name: item.targetAccountName, type: 'savings' })
+      setDeleteTarget({
+        id: itemId,
+        name: item.targetAccountName,
+        type: "savings",
+      });
     }
-  }
+  };
 
   return (
     <div>
       <PageHeader
         title={title}
         description={
-          <Badge variant={isLocked ? 'default' : 'secondary'} className="mt-1">
+          <Badge variant={isLocked ? "default" : "secondary"} className="mt-1">
             {isLocked ? (
               <>
                 <Lock className="w-3 h-3 mr-1" />
                 Locked
               </>
             ) : (
-              'Draft'
+              "Draft"
             )}
           </Badge>
         }
@@ -253,8 +274,8 @@ export function BudgetDetailPage() {
         item={editingIncome}
         open={incomeModalOpen}
         onOpenChange={(open) => {
-          setIncomeModalOpen(open)
-          if (!open) setEditingIncome(null)
+          setIncomeModalOpen(open);
+          if (!open) setEditingIncome(null);
         }}
       />
 
@@ -264,8 +285,8 @@ export function BudgetDetailPage() {
         item={editingExpense}
         open={expenseModalOpen}
         onOpenChange={(open) => {
-          setExpenseModalOpen(open)
-          if (!open) setEditingExpense(null)
+          setExpenseModalOpen(open);
+          if (!open) setEditingExpense(null);
         }}
       />
 
@@ -276,8 +297,8 @@ export function BudgetDetailPage() {
         existingAccountIds={existingSavingsAccountIds}
         open={savingsModalOpen}
         onOpenChange={(open) => {
-          setSavingsModalOpen(open)
-          if (!open) setEditingSavings(null)
+          setSavingsModalOpen(open);
+          if (!open) setEditingSavings(null);
         }}
       />
 
@@ -292,31 +313,31 @@ export function BudgetDetailPage() {
         />
       )}
     </div>
-  )
+  );
 }
 ```
 
 **Create barrel export `src/components/budget-detail/index.ts`:**
 
 ```typescript
-export { BudgetSummary } from './BudgetSummary'
-export { BudgetSection } from './BudgetSection'
-export { BudgetActions } from './BudgetActions'
-export { IncomeItemModal } from './IncomeItemModal'
-export { ExpenseItemModal } from './ExpenseItemModal'
-export { SavingsItemModal } from './SavingsItemModal'
-export { DeleteItemDialog } from './DeleteItemDialog'
-export * from './schemas'
+export { BudgetSummary } from "./BudgetSummary";
+export { BudgetSection } from "./BudgetSection";
+export { BudgetActions } from "./BudgetActions";
+export { IncomeItemModal } from "./IncomeItemModal";
+export { ExpenseItemModal } from "./ExpenseItemModal";
+export { SavingsItemModal } from "./SavingsItemModal";
+export { DeleteItemDialog } from "./DeleteItemDialog";
+export * from "./schemas";
 ```
 
 ### Definition of Done
 
-- [ ] All tests pass
-- [ ] Page loads and displays budget
-- [ ] All sections render with items
-- [ ] Add/Edit/Delete modals work
-- [ ] Lock/Unlock actions work
-- [ ] Delete budget works
+- [x] All tests pass
+- [x] Page loads and displays budget
+- [x] All sections render with items
+- [x] Add/Edit/Delete modals work
+- [x] Lock/Unlock actions work
+- [x] Delete budget works
 
 ---
 
@@ -343,16 +364,16 @@ src/
 
 ## Test Summary
 
-| Component | Test File | Tests (approx) |
-|-----------|-----------|----------------|
-| BudgetDetailPage | BudgetDetailPage.test.tsx | 6 |
-| BudgetSummary | BudgetSummary.test.tsx | 4 |
-| BudgetSection | BudgetSection.test.tsx | 14 |
-| IncomeItemModal | IncomeItemModal.test.tsx | 8 |
-| ExpenseItemModal | ExpenseItemModal.test.tsx | 5 |
-| SavingsItemModal | SavingsItemModal.test.tsx | 6 |
-| DeleteItemDialog | DeleteItemDialog.test.tsx | 6 |
-| BudgetActions | BudgetActions.test.tsx | 9 |
+| Component        | Test File                 | Tests (approx) |
+| ---------------- | ------------------------- | -------------- |
+| BudgetDetailPage | BudgetDetailPage.test.tsx | 6              |
+| BudgetSummary    | BudgetSummary.test.tsx    | 4              |
+| BudgetSection    | BudgetSection.test.tsx    | 14             |
+| IncomeItemModal  | IncomeItemModal.test.tsx  | 8              |
+| ExpenseItemModal | ExpenseItemModal.test.tsx | 5              |
+| SavingsItemModal | SavingsItemModal.test.tsx | 6              |
+| DeleteItemDialog | DeleteItemDialog.test.tsx | 6              |
+| BudgetActions    | BudgetActions.test.tsx    | 9              |
 
 **Total: ~58 tests for Epic 6**
 
@@ -454,16 +475,16 @@ After completing Epic 6:
 
 ## Progress Summary
 
-| Epic | Stories | Tests |
-|------|---------|-------|
-| Epic 1: Infrastructure | 6 | ~50 |
-| Epic 2: Accounts | 7 | ~46 |
-| Epic 3: Recurring Expenses | 5 | ~42 |
-| Epic 4: Budget List | 3 | ~24 |
-| Epic 5: Budget Wizard | 7 | ~83 |
-| **Epic 6: Budget Detail** | **9** | **~58** |
-| **Total** | **37** | **~303** |
+| Epic                       | Stories | Tests    |
+| -------------------------- | ------- | -------- |
+| Epic 1: Infrastructure     | 6       | ~50      |
+| Epic 2: Accounts           | 7       | ~46      |
+| Epic 3: Recurring Expenses | 5       | ~42      |
+| Epic 4: Budget List        | 3       | ~24      |
+| Epic 5: Budget Wizard      | 7       | ~83      |
+| **Epic 6: Budget Detail**  | **9**   | **~58**  |
+| **Total**                  | **37**  | **~303** |
 
 ---
 
-*Last updated: December 2024*
+_Last updated: December 2024_

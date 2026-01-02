@@ -26,4 +26,10 @@ describe('PageHeader', () => {
 
     expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument()
   })
+
+  it('renders backLink when provided', () => {
+    render(<PageHeader title="Title" backLink={<a href="/back">Go back</a>} />)
+
+    expect(screen.getByRole('link', { name: 'Go back' })).toBeInTheDocument()
+  })
 })

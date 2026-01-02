@@ -1,17 +1,19 @@
 # Story 7.1: Todo List Page Shell
 
+**Status: DONE**
+
 **As a** user  
 **I want to** access the todo list for a locked budget  
 **So that** I can see what payments I need to make
 
 ### Acceptance Criteria
 
-- [ ] Page renders at `/budgets/:id/todo` route
-- [ ] Shows budget month/year in title
-- [ ] Shows "Back to Budget" link
-- [ ] Loading state while fetching
-- [ ] Error state if budget not found or not locked
-- [ ] Empty state if no todo items
+- [x] Page renders at `/budgets/:id/todo` route
+- [x] Shows budget month/year in title
+- [x] Shows "Back to Budget" link
+- [x] Loading state while fetching
+- [x] Error state if budget not found or not locked
+- [x] Empty state if no todo items
 
 ### Implementation
 
@@ -250,10 +252,10 @@ describe('TodoListPage', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Page loads todo data
-- [ ] Title shows month/year
-- [ ] Back link works
-- [ ] Loading, error, empty states work
+- [x] Tests pass
+- [x] Page loads todo data
+- [x] Title shows month/year
+- [x] Back link works
+- [x] Loading, error, empty states work
 
 ---

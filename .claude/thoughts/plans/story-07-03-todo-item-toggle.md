@@ -6,12 +6,12 @@
 
 ### Acceptance Criteria
 
-- [ ] Shows list of todo items
-- [ ] Each item shows: checkbox, name, amount, type badge
-- [ ] Payment items show "Payment" badge
-- [ ] Transfer items show destination account name
-- [ ] Completed items have strikethrough
-- [ ] Items grouped by type (Payments first, then Transfers)
+- [x] Shows list of todo items
+- [x] Each item shows: checkbox, name, amount, type badge
+- [x] Payment items show "Payment" badge
+- [x] Transfer items show destination account name
+- [x] Completed items have strikethrough
+- [x] Items grouped by type (Transfers first, then Payments)
 
 ### Implementation
 
@@ -441,10 +441,10 @@ describe('TodoItemRow', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Items grouped by type
-- [ ] Checkboxes toggle correctly
-- [ ] Completed items have strikethrough
-- [ ] Update balance button shown for completed savings
+- [x] Tests pass
+- [x] Items grouped by type
+- [x] Checkboxes toggle correctly
+- [x] Completed items have strikethrough
+- [x] Update balance button shown for completed savings
 
 ---

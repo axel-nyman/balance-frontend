@@ -1,30 +1,87 @@
-import type { TodoItem } from '@/api/types'
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { TodoItemRow } from './TodoItemRow'
+import { UpdateBalanceModal } from '@/components/accounts/UpdateBalanceModal'
+import type { TodoItem, BankAccount } from '@/api/types'
 
 interface TodoItemListProps {
   budgetId: string
   items: TodoItem[]
 }
 
-export function TodoItemList({ budgetId: _budgetId, items }: TodoItemListProps) {
-  // Placeholder - will be implemented in a later story
+export function TodoItemList({ budgetId, items }: TodoItemListProps) {
+  const [balanceModalItem, setBalanceModalItem] = useState<TodoItem | null>(null)
+
+  // Separate items by type
+  const paymentItems = items.filter((item) => item.type === 'PAYMENT')
+  const transferItems = items.filter((item) => item.type === 'TRANSFER')
+
+  const handleUpdateBalance = (item: TodoItem) => {
+    setBalanceModalItem(item)
+  }
+
+  // Create a BankAccount-compatible object from TodoItem for the modal
+  const modalAccount: BankAccount | null = balanceModalItem?.toAccount
+    ? {
+        id: balanceModalItem.toAccount.id,
+        name: balanceModalItem.toAccount.name,
+        description: null,
+        currentBalance: balanceModalItem.amount,
+        createdAt: '',
+      }
+    : null
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
-      <div className="p-4 border-b border-gray-200">
-        <h3 className="font-medium text-gray-900">Todo Items</h3>
-      </div>
-      <div className="divide-y divide-gray-100">
-        {items.map((item) => (
-          <div key={item.id} className="p-4 flex items-center justify-between">
-            <div>
-              <span className="font-medium text-gray-900">{item.name}</span>
-              <span className="ml-2 text-sm text-gray-500">{item.type}</span>
-            </div>
-            <span className={`text-sm ${item.status === 'COMPLETED' ? 'text-green-600' : 'text-gray-500'}`}>
-              {item.status}
-            </span>
-          </div>
-        ))}
-      </div>
+    <div className="space-y-6">
+      {/* Transfer Items */}
+      {transferItems.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium">Transfers</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <ul className="divide-y">
+              {transferItems.map((item) => (
+                <TodoItemRow
+                  key={item.id}
+                  budgetId={budgetId}
+                  item={item}
+                  onUpdateBalance={() => handleUpdateBalance(item)}
+                />
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Payment Items */}
+      {paymentItems.length > 0 && (
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium">Payments</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <ul className="divide-y">
+              {paymentItems.map((item) => (
+                <TodoItemRow
+                  key={item.id}
+                  budgetId={budgetId}
+                  item={item}
+                />
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Update Balance Modal */}
+      {balanceModalItem && modalAccount && (
+        <UpdateBalanceModal
+          account={modalAccount}
+          open={!!balanceModalItem}
+          onOpenChange={(open) => !open && setBalanceModalItem(null)}
+        />
+      )}
     </div>
   )
 }

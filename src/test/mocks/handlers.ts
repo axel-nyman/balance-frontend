@@ -116,4 +116,58 @@ export const handlers = [
   http.post('/api/budgets/:id/lock', () => {
     return HttpResponse.json({ status: 'LOCKED' })
   }),
+
+  // Get todo list
+  http.get('/api/budgets/:id/todo-list', ({ params }) => {
+    return HttpResponse.json({
+      id: 'todolist-1',
+      budgetId: params.id,
+      createdAt: '2025-03-01T00:00:00Z',
+      items: [
+        {
+          id: 'todo-1',
+          type: 'PAYMENT',
+          name: 'Pay Rent',
+          amount: 8000,
+          status: 'PENDING',
+          fromAccount: { id: 'acc-main', name: 'Main Account' },
+          toAccount: null,
+          completedAt: null,
+          createdAt: '2025-03-01T00:00:00Z',
+        },
+        {
+          id: 'todo-2',
+          type: 'TRANSFER',
+          name: 'Transfer to Savings',
+          amount: 5000,
+          status: 'COMPLETED',
+          fromAccount: { id: 'acc-main', name: 'Main Account' },
+          toAccount: { id: 'acc-savings', name: 'Savings Account' },
+          completedAt: '2025-03-15T10:30:00Z',
+          createdAt: '2025-03-01T00:00:00Z',
+        },
+      ],
+      summary: {
+        totalItems: 2,
+        pendingItems: 1,
+        completedItems: 1,
+      },
+    })
+  }),
+
+  // Update todo item
+  http.put('/api/budgets/:budgetId/todo-list/items/:itemId', async ({ request, params }) => {
+    const body = (await request.json()) as { status: string }
+    return HttpResponse.json({
+      id: params.itemId,
+      type: 'PAYMENT',
+      name: 'Pay Rent',
+      amount: 8000,
+      status: body.status,
+      fromAccount: { id: 'acc-main', name: 'Main Account' },
+      toAccount: null,
+      completedAt: body.status === 'COMPLETED' ? new Date().toISOString() : null,
+      createdAt: '2025-03-01T00:00:00Z',
+    })
+  }),
 ]

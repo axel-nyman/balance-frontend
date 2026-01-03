@@ -6,10 +6,10 @@
 
 ### Acceptance Criteria
 
-- [ ] Checkbox state updates immediately on click
-- [ ] Progress bar updates immediately
-- [ ] If API fails, state reverts
-- [ ] Error toast shown on failure
+- [x] Checkbox state updates immediately on click
+- [x] Progress bar updates immediately
+- [x] If API fails, state reverts
+- [x] Error toast shown on failure
 
 ### Implementation
 
@@ -270,10 +270,10 @@ describe('useUpdateTodoItem', () => {
 
 ### Definition of Done
 
-- [ ] Tests pass
-- [ ] Checkbox updates immediately
-- [ ] Progress updates immediately
-- [ ] Error reverts the update
+- [x] Tests pass
+- [x] Checkbox updates immediately
+- [x] Progress updates immediately
+- [x] Error reverts the update
 
 ---
 

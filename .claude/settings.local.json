@@ -43,7 +43,15 @@
       "Bash(git log:*)",
       "WebFetch(domain:localhost)",
       "Bash(npx tsc:*)",
-      "Bash(npx shadcn@latest add progress -y)"
+      "Bash(npx shadcn@latest add progress -y)",
+      "WebFetch(domain:docs.docker.com)",
+      "WebFetch(domain:docs.github.com)",
+      "WebFetch(domain:www.conventionalcommits.org)",
+      "WebFetch(domain:www.hamzak.xyz)",
+      "WebFetch(domain:oleksiipopov.com)",
+      "WebFetch(domain:semver.org)",
+      "Bash(docker build:*)",
+      "Bash(docker images:*)"
     ],
     "deny": [],
     "ask": []

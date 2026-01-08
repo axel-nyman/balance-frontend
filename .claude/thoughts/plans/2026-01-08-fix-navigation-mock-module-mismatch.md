@@ -211,7 +211,7 @@ const actual = await vi.importActual('react-router')
 - [x] Lint passes: `npm run lint`
 
 #### Manual Verification:
-- [ ] CI workflow passes on push
+- [x] CI workflow passes on push
 
 ---
 

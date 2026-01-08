@@ -128,9 +128,9 @@ jobs:
 - [x] Local build passes: `npm run build`
 
 #### Manual Verification:
-- [ ] Push to main triggers the CI workflow
-- [ ] All jobs complete successfully (green checkmark on GitHub)
-- [ ] Build artifact is uploaded and accessible
+- [x] Push to main triggers the CI workflow
+- [x] All jobs complete successfully (green checkmark on GitHub)
+- [x] Build artifact is uploaded and accessible
 
 **Implementation Note**: After completing this phase, commit and push to main to verify the workflow runs. Wait for manual confirmation before proceeding to Phase 2.
 
@@ -208,9 +208,9 @@ jobs:
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] `.release-please-manifest.json` exists with version `"1.0.0"`
-- [ ] `release-please-config.json` exists with proper configuration
-- [ ] `.github/workflows/release.yml` exists
+- [x] `.release-please-manifest.json` exists with version `"1.0.0"`
+- [x] `release-please-config.json` exists with proper configuration
+- [x] `.github/workflows/release.yml` exists
 
 #### Manual Verification:
 - [ ] Push to main triggers the Release workflow
@@ -311,8 +311,8 @@ jobs:
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Updated `.github/workflows/release.yml` contains the `docker` job
-- [ ] Docker build works locally: `docker build -t balance-frontend:test .`
+- [x] Updated `.github/workflows/release.yml` contains the `docker` job
+- [x] Docker build works locally: `docker build -t balance-frontend:test .`
 
 #### Manual Verification:
 - [ ] GitHub Secrets are configured (`DOCKER_USERNAME`, `DOCKER_TOKEN`)

@@ -213,9 +213,9 @@ jobs:
 - [x] `.github/workflows/release.yml` exists
 
 #### Manual Verification:
-- [ ] Push to main triggers the Release workflow
-- [ ] Release-please creates a "Release PR" (or updates existing one)
-- [ ] The Release PR shows correct version bump based on commit types
+- [x] Push to main triggers the Release workflow
+- [x] Release-please creates a "Release PR" (or updates existing one)
+- [x] The Release PR shows correct version bump based on commit types
 
 **Implementation Note**: After completing this phase, push a commit with `feat:` prefix to verify release-please creates a Release PR. Do NOT merge the Release PR yet - wait for Phase 3 to add Docker publishing.
 
@@ -315,10 +315,10 @@ jobs:
 - [x] Docker build works locally: `docker build -t balance-frontend:test .`
 
 #### Manual Verification:
-- [ ] GitHub Secrets are configured (`DOCKER_USERNAME`, `DOCKER_TOKEN`)
-- [ ] Merging the Release PR triggers the Docker job
-- [ ] Docker image is pushed to Docker Hub with correct tags
-- [ ] Image is pullable: `docker pull axelnyman/balance-frontend:1.0.0`
+- [x] GitHub Secrets are configured (`DOCKER_USERNAME`, `DOCKER_TOKEN`)
+- [x] Merging the Release PR triggers the Docker job
+- [x] Docker image is pushed to Docker Hub with correct tags
+- [x] Image is pullable: `docker pull axelnyman/balance-frontend:1.2.0`
 
 **Implementation Note**: Complete the prerequisites (Docker Hub token, GitHub secrets) before merging the Release PR. Once secrets are configured, merge the Release PR to trigger the first release.
 

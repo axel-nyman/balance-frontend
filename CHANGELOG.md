@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.1.0...balance-frontend-v1.1.1) (2026-01-08)
+
+
+### Bug Fixes
+
+* **ci:** correct semver pattern values in Docker metadata action ([c453127](https://github.com/axel-nyman/balance-frontend/commit/c4531275219a220641d40956c52a2285ee6d3c0c))
+
 ## [1.1.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.0.0...balance-frontend-v1.1.0) (2026-01-08)
 
 

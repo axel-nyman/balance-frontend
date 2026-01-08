@@ -5,8 +5,8 @@ import { BudgetGrid } from './BudgetGrid'
 import type { BudgetSummary } from '@/api/types'
 
 // Mock useNavigate for BudgetCard
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom')
+vi.mock('react-router', async () => {
+  const actual = await vi.importActual('react-router')
   return {
     ...actual,
     useNavigate: () => vi.fn(),

@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { screen, waitFor } from '@testing-library/react'
+import { renderWithRoute } from '@/test/test-utils'
 import { TodoListPage } from './TodoListPage'
 import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'
@@ -55,23 +54,13 @@ const mockTodoData: TodoList = {
   },
 }
 
-function renderWithRouter(budgetId = '123') {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  })
-
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[`/budgets/${budgetId}/todo`]}>
-        <Routes>
-          <Route path="/budgets/:id/todo" element={<TodoListPage />} />
-        </Routes>
-      </MemoryRouter>
-    </QueryClientProvider>
+function renderTodoListPage(budgetId = '123') {
+  return renderWithRoute(
+    <TodoListPage />,
+    {
+      route: '/budgets/:id/todo',
+      initialEntry: `/budgets/${budgetId}/todo`,
+    }
   )
 }
 
@@ -88,13 +77,13 @@ describe('TodoListPage', () => {
   })
 
   it('shows loading state initially', () => {
-    renderWithRouter()
+    renderTodoListPage()
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument()
   })
 
   it('displays budget month and year in title', async () => {
-    renderWithRouter()
+    renderTodoListPage()
 
     await waitFor(() => {
       expect(screen.getByText(/mars 2025/i)).toBeInTheDocument()
@@ -102,7 +91,7 @@ describe('TodoListPage', () => {
   })
 
   it('shows back to budget link', async () => {
-    renderWithRouter()
+    renderTodoListPage()
 
     await waitFor(() => {
       expect(screen.getByRole('link', { name: /back to budget/i })).toBeInTheDocument()
@@ -110,7 +99,7 @@ describe('TodoListPage', () => {
   })
 
   it('shows todo items', async () => {
-    renderWithRouter()
+    renderTodoListPage()
 
     await waitFor(() => {
       expect(screen.getByText('Pay Rent')).toBeInTheDocument()
@@ -131,7 +120,7 @@ describe('TodoListPage', () => {
       })
     )
 
-    renderWithRouter()
+    renderTodoListPage()
 
     await waitFor(() => {
       expect(screen.getByText(/must be locked/i)).toBeInTheDocument()
@@ -151,7 +140,7 @@ describe('TodoListPage', () => {
       })
     )
 
-    renderWithRouter()
+    renderTodoListPage()
 
     await waitFor(() => {
       expect(screen.getByText(/no todo items/i)).toBeInTheDocument()

@@ -1,21 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { describe, it, expect, beforeEach } from 'vitest'
+import { screen, waitFor } from '@testing-library/react'
+import { renderWithRoute } from '@/test/test-utils'
 import { BudgetDetailPage } from './BudgetDetailPage'
 import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'
 import type { BudgetDetail } from '@/api/types'
-
-// Mock useNavigate
-const mockNavigate = vi.fn()
-vi.mock('react-router', async () => {
-  const actual = await vi.importActual('react-router')
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  }
-})
 
 const mockBudget: BudgetDetail = {
   id: '123',
@@ -47,29 +36,18 @@ const mockBudget: BudgetDetail = {
   },
 }
 
-function renderWithRouter(budgetId = '123') {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  })
-
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[`/budgets/${budgetId}`]}>
-        <Routes>
-          <Route path="/budgets/:id" element={<BudgetDetailPage />} />
-        </Routes>
-      </MemoryRouter>
-    </QueryClientProvider>
+function renderBudgetDetailPage(budgetId = '123') {
+  return renderWithRoute(
+    <BudgetDetailPage />,
+    {
+      route: '/budgets/:id',
+      initialEntry: `/budgets/${budgetId}`,
+    }
   )
 }
 
 describe('BudgetDetailPage', () => {
   beforeEach(() => {
-    mockNavigate.mockClear()
     server.use(
       http.get('/api/budgets/123', () => {
         return HttpResponse.json(mockBudget)
@@ -78,13 +56,13 @@ describe('BudgetDetailPage', () => {
   })
 
   it('shows loading state initially', () => {
-    renderWithRouter()
+    renderBudgetDetailPage()
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument()
   })
 
   it('displays budget month and year as title', async () => {
-    renderWithRouter()
+    renderBudgetDetailPage()
 
     await waitFor(() => {
       expect(screen.getByText(/mars 2025/i)).toBeInTheDocument()
@@ -92,7 +70,7 @@ describe('BudgetDetailPage', () => {
   })
 
   it('shows Draft badge for draft budgets', async () => {
-    renderWithRouter()
+    renderBudgetDetailPage()
 
     await waitFor(() => {
       expect(screen.getByText('Draft')).toBeInTheDocument()
@@ -106,7 +84,7 @@ describe('BudgetDetailPage', () => {
       })
     )
 
-    renderWithRouter()
+    renderBudgetDetailPage()
 
     await waitFor(() => {
       expect(screen.getByText('Locked')).toBeInTheDocument()
@@ -120,7 +98,7 @@ describe('BudgetDetailPage', () => {
       })
     )
 
-    renderWithRouter()
+    renderBudgetDetailPage()
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /todo list/i })).toBeInTheDocument()
@@ -134,7 +112,7 @@ describe('BudgetDetailPage', () => {
       })
     )
 
-    renderWithRouter('999')
+    renderBudgetDetailPage('999')
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { level: 1, name: /budget not found/i })).toBeInTheDocument()

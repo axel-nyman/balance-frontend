@@ -51,7 +51,9 @@
       "WebFetch(domain:oleksiipopov.com)",
       "WebFetch(domain:semver.org)",
       "Bash(docker build:*)",
-      "Bash(docker images:*)"
+      "Bash(docker images:*)",
+      "Bash(npx yaml-lint:*)",
+      "Bash(npm run typecheck:*)"
     ],
     "deny": [],
     "ask": []

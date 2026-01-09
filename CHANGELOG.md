@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.1.1...balance-frontend-v1.2.0) (2026-01-09)
+
+
+### Features
+
+* implement multi-platform Docker build support for ARM64 and amd64 ([cbcff9e](https://github.com/axel-nyman/balance-frontend/commit/cbcff9e66dc598e695f77ade5b35aa2dd737d781))
+
 ## [1.1.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.1.0...balance-frontend-v1.1.1) (2026-01-08)
 
 

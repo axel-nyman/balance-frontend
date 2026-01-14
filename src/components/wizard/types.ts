@@ -43,6 +43,7 @@ export interface WizardState {
   currentStep: number
   month: number | null
   year: number | null
+  budgetExists: boolean
   incomeItems: WizardIncomeItem[]
   expenseItems: WizardExpenseItem[]
   savingsItems: WizardSavingsItem[]
@@ -57,6 +58,7 @@ export interface WizardState {
 
 export type WizardAction =
   | { type: 'SET_MONTH_YEAR'; month: number; year: number }
+  | { type: 'SET_BUDGET_EXISTS'; exists: boolean }
   | { type: 'SET_INCOME_ITEMS'; items: WizardIncomeItem[] }
   | { type: 'ADD_INCOME_ITEM'; item: WizardIncomeItem }
   | { type: 'UPDATE_INCOME_ITEM'; id: string; updates: Partial<WizardIncomeItem> }

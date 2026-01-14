@@ -5,6 +5,7 @@ export const initialWizardState: WizardState = {
   currentStep: 1,
   month: null,
   year: null,
+  budgetExists: false,
   incomeItems: [],
   expenseItems: [],
   savingsItems: [],
@@ -22,6 +23,9 @@ export function wizardReducer(state: WizardState, action: WizardAction): WizardS
         year: action.year,
         isDirty: true,
       }
+
+    case 'SET_BUDGET_EXISTS':
+      return { ...state, budgetExists: action.exists }
 
     case 'SET_INCOME_ITEMS':
       return {

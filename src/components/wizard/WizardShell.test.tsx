@@ -195,4 +195,31 @@ describe('WizardShell', () => {
       expect(screen.getByText('20% complete')).toBeInTheDocument()
     })
   })
+
+  it('disables Continue on step 1 when budget exists for selected month', async () => {
+    const currentMonth = new Date().getMonth() + 1
+    const currentYear = new Date().getFullYear()
+    const nextMonth = currentMonth === 12 ? 1 : currentMonth + 1
+    const nextYear = currentMonth === 12 ? currentYear + 1 : currentYear
+
+    // Return a budget for next month (the default selection)
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [
+            { id: '1', month: nextMonth, year: nextYear, status: 'DRAFT' }
+          ]
+        })
+      })
+    )
+
+    renderWizard()
+
+    // Wait for the warning to appear and Continue to be disabled
+    await waitFor(() => {
+      expect(screen.getByText(/already exists/i)).toBeInTheDocument()
+    })
+
+    expect(screen.getByRole('button', { name: /continue/i })).toBeDisabled()
+  })
 })

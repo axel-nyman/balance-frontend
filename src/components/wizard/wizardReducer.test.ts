@@ -17,6 +17,31 @@ describe('wizardReducer', () => {
     })
   })
 
+  describe('SET_BUDGET_EXISTS', () => {
+    it('sets budgetExists to true', () => {
+      const state = wizardReducer(initialWizardState, {
+        type: 'SET_BUDGET_EXISTS',
+        exists: true,
+      })
+
+      expect(state.budgetExists).toBe(true)
+    })
+
+    it('sets budgetExists to false', () => {
+      const startState: WizardState = {
+        ...initialWizardState,
+        budgetExists: true,
+      }
+
+      const state = wizardReducer(startState, {
+        type: 'SET_BUDGET_EXISTS',
+        exists: false,
+      })
+
+      expect(state.budgetExists).toBe(false)
+    })
+  })
+
   describe('income items', () => {
     it('adds income item', () => {
       const item: WizardIncomeItem = {

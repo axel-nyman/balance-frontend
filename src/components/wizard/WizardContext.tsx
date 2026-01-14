@@ -23,7 +23,7 @@ export function WizardProvider({ children }: WizardProviderProps) {
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
-        return state.month !== null && state.year !== null
+        return state.month !== null && state.year !== null && !state.budgetExists
       case 2:
         return (
           state.incomeItems.length > 0 &&

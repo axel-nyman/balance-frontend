@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { AlertCircle } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import {
@@ -71,7 +71,6 @@ function getDefaultMonthYear(existingBudgets: Array<{ month: number; year: numbe
 export function StepMonthYear() {
   const { state, dispatch } = useWizard()
   const { data: budgetsData } = useBudgets()
-  const [budgetExists, setBudgetExists] = useState(false)
 
   const existingBudgets = budgetsData?.budgets ?? []
   const yearOptions = getYearOptions()
@@ -94,9 +93,12 @@ export function StepMonthYear() {
       const exists = existingBudgets.some(
         (b) => b.month === state.month && b.year === state.year
       )
-      setBudgetExists(exists)
+      // Only dispatch if the value changed to avoid infinite loops
+      if (exists !== state.budgetExists) {
+        dispatch({ type: 'SET_BUDGET_EXISTS', exists })
+      }
     }
-  }, [state.month, state.year, existingBudgets])
+  }, [state.month, state.year, state.budgetExists, existingBudgets, dispatch])
 
   const handleMonthChange = (value: string) => {
     dispatch({
@@ -160,7 +162,7 @@ export function StepMonthYear() {
         </div>
       </div>
 
-      {budgetExists && (
+      {state.budgetExists && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.2.0...balance-frontend-v1.3.0) (2026-01-14)
+
+
+### Features
+
+* **wizard:** disable continue when budget exists for selected month ([5f2dacf](https://github.com/axel-nyman/balance-frontend/commit/5f2dacfba593518c85d53d5a683993c951f16827))
+
 ## [1.2.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.1.1...balance-frontend-v1.2.0) (2026-01-09)
 
 

@@ -268,10 +268,7 @@ export function StepIncome() {
                 {availableItems.map((item) => {
                   const isCopying = copyingIds.has(item.id)
                   return (
-                    <TableRow
-                      key={`available-${item.id}`}
-                      className="contents"
-                    >
+                    <TableRow key={`available-${item.id}`}>
                       <td colSpan={4} className="p-0">
                         <div
                           className={cn(

@@ -58,7 +58,29 @@ describe('BudgetsPage', () => {
   })
 
   it('navigates to wizard when new budget button is clicked', async () => {
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [
+            {
+              id: '1',
+              month: 3,
+              year: 2025,
+              status: 'LOCKED',
+              createdAt: '2025-03-01',
+              lockedAt: '2025-03-15',
+              totals: { income: 50000, expenses: 35000, savings: 10000, balance: 5000 },
+            },
+          ],
+        })
+      })
+    )
+
     render(<BudgetsPage />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /new budget/i })).toBeEnabled()
+    })
 
     await userEvent.click(screen.getByRole('button', { name: /new budget/i }))
 
@@ -124,5 +146,87 @@ describe('BudgetsPage', () => {
     await waitFor(() => {
       expect(screen.getByText(/mars 2025/i)).toBeInTheDocument()
     })
+  })
+
+  it('shows new budget button as disabled when unlocked budget exists', async () => {
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [
+            {
+              id: '1',
+              month: 3,
+              year: 2025,
+              status: 'UNLOCKED',
+              createdAt: '2025-03-01',
+              lockedAt: null,
+              totals: { income: 50000, expenses: 35000, savings: 10000, balance: 5000 },
+            },
+          ],
+        })
+      })
+    )
+
+    render(<BudgetsPage />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /new budget/i })).toHaveAttribute('aria-disabled', 'true')
+    })
+  })
+
+  it('shows new budget button as enabled when all budgets are locked', async () => {
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [
+            {
+              id: '1',
+              month: 3,
+              year: 2025,
+              status: 'LOCKED',
+              createdAt: '2025-03-01',
+              lockedAt: '2025-03-15',
+              totals: { income: 50000, expenses: 35000, savings: 10000, balance: 5000 },
+            },
+          ],
+        })
+      })
+    )
+
+    render(<BudgetsPage />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /new budget/i })).not.toHaveAttribute('aria-disabled', 'true')
+    })
+  })
+
+  it('does not navigate when clicking disabled new budget button', async () => {
+    server.use(
+      http.get('/api/budgets', () => {
+        return HttpResponse.json({
+          budgets: [
+            {
+              id: '1',
+              month: 3,
+              year: 2025,
+              status: 'UNLOCKED',
+              createdAt: '2025-03-01',
+              lockedAt: null,
+              totals: { income: 50000, expenses: 35000, savings: 10000, balance: 5000 },
+            },
+          ],
+        })
+      })
+    )
+
+    render(<BudgetsPage />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /new budget/i })).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: /new budget/i }))
+
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 })

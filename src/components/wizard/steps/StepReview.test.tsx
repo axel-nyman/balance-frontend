@@ -69,12 +69,13 @@ function WizardWithFullState({ children }: { children: React.ReactNode }) {
 }
 
 // Wrapper component to manage lockAfterSave state
-function StepReviewWrapper() {
+function StepReviewWrapper({ isBalanced = false }: { isBalanced?: boolean }) {
   const [lockAfterSave, setLockAfterSave] = useState(false)
   return (
     <StepReview
       lockAfterSave={lockAfterSave}
       onLockAfterSaveChange={setLockAfterSave}
+      isBalanced={isBalanced}
     />
   )
 }
@@ -118,6 +119,64 @@ function renderWithEmptyState() {
       <WizardWithEmptyState>
         <StepReviewWrapper />
       </WizardWithEmptyState>
+    </WizardProvider>
+  )
+}
+
+// Helper for balanced state (income = expenses + savings)
+function WizardWithBalancedState({ children }: { children: React.ReactNode }) {
+  const { dispatch } = useWizard()
+
+  useEffect(() => {
+    dispatch({ type: 'SET_MONTH_YEAR', month: 3, year: 2025 })
+    dispatch({
+      type: 'SET_INCOME_ITEMS',
+      items: [
+        {
+          id: '1',
+          name: 'Salary',
+          amount: 50000,
+          bankAccountId: 'acc-1',
+          bankAccountName: 'Checking',
+        },
+      ],
+    })
+    dispatch({
+      type: 'SET_EXPENSE_ITEMS',
+      items: [
+        {
+          id: '1',
+          name: 'Rent',
+          amount: 30000,
+          bankAccountId: 'acc-1',
+          bankAccountName: 'Checking',
+          isManual: true,
+        },
+      ],
+    })
+    dispatch({
+      type: 'SET_SAVINGS_ITEMS',
+      items: [
+        {
+          id: '1',
+          name: 'Emergency Fund',
+          amount: 20000,
+          bankAccountId: 'acc-2',
+          bankAccountName: 'Savings Account',
+        },
+      ],
+    })
+  }, [dispatch])
+
+  return <>{children}</>
+}
+
+function renderWithBalancedState() {
+  return render(
+    <WizardProvider>
+      <WizardWithBalancedState>
+        <StepReviewWrapper isBalanced={true} />
+      </WizardWithBalancedState>
     </WizardProvider>
   )
 }
@@ -282,16 +341,25 @@ describe('StepReview', () => {
     })
   })
 
-  it('has lock after save checkbox', async () => {
-    renderWithWizard()
+  it('has lock after save checkbox when balanced', async () => {
+    renderWithBalancedState()
 
     await waitFor(() => {
       expect(screen.getByLabelText(/lock budget/i)).toBeInTheDocument()
     })
   })
 
-  it('can toggle lock after save checkbox', async () => {
+  it('hides lock after save checkbox when unbalanced', async () => {
     renderWithWizard()
+
+    await waitFor(() => {
+      // Checkbox should not be present when budget is unbalanced
+      expect(screen.queryByLabelText(/lock budget/i)).not.toBeInTheDocument()
+    })
+  })
+
+  it('can toggle lock after save checkbox', async () => {
+    renderWithBalancedState()
 
     await waitFor(() => {
       expect(screen.getByLabelText(/lock budget/i)).toBeInTheDocument()
@@ -390,11 +458,19 @@ describe('StepReview', () => {
     })
   })
 
-  it('shows lock description text', async () => {
-    renderWithWizard()
+  it('shows lock description text when balanced', async () => {
+    renderWithBalancedState()
 
     await waitFor(() => {
       expect(screen.getByText(/applies savings to account balances/i)).toBeInTheDocument()
+    })
+  })
+
+  it('hides lock description text when unbalanced', async () => {
+    renderWithWizard()
+
+    await waitFor(() => {
+      expect(screen.queryByText(/applies savings to account balances/i)).not.toBeInTheDocument()
     })
   })
 

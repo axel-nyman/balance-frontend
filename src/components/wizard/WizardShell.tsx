@@ -7,6 +7,7 @@ import { SectionHeader } from './SectionHeader'
 import { WizardNavigation } from './WizardNavigation'
 import { WIZARD_STEPS, toIncomeRequest, toExpenseRequest, toSavingsRequest } from './types'
 import { createBudget, addIncome, addExpense, addSavings, lockBudget } from '@/api/budgets'
+import { calculateBudgetTotals, isBudgetBalanced } from '@/lib/utils'
 
 // Step components
 import { StepMonthYear } from './steps/StepMonthYear'
@@ -19,6 +20,21 @@ export function WizardShell() {
   const navigate = useNavigate()
   const { state, dispatch, isStepValid, getStepStatus, completionPercentage } = useWizard()
   const [lockAfterSave, setLockAfterSave] = useState(false)
+
+  // Calculate if budget is balanced
+  const { balance } = calculateBudgetTotals(
+    state.incomeItems,
+    state.expenseItems,
+    state.savingsItems
+  )
+  const isBalanced = isBudgetBalanced(balance)
+
+  // Reset lockAfterSave if budget becomes unbalanced
+  useEffect(() => {
+    if (!isBalanced && lockAfterSave) {
+      setLockAfterSave(false)
+    }
+  }, [isBalanced, lockAfterSave])
 
   // Warn before leaving the page with unsaved changes (browser navigation/refresh)
   useEffect(() => {
@@ -136,6 +152,7 @@ export function WizardShell() {
           <StepReview
             lockAfterSave={lockAfterSave}
             onLockAfterSaveChange={setLockAfterSave}
+            isBalanced={isBalanced}
           />
         )
       default:
@@ -194,6 +211,7 @@ export function WizardShell() {
         currentStep={state.currentStep}
         canProceed={isStepValid(state.currentStep)}
         isSubmitting={state.isSubmitting}
+        isBalanced={isBalanced}
         onBack={handleBack}
         onNext={handleNext}
         onSave={handleSave}

@@ -137,7 +137,7 @@ describe('Wizard Integration', () => {
     expect(screen.getAllByText(/50 000,00 kr/).length).toBeGreaterThan(0)
 
     // Save
-    await userEvent.click(screen.getByRole('button', { name: /create budget/i }))
+    await userEvent.click(screen.getByRole('button', { name: /create draft/i }))
 
     await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith('/budgets/new-budget-123')
@@ -192,9 +192,9 @@ describe('Wizard Integration', () => {
 
     // Step 5: Review - save
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /create budget/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /create draft/i })).toBeInTheDocument()
     })
-    await userEvent.click(screen.getByRole('button', { name: /create budget/i }))
+    await userEvent.click(screen.getByRole('button', { name: /create draft/i }))
 
     // Check that error is displayed (looking for the error message from the API)
     await waitFor(() => {
@@ -249,9 +249,9 @@ describe('Wizard Integration', () => {
 
     // Step 5: Click save
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /create budget/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /create draft/i })).toBeInTheDocument()
     })
-    await userEvent.click(screen.getByRole('button', { name: /create budget/i }))
+    await userEvent.click(screen.getByRole('button', { name: /create draft/i }))
 
     // Check for loading state
     expect(screen.getByRole('button', { name: /creating/i })).toBeInTheDocument()

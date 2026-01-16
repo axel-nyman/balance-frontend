@@ -6,6 +6,7 @@ interface WizardNavigationProps {
   currentStep: number
   canProceed: boolean
   isSubmitting?: boolean
+  isBalanced?: boolean
   onBack: () => void
   onNext: () => void
   onSave?: () => void
@@ -15,6 +16,7 @@ export function WizardNavigation({
   currentStep,
   canProceed,
   isSubmitting = false,
+  isBalanced = true,
   onBack,
   onNext,
   onSave,
@@ -46,7 +48,7 @@ export function WizardNavigation({
             onClick={onSave}
             disabled={!canProceed || isSubmitting}
           >
-            {isSubmitting ? 'Creating...' : 'Create Budget'}
+            {isSubmitting ? 'Creating...' : isBalanced ? 'Create Budget' : 'Create Draft'}
           </Button>
         ) : (
           <Button

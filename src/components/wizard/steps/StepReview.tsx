@@ -16,9 +16,10 @@ import { cn } from '@/lib/utils'
 interface StepReviewProps {
   lockAfterSave: boolean
   onLockAfterSaveChange: (checked: boolean) => void
+  isBalanced: boolean
 }
 
-export function StepReview({ lockAfterSave, onLockAfterSaveChange }: StepReviewProps) {
+export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }: StepReviewProps) {
   const { state } = useWizard()
   const [incomeOpen, setIncomeOpen] = useState(false)
   const [expensesOpen, setExpensesOpen] = useState(false)
@@ -149,21 +150,25 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange }: StepReviewP
         )}
       </div>
 
-      {/* Lock option */}
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          id="lockAfterSave"
-          checked={lockAfterSave}
-          onCheckedChange={(checked) => onLockAfterSaveChange(checked === true)}
-        />
-        <Label htmlFor="lockAfterSave" className="text-sm font-normal cursor-pointer">
-          Lock budget after saving
-        </Label>
-      </div>
-      <p className="text-xs text-gray-500 -mt-4">
-        Locking applies savings to account balances and creates a payment todo list.
-        You can always lock later from the budget detail page.
-      </p>
+      {/* Lock option - only show when balanced */}
+      {isBalanced && (
+        <>
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="lockAfterSave"
+              checked={lockAfterSave}
+              onCheckedChange={(checked) => onLockAfterSaveChange(checked === true)}
+            />
+            <Label htmlFor="lockAfterSave" className="text-sm font-normal cursor-pointer">
+              Lock budget after saving
+            </Label>
+          </div>
+          <p className="text-xs text-gray-500 -mt-4">
+            Locking applies savings to account balances and creates a payment todo list.
+            You can always lock later from the budget detail page.
+          </p>
+        </>
+      )}
 
       {state.error && (
         <Alert variant="destructive">

@@ -1,12 +1,44 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
-import { WizardProvider } from '../WizardContext'
+import { WizardProvider, useWizard } from '../WizardContext'
 import { StepExpenses } from './StepExpenses'
 import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'
+import { useEffect } from 'react'
 
-function renderWithWizard() {
+// Helper to set up wizard state with income
+function WizardWithIncome({ children }: { children: React.ReactNode }) {
+  const { dispatch } = useWizard()
+
+  useEffect(() => {
+    dispatch({
+      type: 'SET_INCOME_ITEMS',
+      items: [
+        {
+          id: '1',
+          name: 'Salary',
+          amount: 50000,
+          bankAccountId: 'acc-1',
+          bankAccountName: 'Checking',
+        },
+      ],
+    })
+  }, [dispatch])
+
+  return <>{children}</>
+}
+
+function renderWithWizard(withIncome = false) {
+  if (withIncome) {
+    return render(
+      <WizardProvider>
+        <WizardWithIncome>
+          <StepExpenses />
+        </WizardWithIncome>
+      </WizardProvider>
+    )
+  }
   return render(
     <WizardProvider>
       <StepExpenses />
@@ -97,7 +129,9 @@ describe('StepExpenses', () => {
     await userEvent.type(amountInput, '8000')
 
     await waitFor(() => {
-      expect(screen.getByText(/8 000,00 kr/)).toBeInTheDocument()
+      // Amount appears in balance display and table footer
+      const amounts = screen.getAllByText(/8 000,00 kr/)
+      expect(amounts.length).toBeGreaterThanOrEqual(1)
     })
   })
 
@@ -318,6 +352,67 @@ describe('StepExpenses', () => {
     await waitFor(() => {
       expect(screen.getByText(/due this month/i)).toBeInTheDocument()
       expect(screen.getByText(/other recurring/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows running balance summary', async () => {
+    renderWithWizard(true)
+
+    await waitFor(() => {
+      expect(screen.getByText('Income')).toBeInTheDocument()
+      expect(screen.getByText('Remaining')).toBeInTheDocument()
+    })
+  })
+
+  it('displays income from previous step', async () => {
+    renderWithWizard(true)
+
+    await waitFor(() => {
+      // Income appears in both Income and Remaining columns (both 50000 at start)
+      const amounts = screen.getAllByText(/50 000,00 kr/)
+      expect(amounts.length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  it('calculates remaining balance correctly', async () => {
+    renderWithWizard(true)
+
+    // Add expense
+    await userEvent.click(screen.getByRole('button', { name: /add expense/i }))
+    const amountInput = screen.getByPlaceholderText('0')
+    await userEvent.type(amountInput, '20000')
+
+    // Income 50000 - Expenses 20000 = 30000 remaining
+    await waitFor(() => {
+      expect(screen.getByText(/30 000,00 kr/)).toBeInTheDocument()
+    })
+  })
+
+  it('shows warning when expenses exceed income', async () => {
+    renderWithWizard(true)
+
+    await userEvent.click(screen.getByRole('button', { name: /add expense/i }))
+
+    const amountInput = screen.getByPlaceholderText('0')
+    await userEvent.type(amountInput, '60000')
+
+    await waitFor(() => {
+      expect(screen.getByText(/exceed/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows remaining in red when negative', async () => {
+    renderWithWizard(true)
+
+    await userEvent.click(screen.getByRole('button', { name: /add expense/i }))
+
+    const amountInput = screen.getByPlaceholderText('0')
+    await userEvent.type(amountInput, '60000')
+
+    await waitFor(() => {
+      // Find the remaining balance element - it's the one with the negative sign
+      const remainingText = screen.getByText(/−10 000,00 kr/)
+      expect(remainingText).toHaveClass('text-red-600')
     })
   })
 })

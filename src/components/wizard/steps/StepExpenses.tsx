@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, Check, Repeat } from 'lucide-react'
+import { Plus, Trash2, Check, Repeat, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWizard } from '../WizardContext'
 import { useAccounts, useRecurringExpenses } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
@@ -36,6 +37,12 @@ export function StepExpenses() {
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
 
   const accounts = accountsData?.accounts ?? []
+
+  // Calculate totals for balance display
+  const totalIncome = state.incomeItems.reduce(
+    (sum, item) => sum + (item.amount || 0),
+    0
+  )
 
   // Memoize recurring expenses to avoid dependency array issues
   const recurringExpenses = useMemo(
@@ -81,6 +88,7 @@ export function StepExpenses() {
     (sum, item) => sum + (item.amount || 0),
     0
   )
+  const remainingBalance = totalIncome - totalExpenses
 
   const handleAddItem = () => {
     dispatch({
@@ -242,6 +250,38 @@ export function StepExpenses() {
           </p>
         </div>
       </div>
+
+      {/* Running balance display */}
+      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+        <div>
+          <p className="text-xs text-gray-500 uppercase">Income</p>
+          <p className="text-lg font-semibold text-green-600">
+            {formatCurrency(totalIncome)}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-500 uppercase">Remaining</p>
+          <p
+            className={cn(
+              'text-lg font-semibold',
+              remainingBalance >= 0 ? 'text-green-600' : 'text-red-600'
+            )}
+          >
+            {formatCurrency(remainingBalance)}
+          </p>
+        </div>
+      </div>
+
+      {remainingBalance < 0 && (
+        <Alert variant="destructive">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>
+            Your planned expenses exceed your income by{' '}
+            {formatCurrency(Math.abs(remainingBalance))}. Consider reducing your
+            expenses.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Quick-add from recurring expenses */}
       {availableRecurring.length > 0 && (

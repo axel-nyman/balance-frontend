@@ -14,15 +14,9 @@ import {
   TableRow,
   TableFooter,
 } from '@/components/ui/table'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
 import { useAccounts, useRecurringExpenses } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
@@ -385,23 +379,21 @@ export function StepExpenses() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Select
+                    <AccountSelect
                       value={item.bankAccountId}
-                      onValueChange={(value) =>
-                        handleUpdateItem(item.id, 'bankAccountId', value)
-                      }
-                    >
-                      <SelectTrigger className="border-0 shadow-none focus:ring-0 px-0">
-                        <SelectValue placeholder="Select account" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {accounts.map((account) => (
-                          <SelectItem key={account.id} value={account.id}>
-                            {account.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      onValueChange={(accountId, accountName) => {
+                        dispatch({
+                          type: 'UPDATE_EXPENSE_ITEM',
+                          id: item.id,
+                          updates: {
+                            bankAccountId: accountId,
+                            bankAccountName: accountName,
+                          },
+                        })
+                      }}
+                      placeholder="Select account"
+                      triggerClassName="border-0 shadow-none focus:ring-0 px-0"
+                    />
                   </TableCell>
                   <TableCell className="text-right">
                     <Input

@@ -12,14 +12,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { useAddSavings, useUpdateSavings, useAccounts } from '@/hooks'
+import { AccountSelect } from '@/components/accounts'
+import { useAddSavings, useUpdateSavings } from '@/hooks'
 import { savingsItemSchema, type SavingsItemFormData } from './schemas'
 import type { BudgetSavings } from '@/api/types'
 
@@ -33,7 +27,6 @@ interface SavingsItemModalProps {
 export function SavingsItemModal({ budgetId, item, open, onOpenChange }: SavingsItemModalProps) {
   const addSavings = useAddSavings(budgetId)
   const updateSavings = useUpdateSavings(budgetId)
-  const { data: accountsData } = useAccounts()
   const isEditing = item !== null
 
   const {
@@ -133,21 +126,11 @@ export function SavingsItemModal({ budgetId, item, open, onOpenChange }: Savings
 
           <div className="space-y-2">
             <Label htmlFor="bankAccountId">Account *</Label>
-            <Select
+            <AccountSelect
               value={selectedAccountId}
-              onValueChange={(value) => setValue('bankAccountId', value)}
-            >
-              <SelectTrigger id="bankAccountId">
-                <SelectValue placeholder="Select account" />
-              </SelectTrigger>
-              <SelectContent>
-                {accountsData?.accounts.map((account) => (
-                  <SelectItem key={account.id} value={account.id}>
-                    {account.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onValueChange={(accountId) => setValue('bankAccountId', accountId)}
+              placeholder="Select account"
+            />
             {errors.bankAccountId && (
               <p className="text-sm text-red-600">{errors.bankAccountId.message}</p>
             )}

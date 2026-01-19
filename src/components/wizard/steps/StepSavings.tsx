@@ -11,14 +11,8 @@ import {
   TableRow,
   TableFooter,
 } from '@/components/ui/table'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
 import { useAccounts } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
@@ -269,23 +263,21 @@ export function StepSavings() {
                           />
                         </TableCell>
                         <TableCell>
-                          <Select
+                          <AccountSelect
                             value={item.bankAccountId}
-                            onValueChange={(value) =>
-                              handleUpdateItem(item.id, 'bankAccountId', value)
-                            }
-                          >
-                            <SelectTrigger className="border-0 shadow-none focus:ring-0 px-0">
-                              <SelectValue placeholder="Select account" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {accounts.map((account) => (
-                                <SelectItem key={account.id} value={account.id}>
-                                  {account.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                            onValueChange={(accountId, accountName) => {
+                              dispatch({
+                                type: 'UPDATE_SAVINGS_ITEM',
+                                id: item.id,
+                                updates: {
+                                  bankAccountId: accountId,
+                                  bankAccountName: accountName,
+                                },
+                              })
+                            }}
+                            placeholder="Select account"
+                            triggerClassName="border-0 shadow-none focus:ring-0 px-0"
+                          />
                         </TableCell>
                         <TableCell className="text-right">
                           <Input

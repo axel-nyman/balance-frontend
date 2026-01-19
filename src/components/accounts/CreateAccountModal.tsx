@@ -17,9 +17,10 @@ import { createAccountSchema, type CreateAccountFormData } from './schemas'
 interface CreateAccountModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCreated?: (account: { id: string; name: string }) => void
 }
 
-export function CreateAccountModal({ open, onOpenChange }: CreateAccountModalProps) {
+export function CreateAccountModal({ open, onOpenChange, onCreated }: CreateAccountModalProps) {
   const createAccount = useCreateAccount()
 
   const {
@@ -38,7 +39,7 @@ export function CreateAccountModal({ open, onOpenChange }: CreateAccountModalPro
 
   const onSubmit = async (data: CreateAccountFormData) => {
     try {
-      await createAccount.mutateAsync({
+      const newAccount = await createAccount.mutateAsync({
         name: data.name,
         description: data.description || undefined,
         initialBalance: data.initialBalance,
@@ -46,6 +47,7 @@ export function CreateAccountModal({ open, onOpenChange }: CreateAccountModalPro
       toast.success('Account created')
       reset()
       onOpenChange(false)
+      onCreated?.({ id: newAccount.id, name: newAccount.name })
     } catch {
       // Error is handled by the mutation and displayed inline
     }
@@ -63,7 +65,13 @@ export function CreateAccountModal({ open, onOpenChange }: CreateAccountModalPro
           <DialogTitle>New Account</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.stopPropagation()
+            handleSubmit(onSubmit)(e)
+          }}
+          className="space-y-4"
+        >
           <div className="space-y-2">
             <Label htmlFor="name">Name *</Label>
             <Input

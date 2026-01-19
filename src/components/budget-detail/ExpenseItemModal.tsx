@@ -13,14 +13,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { useAddExpense, useUpdateExpense, useAccounts } from '@/hooks'
+import { AccountSelect } from '@/components/accounts'
+import { useAddExpense, useUpdateExpense } from '@/hooks'
 import { expenseItemSchema, type ExpenseItemFormData } from './schemas'
 import type { BudgetExpense } from '@/api/types'
 
@@ -34,7 +28,6 @@ interface ExpenseItemModalProps {
 export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: ExpenseItemModalProps) {
   const addExpense = useAddExpense(budgetId)
   const updateExpense = useUpdateExpense(budgetId)
-  const { data: accountsData } = useAccounts()
   const isEditing = item !== null
 
   const {
@@ -138,21 +131,11 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
 
           <div className="space-y-2">
             <Label htmlFor="bankAccountId">Account *</Label>
-            <Select
+            <AccountSelect
               value={selectedAccountId}
-              onValueChange={(value) => setValue('bankAccountId', value)}
-            >
-              <SelectTrigger id="bankAccountId">
-                <SelectValue placeholder="Select account" />
-              </SelectTrigger>
-              <SelectContent>
-                {accountsData?.accounts.map((account) => (
-                  <SelectItem key={account.id} value={account.id}>
-                    {account.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onValueChange={(accountId) => setValue('bankAccountId', accountId)}
+              placeholder="Select account"
+            />
             {errors.bankAccountId && (
               <p className="text-sm text-red-600">{errors.bankAccountId.message}</p>
             )}

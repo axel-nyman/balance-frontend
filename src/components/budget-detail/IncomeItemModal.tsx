@@ -12,14 +12,8 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { useAddIncome, useUpdateIncome, useAccounts } from '@/hooks'
+import { AccountSelect } from '@/components/accounts'
+import { useAddIncome, useUpdateIncome } from '@/hooks'
 import { incomeItemSchema, type IncomeItemFormData } from './schemas'
 import type { BudgetIncome } from '@/api/types'
 
@@ -33,7 +27,6 @@ interface IncomeItemModalProps {
 export function IncomeItemModal({ budgetId, item, open, onOpenChange }: IncomeItemModalProps) {
   const addIncome = useAddIncome(budgetId)
   const updateIncome = useUpdateIncome(budgetId)
-  const { data: accountsData } = useAccounts()
   const isEditing = item !== null
 
   const {
@@ -133,21 +126,11 @@ export function IncomeItemModal({ budgetId, item, open, onOpenChange }: IncomeIt
 
           <div className="space-y-2">
             <Label htmlFor="bankAccountId">Account *</Label>
-            <Select
+            <AccountSelect
               value={selectedAccountId}
-              onValueChange={(value) => setValue('bankAccountId', value)}
-            >
-              <SelectTrigger id="bankAccountId">
-                <SelectValue placeholder="Select account" />
-              </SelectTrigger>
-              <SelectContent>
-                {accountsData?.accounts.map((account) => (
-                  <SelectItem key={account.id} value={account.id}>
-                    {account.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onValueChange={(accountId) => setValue('bankAccountId', accountId)}
+              placeholder="Select account"
+            />
             {errors.bankAccountId && (
               <p className="text-sm text-red-600">{errors.bankAccountId.message}</p>
             )}

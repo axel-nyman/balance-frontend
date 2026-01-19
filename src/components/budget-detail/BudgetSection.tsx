@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Plus, Pencil, Trash2 } from 'lucide-react'
+import { ChevronDown, Plus, Pencil, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,
@@ -52,11 +52,12 @@ export function BudgetSection({
       <CollapsibleTrigger asChild>
         <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50">
           <div className="flex items-center gap-2">
-            {isOpen ? (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            ) : (
-              <ChevronRight className="w-4 h-4 text-gray-500" />
-            )}
+            <ChevronDown
+              className={cn(
+                'w-4 h-4 text-gray-500 transition-transform duration-200',
+                !isOpen && '-rotate-90'
+              )}
+            />
             <span className="font-medium text-gray-900">{title}</span>
             <span className="text-sm text-gray-500">({items.length})</span>
           </div>

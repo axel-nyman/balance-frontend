@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
@@ -46,7 +46,12 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
         <CollapsibleTrigger asChild>
           <Button variant="ghost" className="w-full justify-between p-4 h-auto">
             <div className="flex items-center gap-2">
-              {incomeOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <ChevronDown
+                className={cn(
+                  'w-4 h-4 transition-transform duration-200',
+                  !incomeOpen && '-rotate-90'
+                )}
+              />
               <span className="font-medium">Income</span>
               <span className="text-gray-500">({state.incomeItems.length} items)</span>
             </div>
@@ -73,7 +78,12 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
         <CollapsibleTrigger asChild>
           <Button variant="ghost" className="w-full justify-between p-4 h-auto">
             <div className="flex items-center gap-2">
-              {expensesOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <ChevronDown
+                className={cn(
+                  'w-4 h-4 transition-transform duration-200',
+                  !expensesOpen && '-rotate-90'
+                )}
+              />
               <span className="font-medium">Expenses</span>
               <span className="text-gray-500">({state.expenseItems.length} items)</span>
             </div>
@@ -104,7 +114,12 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
         <CollapsibleTrigger asChild>
           <Button variant="ghost" className="w-full justify-between p-4 h-auto">
             <div className="flex items-center gap-2">
-              {savingsOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <ChevronDown
+                className={cn(
+                  'w-4 h-4 transition-transform duration-200',
+                  !savingsOpen && '-rotate-90'
+                )}
+              />
               <span className="font-medium">Savings</span>
               <span className="text-gray-500">({state.savingsItems.length} items)</span>
             </div>

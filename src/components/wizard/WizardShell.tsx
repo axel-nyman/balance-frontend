@@ -5,6 +5,7 @@ import { useWizard } from './WizardContext'
 import { ProgressHeader } from './ProgressHeader'
 import { SectionHeader } from './SectionHeader'
 import { WizardNavigation } from './WizardNavigation'
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible'
 import { WIZARD_STEPS, toIncomeRequest, toExpenseRequest, toSavingsRequest } from './types'
 import { createBudget, addIncome, addExpense, addSavings, lockBudget } from '@/api/budgets'
 import { calculateBudgetTotals, isBudgetBalanced } from '@/lib/utils'
@@ -189,18 +190,14 @@ export function WizardShell() {
                 onClick={() => handleGoToStep(step.id)}
               />
 
-              {/* Expandable content with CSS Grid animation */}
-              <div
-                className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${
-                  isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
-                }`}
-              >
-                <div className="overflow-hidden">
+              {/* Expandable content with Radix Collapsible animation */}
+              <Collapsible open={isExpanded}>
+                <CollapsibleContent>
                   <div className="px-4 pb-4">
                     {renderStepContent(step.id)}
                   </div>
-                </div>
-              </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           )
         })}

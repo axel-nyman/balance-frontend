@@ -53,7 +53,8 @@
       "Bash(docker build:*)",
       "Bash(docker images:*)",
       "Bash(npx yaml-lint:*)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []

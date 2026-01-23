@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.3.0...balance-frontend-v1.4.0) (2026-01-23)
+
+
+### Features
+
+* **accounts:** add inline account creation from dropdowns ([6aaf3dd](https://github.com/axel-nyman/balance-frontend/commit/6aaf3ddbce8e2ff8d9460629c4423dfa4ab7c66b))
+* **budgets:** disable new budget button when unlocked budget exists ([f3913b0](https://github.com/axel-nyman/balance-frontend/commit/f3913b051da0090d199b3d1d418f2e0573896404))
+* **claude:** add design-engineer skill for interface design guidance ([e68a514](https://github.com/axel-nyman/balance-frontend/commit/e68a514f960f28ca4f826138bf825665beee8822))
+* **ui:** add smooth animations to collapsible sections ([01276af](https://github.com/axel-nyman/balance-frontend/commit/01276af4a40e368fc46cc88729f21befbe9e4d18))
+* **wizard:** add balance display to expenses step ([0c5418d](https://github.com/axel-nyman/balance-frontend/commit/0c5418d70abaa02270bb756132b905f389534732))
+* **wizard:** hide lock checkbox when budget is unbalanced ([961251d](https://github.com/axel-nyman/balance-frontend/commit/961251d9742837b316062f63ff8509f39deeb4c2))
+
+
+### Bug Fixes
+
+* **wizard:** fix horizontal stacking of copy items from last budget ([f747dc0](https://github.com/axel-nyman/balance-frontend/commit/f747dc0a40ede1d3347fb8e1e290753f004eb7f7))
+
 ## [1.3.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.2.0...balance-frontend-v1.3.0) (2026-01-14)
 
 

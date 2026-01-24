@@ -57,41 +57,89 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Semantic budget colors */
+  --color-income: var(--income);
+  --color-income-muted: var(--income-muted);
+  --color-expense: var(--expense);
+  --color-expense-muted: var(--expense-muted);
+  --color-savings: var(--savings);
+  --color-savings-muted: var(--savings-muted);
+  --color-balanced: var(--balanced);
+  --color-balanced-muted: var(--balanced-muted);
+
+  /* Shadow scale */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /*
+   * Unified Cream Palette
+   * All surfaces share hue 85 (warm beige) with whisper-quiet lightness shifts.
+   * Canvas is slightly deeper to give cards room to lift without going white.
+   */
+
+  /* Surface elevation scale (all hue 85, chroma 0.015) */
+  --background: oklch(0.965 0.015 85);           /* Cream canvas */
+  --foreground: oklch(0.25 0.015 60);            /* Warm near-black */
+  --card: oklch(0.980 0.012 85);                 /* Lifted cream - subtle step up */
+  --card-foreground: oklch(0.25 0.015 60);
+  --popover: oklch(0.985 0.010 85);              /* Floating cream - another whisper up */
+  --popover-foreground: oklch(0.25 0.015 60);
+  --muted: oklch(0.950 0.018 85);                /* Recessed cream - inset areas */
+  --muted-foreground: oklch(0.45 0.015 60);      /* Warm medium gray */
+  --accent: oklch(0.955 0.016 85);               /* Hover states - between muted and canvas */
+  --accent-foreground: oklch(0.25 0.015 60);
+  --secondary: oklch(0.960 0.015 85);            /* Secondary surfaces */
+  --secondary-foreground: oklch(0.30 0.015 60);
+
+  /* Interactive elements */
+  --primary: oklch(0.25 0.015 60);               /* Warm dark primary */
+  --primary-foreground: oklch(0.98 0.010 85);
+  --destructive: oklch(0.55 0.18 25);            /* Warmed red */
+
+  /* Borders - subtle warm separation */
+  --border: oklch(0.92 0.012 85);                /* Default border */
+  --input: oklch(0.94 0.010 85);                 /* Input borders - slightly lighter */
+  --ring: oklch(0.60 0.015 60);                  /* Warm focus ring */
+
+  /* Semantic colors - budget types */
+  --income: oklch(0.50 0.14 145);                /* Green - money in */
+  --income-muted: oklch(0.94 0.04 145);
+  --expense: oklch(0.50 0.16 25);                /* Red - money out */
+  --expense-muted: oklch(0.94 0.04 25);
+  --savings: oklch(0.50 0.14 250);               /* Blue - money aside */
+  --savings-muted: oklch(0.94 0.04 250);
+  --balanced: oklch(0.50 0.14 145);              /* Green - balanced */
+  --balanced-muted: oklch(0.94 0.04 145);
+
+  /* Charts - warmed to match palette */
+  --chart-1: oklch(0.60 0.18 45);
+  --chart-2: oklch(0.55 0.12 180);
+  --chart-3: oklch(0.45 0.08 220);
+  --chart-4: oklch(0.75 0.15 85);
+  --chart-5: oklch(0.70 0.15 70);
+
+  /* Sidebar - matches canvas */
+  --sidebar: oklch(0.965 0.015 85);
+  --sidebar-foreground: oklch(0.25 0.015 60);
+  --sidebar-primary: oklch(0.25 0.015 60);
+  --sidebar-primary-foreground: oklch(0.98 0.010 85);
+  --sidebar-accent: oklch(0.955 0.016 85);
+  --sidebar-accent-foreground: oklch(0.25 0.015 60);
+  --sidebar-border: oklch(0.92 0.012 85);
+  --sidebar-ring: oklch(0.60 0.015 60);
+
+  /* Shadows - warm-tinted for cohesion */
+  --shadow-xs: 0 1px 2px oklch(0.25 0.02 60 / 0.05);
+  --shadow-sm: 0 1px 3px oklch(0.25 0.02 60 / 0.07), 0 1px 2px oklch(0.25 0.02 60 / 0.04);
+  --shadow-md: 0 4px 6px oklch(0.25 0.02 60 / 0.06), 0 2px 4px oklch(0.25 0.02 60 / 0.04);
+  --shadow-lg: 0 10px 15px oklch(0.25 0.02 60 / 0.08), 0 4px 6px oklch(0.25 0.02 60 / 0.04);
 }
 
 .dark {

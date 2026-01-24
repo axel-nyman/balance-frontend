@@ -60,24 +60,24 @@ describe('SectionHeader', () => {
   it('shows checkmark for complete status', () => {
     const { container } = render(<SectionHeader {...defaultProps} status="complete" />)
 
-    // Check for green background on status indicator
-    const statusIndicator = container.querySelector('.bg-green-100')
+    // Check for income-muted background on status indicator
+    const statusIndicator = container.querySelector('.bg-income-muted')
     expect(statusIndicator).toBeInTheDocument()
   })
 
   it('shows blue indicator for current status', () => {
     const { container } = render(<SectionHeader {...defaultProps} status="current" />)
 
-    // Check for blue background on status indicator
-    const statusIndicator = container.querySelector('.bg-blue-100')
+    // Check for savings-muted background on status indicator
+    const statusIndicator = container.querySelector('.bg-savings-muted')
     expect(statusIndicator).toBeInTheDocument()
   })
 
-  it('shows gray indicator for upcoming status', () => {
+  it('shows muted indicator for upcoming status', () => {
     const { container } = render(<SectionHeader {...defaultProps} status="upcoming" />)
 
-    // Check for gray background on status indicator
-    const statusIndicator = container.querySelector('.bg-gray-100')
+    // Check for muted background on status indicator
+    const statusIndicator = container.querySelector('.bg-muted')
     expect(statusIndicator).toBeInTheDocument()
   })
 })

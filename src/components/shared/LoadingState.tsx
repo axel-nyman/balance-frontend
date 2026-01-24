@@ -12,7 +12,7 @@ export function LoadingState({ rows = 3, variant = 'table' }: LoadingStateProps)
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="p-4 bg-white rounded-lg border border-gray-200">
+          <div key={i} className="p-4 bg-card rounded-2xl shadow-sm">
             <Skeleton className="h-5 w-24 mb-2" />
             <Skeleton className="h-4 w-16 mb-4" />
             <Skeleton className="h-4 w-32" />
@@ -30,7 +30,7 @@ export function LoadingState({ rows = 3, variant = 'table' }: LoadingStateProps)
         <Skeleton className="h-8 w-48" />
         <div className="space-y-4">
           {Array.from({ length: rows }).map((_, i) => (
-            <div key={i} className="p-4 bg-white rounded-lg border border-gray-200">
+            <div key={i} className="p-4 bg-card rounded-2xl shadow-sm">
               <Skeleton className="h-5 w-32 mb-3" />
               <Skeleton className="h-4 w-full" />
               <Skeleton className="h-4 w-3/4 mt-2" />
@@ -43,12 +43,12 @@ export function LoadingState({ rows = 3, variant = 'table' }: LoadingStateProps)
 
   // Default: table variant
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
-      <div className="p-4 border-b border-gray-200">
+    <div className="bg-card rounded-2xl shadow-sm">
+      <div className="p-4 border-b border-border">
         <Skeleton className="h-5 w-32" />
       </div>
       {Array.from({ length: rows }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 p-4 border-b border-gray-100 last:border-b-0">
+        <div key={i} className="flex items-center gap-4 p-4 border-b border-border last:border-b-0">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-4 w-32" />
           <Skeleton className="h-4 w-20 ml-auto" />

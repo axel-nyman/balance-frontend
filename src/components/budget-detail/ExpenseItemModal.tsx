@@ -111,7 +111,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
               autoFocus
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -125,7 +125,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
               placeholder="0.00"
             />
             {errors.amount && (
-              <p className="text-sm text-red-600">{errors.amount.message}</p>
+              <p className="text-sm text-destructive">{errors.amount.message}</p>
             )}
           </div>
 
@@ -137,7 +137,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
               placeholder="Select account"
             />
             {errors.bankAccountId && (
-              <p className="text-sm text-red-600">{errors.bankAccountId.message}</p>
+              <p className="text-sm text-destructive">{errors.bankAccountId.message}</p>
             )}
           </div>
 
@@ -153,7 +153,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
           </div>
 
           {mutation.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {mutation.error.message}
             </p>
           )}

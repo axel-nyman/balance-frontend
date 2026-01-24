@@ -12,7 +12,7 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
     return (
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-yellow-500" aria-hidden="true" />
-        <span className="text-sm text-gray-600">Never used</span>
+        <span className="text-sm text-muted-foreground">Never used</span>
       </div>
     )
   }
@@ -21,8 +21,8 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
   if (isDue) {
     return (
       <div className="flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-red-500" aria-hidden="true" />
-        <span className="text-sm font-medium text-red-600">Due now</span>
+        <span className="w-2 h-2 rounded-full bg-expense" aria-hidden="true" />
+        <span className="text-sm font-medium text-expense">Due now</span>
       </div>
     )
   }
@@ -35,8 +35,8 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
 
     return (
       <div className="flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-green-500" aria-hidden="true" />
-        <span className="text-sm text-gray-600">{formatMonthYear(month, year)}</span>
+        <span className="w-2 h-2 rounded-full bg-income" aria-hidden="true" />
+        <span className="text-sm text-muted-foreground">{formatMonthYear(month, year)}</span>
       </div>
     )
   }

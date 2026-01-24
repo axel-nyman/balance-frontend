@@ -63,7 +63,7 @@ export function AccountsList({
   return (
     <>
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-lg border border-gray-200">
+      <div className="hidden md:block bg-card rounded-2xl shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -101,7 +101,7 @@ export function AccountsList({
       </div>
 
       {/* Helper text */}
-      <p className="text-sm text-gray-500 mt-4 text-center">
+      <p className="text-sm text-muted-foreground mt-4 text-center">
         Click any account to view balance history
       </p>
     </>

@@ -74,6 +74,6 @@ describe('ConfirmDialog', () => {
     render(<ConfirmDialog {...defaultProps} variant="destructive" />)
 
     const confirmButton = screen.getByRole('button', { name: 'Confirm' })
-    expect(confirmButton).toHaveClass('bg-red-600')
+    expect(confirmButton).toHaveClass('bg-destructive')
   })
 })

@@ -54,7 +54,7 @@ export function AccountSelect({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value={NEW_ACCOUNT_VALUE}>
-            <span className="flex items-center gap-2 text-blue-600">
+            <span className="flex items-center gap-2 text-primary">
               <Plus className="w-4 h-4" />
               New Account
             </span>

@@ -19,7 +19,7 @@ const INTERVAL_LABELS: Record<string, string> = {
 
 export function RecurringExpenseRow({ expense, onEdit, onDelete }: RecurringExpenseRowProps) {
   return (
-    <tr className="hover:bg-gray-50">
+    <tr className="hover:bg-accent">
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <DueStatusIndicator
@@ -27,13 +27,13 @@ export function RecurringExpenseRow({ expense, onEdit, onDelete }: RecurringExpe
             nextDueDate={expense.nextDueDate}
             lastUsedDate={expense.lastUsedDate}
           />
-          <span className="font-medium text-gray-900">{expense.name}</span>
+          <span className="font-medium text-foreground">{expense.name}</span>
         </div>
       </td>
-      <td className="px-4 py-3 text-right font-medium text-gray-900">
+      <td className="px-4 py-3 text-right font-medium text-foreground">
         {formatCurrency(expense.amount)}
       </td>
-      <td className="px-4 py-3 text-gray-500">
+      <td className="px-4 py-3 text-muted-foreground">
         {INTERVAL_LABELS[expense.recurrenceInterval]}
       </td>
       <td className="px-4 py-3 text-right">

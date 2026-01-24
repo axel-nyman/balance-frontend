@@ -81,7 +81,7 @@ export function CreateAccountModal({ open, onOpenChange, onCreated }: CreateAcco
               autoFocus
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -104,12 +104,12 @@ export function CreateAccountModal({ open, onOpenChange, onCreated }: CreateAcco
               placeholder="0.00"
             />
             {errors.initialBalance && (
-              <p className="text-sm text-red-600">{errors.initialBalance.message}</p>
+              <p className="text-sm text-destructive">{errors.initialBalance.message}</p>
             )}
           </div>
 
           {createAccount.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {createAccount.error.message}
             </p>
           )}

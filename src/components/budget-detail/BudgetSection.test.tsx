@@ -49,7 +49,7 @@ describe('BudgetSection', () => {
     )
 
     expect(screen.getByText(/55 000,00 kr/)).toBeInTheDocument()
-    expect(container.querySelector('.text-green-600')).toBeInTheDocument()
+    expect(container.querySelector('.text-income')).toBeInTheDocument()
   })
 
   it('renders all items', () => {

@@ -44,13 +44,13 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
 
       <div className="flex-1 min-w-0">
         <p className={cn(
-          'font-medium text-gray-900',
-          isCompleted && 'line-through text-gray-500'
+          'font-medium text-foreground',
+          isCompleted && 'line-through text-muted-foreground'
         )}>
           {item.name}
         </p>
         {isTransfer && item.toAccount && (
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             To: {item.toAccount.name}
           </p>
         )}
@@ -65,8 +65,8 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
         </Badge>
 
         <span className={cn(
-          'font-medium text-gray-900 tabular-nums',
-          isCompleted && 'line-through text-gray-500'
+          'font-medium text-foreground tabular-nums',
+          isCompleted && 'line-through text-muted-foreground'
         )}>
           {formatCurrency(item.amount)}
         </span>
@@ -78,7 +78,7 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
             onClick={onUpdateBalance}
             title="Update account balance"
           >
-            <Wallet className="w-4 h-4 text-gray-500" />
+            <Wallet className="w-4 h-4 text-muted-foreground" />
           </Button>
         )}
       </div>

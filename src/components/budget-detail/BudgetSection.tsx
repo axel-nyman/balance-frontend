@@ -42,24 +42,24 @@ export function BudgetSection({
   const [isOpen, setIsOpen] = useState(true)
 
   const colorClasses = {
-    green: 'text-green-600',
-    red: 'text-red-600',
-    blue: 'text-blue-600',
+    green: 'text-income',
+    red: 'text-expense',
+    blue: 'text-savings',
   }
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="border rounded-lg">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="bg-card rounded-2xl shadow-sm">
       <CollapsibleTrigger asChild>
-        <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50">
+        <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accent rounded-t-2xl">
           <div className="flex items-center gap-2">
             <ChevronDown
               className={cn(
-                'w-4 h-4 text-gray-500 transition-transform duration-200',
+                'w-4 h-4 text-muted-foreground transition-transform duration-200',
                 !isOpen && '-rotate-90'
               )}
             />
-            <span className="font-medium text-gray-900">{title}</span>
-            <span className="text-sm text-gray-500">({items.length})</span>
+            <span className="font-medium text-foreground">{title}</span>
+            <span className="text-sm text-muted-foreground">({items.length})</span>
           </div>
           <span className={cn('font-semibold', colorClasses[totalColor])}>
             {formatCurrency(total)}
@@ -67,35 +67,35 @@ export function BudgetSection({
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="border-t">
+        <div className="border-t border-border">
           {items.length === 0 ? (
             isEditable && onAdd ? (
               <button
                 onClick={onAdd}
-                className="flex flex-col items-center justify-center w-full py-8 text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors"
+                className="flex flex-col items-center justify-center w-full py-8 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors rounded-b-2xl"
               >
                 <Plus className="w-6 h-6 mb-2" />
                 <span className="text-sm font-medium">Add {title.toLowerCase()}</span>
               </button>
             ) : (
-              <p className="p-4 text-center text-gray-500">{emptyMessage}</p>
+              <p className="p-4 text-center text-muted-foreground">{emptyMessage}</p>
             )
           ) : (
             <>
-              <ul className="divide-y">
+              <ul className="divide-y divide-border">
                 {items.map((item) => (
                   <li
                     key={item.id}
-                    className="flex items-center justify-between px-4 py-3 hover:bg-gray-50"
+                    className="flex items-center justify-between px-4 py-3 hover:bg-accent"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{item.label}</p>
+                      <p className="font-medium text-foreground truncate">{item.label}</p>
                       {item.sublabel && (
-                        <p className="text-sm text-gray-500 truncate">{item.sublabel}</p>
+                        <p className="text-sm text-muted-foreground truncate">{item.sublabel}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-2 ml-4">
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-foreground">
                         {formatCurrency(item.amount)}
                       </span>
                       {isEditable && (
@@ -106,7 +106,7 @@ export function BudgetSection({
                             onClick={() => onEdit?.(item.id)}
                             aria-label={`Edit ${item.label}`}
                           >
-                            <Pencil className="w-4 h-4 text-gray-400" />
+                            <Pencil className="w-4 h-4 text-muted-foreground" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -114,7 +114,7 @@ export function BudgetSection({
                             onClick={() => onDelete?.(item.id)}
                             aria-label={`Delete ${item.label}`}
                           >
-                            <Trash2 className="w-4 h-4 text-gray-400" />
+                            <Trash2 className="w-4 h-4 text-muted-foreground" />
                           </Button>
                         </>
                       )}
@@ -125,7 +125,7 @@ export function BudgetSection({
               {isEditable && onAdd && (
                 <button
                   onClick={onAdd}
-                  className="flex items-center gap-2 w-full px-4 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-700 border-t transition-colors"
+                  className="flex items-center gap-2 w-full px-4 py-3 text-muted-foreground hover:bg-accent hover:text-foreground border-t border-border transition-colors rounded-b-2xl"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="text-sm">Add {title.toLowerCase()}</span>

@@ -23,10 +23,10 @@ export function AccountsSummary({ totalBalance, accountCount, isLoading }: Accou
   return (
     <Card>
       <CardContent className="p-4">
-        <p className="text-sm text-gray-500 mb-1">
+        <p className="text-sm text-muted-foreground mb-1">
           Total Balance ({accountCount} {accountCount === 1 ? 'account' : 'accounts'})
         </p>
-        <p className="text-2xl font-semibold text-gray-900">
+        <p className="text-2xl font-semibold text-foreground">
           {formatCurrency(totalBalance)}
         </p>
       </CardContent>

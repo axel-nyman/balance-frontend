@@ -95,7 +95,7 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
               autoFocus
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -109,7 +109,7 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
               placeholder="0.00"
             />
             {errors.amount && (
-              <p className="text-sm text-red-600">{errors.amount.message}</p>
+              <p className="text-sm text-destructive">{errors.amount.message}</p>
             )}
           </div>
 
@@ -131,7 +131,7 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
               </SelectContent>
             </Select>
             {errors.recurrenceInterval && (
-              <p className="text-sm text-red-600">{errors.recurrenceInterval.message}</p>
+              <p className="text-sm text-destructive">{errors.recurrenceInterval.message}</p>
             )}
           </div>
 
@@ -145,12 +145,12 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
               Requires manual payment
             </Label>
           </div>
-          <p className="text-xs text-gray-500 -mt-2">
+          <p className="text-xs text-muted-foreground -mt-2">
             If checked, this will create a payment todo item when the budget is locked.
           </p>
 
           {createExpense.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {createExpense.error.message}
             </p>
           )}

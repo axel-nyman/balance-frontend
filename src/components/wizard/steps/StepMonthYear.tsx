@@ -118,7 +118,7 @@ export function StepMonthYear() {
 
   return (
     <div className="space-y-4 pt-2">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-muted-foreground">
         Select the month and year for your new budget.
       </p>
 

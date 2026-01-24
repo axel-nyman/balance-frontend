@@ -25,7 +25,7 @@ export function WizardNavigation({
   const isLastStep = currentStep === TOTAL_STEPS
 
   return (
-    <div className="flex items-center justify-between pt-6 mt-6 border-t border-gray-100">
+    <div className="flex items-center justify-between pt-6 mt-6 border-t border-border">
       <div>
         {!isFirstStep && (
           <Button
@@ -33,7 +33,7 @@ export function WizardNavigation({
             variant="ghost"
             onClick={onBack}
             disabled={isSubmitting}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-muted-foreground hover:text-foreground"
           >
             <ChevronLeft className="w-4 h-4 mr-1" />
             Back

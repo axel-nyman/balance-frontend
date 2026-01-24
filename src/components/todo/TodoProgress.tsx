@@ -21,15 +21,15 @@ export function TodoProgress({ items }: TodoProgressProps) {
           <div className="flex items-center gap-2">
             <CheckCircle2 className={cn(
               'w-5 h-5',
-              isComplete ? 'text-green-600' : 'text-gray-400'
+              isComplete ? 'text-income' : 'text-muted-foreground'
             )} />
-            <span className="font-medium text-gray-900">
+            <span className="font-medium text-foreground">
               {completed} of {total} completed
             </span>
           </div>
           <span className={cn(
             'text-sm font-semibold',
-            isComplete ? 'text-green-600' : 'text-gray-600'
+            isComplete ? 'text-income' : 'text-muted-foreground'
           )}>
             {percentage}%
           </span>
@@ -38,7 +38,7 @@ export function TodoProgress({ items }: TodoProgressProps) {
           value={percentage}
           className={cn(
             'h-2',
-            isComplete && '[&>[data-slot=progress-indicator]]:bg-green-600'
+            isComplete && '[&>[data-slot=progress-indicator]]:bg-income'
           )}
         />
       </CardContent>

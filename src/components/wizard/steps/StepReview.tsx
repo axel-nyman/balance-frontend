@@ -36,7 +36,7 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           Review your budget for {state.month && state.year && formatMonthYear(state.month, state.year)} before saving.
         </p>
       </div>
@@ -53,9 +53,9 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
                 )}
               />
               <span className="font-medium">Income</span>
-              <span className="text-gray-500">({state.incomeItems.length} items)</span>
+              <span className="text-muted-foreground">({state.incomeItems.length} items)</span>
             </div>
-            <span className="font-semibold text-green-600">{formatCurrency(incomeTotal)}</span>
+            <span className="font-semibold text-income">{formatCurrency(incomeTotal)}</span>
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="px-4 pb-4">
@@ -63,8 +63,8 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
             {state.incomeItems.map((item) => (
               <div key={item.id} className="flex justify-between">
                 <div className="flex flex-col">
-                  <span className="text-gray-900">{item.name}</span>
-                  <span className="text-xs text-gray-500">{item.bankAccountName}</span>
+                  <span className="text-foreground">{item.name}</span>
+                  <span className="text-xs text-muted-foreground">{item.bankAccountName}</span>
                 </div>
                 <span>{formatCurrency(item.amount)}</span>
               </div>
@@ -85,21 +85,21 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
                 )}
               />
               <span className="font-medium">Expenses</span>
-              <span className="text-gray-500">({state.expenseItems.length} items)</span>
+              <span className="text-muted-foreground">({state.expenseItems.length} items)</span>
             </div>
-            <span className="font-semibold text-red-600">{formatCurrency(expensesTotal)}</span>
+            <span className="font-semibold text-expense">{formatCurrency(expensesTotal)}</span>
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="px-4 pb-4">
           <div className="space-y-2 text-sm">
             {state.expenseItems.length === 0 ? (
-              <p className="text-gray-500">No expenses added</p>
+              <p className="text-muted-foreground">No expenses added</p>
             ) : (
               state.expenseItems.map((item) => (
                 <div key={item.id} className="flex justify-between">
                   <div className="flex flex-col">
-                    <span className="text-gray-900">{item.name}</span>
-                    <span className="text-xs text-gray-500">{item.bankAccountName}</span>
+                    <span className="text-foreground">{item.name}</span>
+                    <span className="text-xs text-muted-foreground">{item.bankAccountName}</span>
                   </div>
                   <span>{formatCurrency(item.amount)}</span>
                 </div>
@@ -121,21 +121,21 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
                 )}
               />
               <span className="font-medium">Savings</span>
-              <span className="text-gray-500">({state.savingsItems.length} items)</span>
+              <span className="text-muted-foreground">({state.savingsItems.length} items)</span>
             </div>
-            <span className="font-semibold text-blue-600">{formatCurrency(savingsTotal)}</span>
+            <span className="font-semibold text-savings">{formatCurrency(savingsTotal)}</span>
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="px-4 pb-4">
           <div className="space-y-2 text-sm">
             {state.savingsItems.length === 0 ? (
-              <p className="text-gray-500">No savings planned</p>
+              <p className="text-muted-foreground">No savings planned</p>
             ) : (
               state.savingsItems.map((item) => (
                 <div key={item.id} className="flex justify-between">
                   <div className="flex flex-col">
-                    <span className="text-gray-900">{item.name}</span>
-                    <span className="text-xs text-gray-500">{item.bankAccountName}</span>
+                    <span className="text-foreground">{item.name}</span>
+                    <span className="text-xs text-muted-foreground">{item.bankAccountName}</span>
                   </div>
                   <span>{formatCurrency(item.amount)}</span>
                 </div>
@@ -146,15 +146,15 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
       </Collapsible>
 
       {/* Final Balance */}
-      <div className="p-4 bg-gray-50 rounded-lg">
+      <div className="p-4 bg-muted rounded-xl">
         <div className="flex justify-between items-center">
-          <span className="font-medium text-gray-700">Remaining Balance</span>
+          <span className="font-medium text-foreground/80">Remaining Balance</span>
           <span className={cn('text-xl font-bold', balanceInfo.colorClass)}>
             {balanceInfo.text}
           </span>
         </div>
         {balance < 0 && (
-          <p className="text-sm text-red-600 mt-2">
+          <p className="text-sm text-destructive mt-2">
             Your expenses and savings exceed your income. Consider adjusting your budget.
           </p>
         )}
@@ -178,7 +178,7 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
               Lock budget after saving
             </Label>
           </div>
-          <p className="text-xs text-gray-500 -mt-4">
+          <p className="text-xs text-muted-foreground -mt-4">
             Locking applies savings to account balances and creates a payment todo list.
             You can always lock later from the budget detail page.
           </p>

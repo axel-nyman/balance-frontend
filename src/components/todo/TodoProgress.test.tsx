@@ -78,6 +78,6 @@ describe('TodoProgress', () => {
 
     const { container } = render(<TodoProgress items={items} />)
 
-    expect(container.querySelector('.text-green-600')).toBeInTheDocument()
+    expect(container.querySelector('.text-income')).toBeInTheDocument()
   })
 })

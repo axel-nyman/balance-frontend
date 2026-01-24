@@ -41,7 +41,7 @@ describe('BudgetSummary', () => {
       />
     )
 
-    const balanceElements = container.querySelectorAll('.text-green-600')
+    const balanceElements = container.querySelectorAll('.text-income')
     expect(balanceElements.length).toBeGreaterThanOrEqual(2) // income and balance
   })
 
@@ -55,7 +55,7 @@ describe('BudgetSummary', () => {
     )
 
     // Balance = -10000, should be red
-    const redElements = container.querySelectorAll('.text-red-600')
+    const redElements = container.querySelectorAll('.text-expense')
     expect(redElements.length).toBeGreaterThanOrEqual(2) // expenses and balance
   })
 })

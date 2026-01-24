@@ -10,20 +10,20 @@ export function ProgressHeader({ percentage, currentStepTitle }: ProgressHeaderP
     <div className="mb-8">
       {/* Progress bar container */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-medium text-gray-700">
+        <span className="text-sm font-medium text-foreground">
           {currentStepTitle}
         </span>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-muted-foreground">
           {percentage}% complete
         </span>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
         <div
           className={cn(
             'h-full rounded-full transition-all duration-500 ease-out',
-            'bg-gradient-to-r from-blue-500 to-blue-600'
+            'bg-gradient-to-r from-primary to-primary'
           )}
           style={{ width: `${percentage}%` }}
         />

@@ -48,7 +48,7 @@ describe('DueStatusIndicator', () => {
       />
     )
 
-    expect(container.querySelector('.bg-red-500')).toBeInTheDocument()
+    expect(container.querySelector('.bg-expense')).toBeInTheDocument()
   })
 
   it('shows next due date for not-due items', () => {
@@ -73,6 +73,6 @@ describe('DueStatusIndicator', () => {
       />
     )
 
-    expect(container.querySelector('.bg-green-500')).toBeInTheDocument()
+    expect(container.querySelector('.bg-income')).toBeInTheDocument()
   })
 })

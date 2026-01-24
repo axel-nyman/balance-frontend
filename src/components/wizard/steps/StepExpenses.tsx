@@ -184,7 +184,7 @@ export function StepExpenses() {
           <div
             className={cn(
               'flex items-center justify-between p-3 rounded-lg border transition-colors duration-150',
-              isCopying ? 'bg-green-50 border-green-200' : 'border-gray-200 hover:border-gray-300'
+              isCopying ? 'bg-income-muted border-income' : 'border-border hover:border-border'
             )}
           >
             <div className="flex-1 min-w-0">
@@ -201,7 +201,7 @@ export function StepExpenses() {
                   </Badge>
                 )}
               </div>
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-muted-foreground">
                 {formatCurrency(recurring.amount)}
               </span>
             </div>
@@ -216,13 +216,13 @@ export function StepExpenses() {
               <div className="relative w-4 h-4">
                 <Plus
                   className={cn(
-                    'w-4 h-4 text-gray-400 absolute inset-0 transition-all duration-100',
+                    'w-4 h-4 text-muted-foreground absolute inset-0 transition-all duration-100',
                     isCopying && 'opacity-0 rotate-90 scale-0'
                   )}
                 />
                 <Check
                   className={cn(
-                    'w-4 h-4 text-green-600 absolute inset-0',
+                    'w-4 h-4 text-income absolute inset-0',
                     isCopying ? 'animate-pop-check' : 'opacity-0 scale-0'
                   )}
                 />
@@ -238,27 +238,27 @@ export function StepExpenses() {
     <div className="space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Expenses</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-foreground mb-1">Expenses</h2>
+          <p className="text-sm text-muted-foreground">
             Add your planned expenses for this month.
           </p>
         </div>
       </div>
 
       {/* Running balance display */}
-      <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
+      <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-xl">
         <div>
-          <p className="text-xs text-gray-500 uppercase">Income</p>
-          <p className="text-lg font-semibold text-green-600">
+          <p className="text-xs text-muted-foreground uppercase">Income</p>
+          <p className="text-lg font-semibold text-income">
             {formatCurrency(totalIncome)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase">Remaining</p>
+          <p className="text-xs text-muted-foreground uppercase">Remaining</p>
           <p
             className={cn(
               'text-lg font-semibold',
-              remainingBalance >= 0 ? 'text-green-600' : 'text-red-600'
+              remainingBalance >= 0 ? 'text-income' : 'text-expense'
             )}
           >
             {formatCurrency(remainingBalance)}
@@ -295,7 +295,7 @@ export function StepExpenses() {
               <CardContent className="py-3 pt-0 space-y-4">
                 {dueExpenses.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-medium text-red-600 uppercase tracking-wide mb-2">
+                    <h4 className="text-xs font-medium text-expense uppercase tracking-wide mb-2">
                       Due this month
                     </h4>
                     <div className="space-y-2">
@@ -306,7 +306,7 @@ export function StepExpenses() {
                 {otherExpenses.length > 0 && (
                   <div>
                     {dueExpenses.length > 0 && (
-                      <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
+                      <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
                         Other recurring
                       </h4>
                     )}
@@ -325,7 +325,7 @@ export function StepExpenses() {
       {recurringExpenses.length > 0 && availableRecurring.length === 0 && (
         <Card className="animate-fade-in-subtle">
           <CardContent className="py-4">
-            <p className="text-sm text-gray-500 text-center">
+            <p className="text-sm text-muted-foreground text-center">
               All recurring expenses have been added.
             </p>
           </CardContent>
@@ -333,7 +333,7 @@ export function StepExpenses() {
       )}
 
       {/* Expenses table */}
-      <div className="border rounded-lg">
+      <div className="bg-card rounded-2xl shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -349,7 +349,7 @@ export function StepExpenses() {
               <TableRow>
                 <TableCell
                   colSpan={5}
-                  className="text-center text-gray-500 py-8"
+                  className="text-center text-muted-foreground py-8"
                 >
                   No expenses yet. Add expenses manually or use quick-add above.
                 </TableCell>
@@ -360,7 +360,7 @@ export function StepExpenses() {
                   key={item.id}
                   className={cn(
                     newlyAddedIds.has(item.id) && 'animate-fade-in-subtle',
-                    item.recurringExpenseId && 'bg-blue-50/50'
+                    item.recurringExpenseId && 'bg-savings-muted/50'
                   )}
                 >
                   <TableCell>
@@ -374,7 +374,7 @@ export function StepExpenses() {
                         className="border-0 shadow-none focus-visible:ring-0 px-0"
                       />
                       {item.recurringExpenseId && (
-                        <Repeat className="w-3 h-3 text-blue-500 flex-shrink-0" />
+                        <Repeat className="w-3 h-3 text-savings flex-shrink-0" />
                       )}
                     </div>
                   </TableCell>
@@ -435,7 +435,7 @@ export function StepExpenses() {
                       onClick={() => handleRemoveItem(item.id)}
                       aria-label="Remove item"
                     >
-                      <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                      <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -448,7 +448,7 @@ export function StepExpenses() {
                 <TableCell colSpan={2} className="font-medium">
                   Total
                 </TableCell>
-                <TableCell className="text-right font-semibold text-red-600">
+                <TableCell className="text-right font-semibold text-expense">
                   {formatCurrency(totalExpenses)}
                 </TableCell>
                 <TableCell colSpan={2}></TableCell>

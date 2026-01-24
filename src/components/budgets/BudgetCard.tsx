@@ -21,12 +21,12 @@ export function BudgetCard({ budget }: BudgetCardProps) {
 
   return (
     <Card
-      className="cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all"
+      className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleClick}
     >
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="font-semibold text-lg text-gray-900">
+          <h3 className="font-semibold text-lg text-foreground">
             {formatMonthYear(budget.month, budget.year)}
           </h3>
           <Badge
@@ -49,27 +49,27 @@ export function BudgetCard({ budget }: BudgetCardProps) {
 
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Income</span>
-            <span className="font-medium text-green-600">
+            <span className="text-muted-foreground">Income</span>
+            <span className="font-medium text-income">
               {formatCurrency(budget.totals.income)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Expenses</span>
-            <span className="font-medium text-red-600">
+            <span className="text-muted-foreground">Expenses</span>
+            <span className="font-medium text-expense">
               {formatCurrency(budget.totals.expenses)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Savings</span>
-            <span className="font-medium text-blue-600">
+            <span className="text-muted-foreground">Savings</span>
+            <span className="font-medium text-savings">
               {formatCurrency(budget.totals.savings)}
             </span>
           </div>
           <hr className="my-2" />
           <div className="flex justify-between">
-            <span className="text-gray-700 font-medium">Balance</span>
-            <span className={`font-semibold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <span className="text-foreground font-medium">Balance</span>
+            <span className={`font-semibold ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
               {formatCurrency(balance)}
             </span>
           </div>

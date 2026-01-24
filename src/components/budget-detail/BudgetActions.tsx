@@ -76,7 +76,7 @@ export function BudgetActions({ budgetId, status }: BudgetActionsProps) {
           <Button
             variant="outline"
             onClick={() => setShowDeleteDialog(true)}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             <Trash2 className="w-4 h-4 mr-2" />
             Delete Budget

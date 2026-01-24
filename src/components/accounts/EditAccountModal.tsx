@@ -78,7 +78,7 @@ export function EditAccountModal({ account, onClose }: EditAccountModalProps) {
               autoFocus
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -91,7 +91,7 @@ export function EditAccountModal({ account, onClose }: EditAccountModalProps) {
           </div>
 
           {updateAccount.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {updateAccount.error.message}
             </p>
           )}

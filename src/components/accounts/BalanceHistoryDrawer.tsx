@@ -21,13 +21,13 @@ interface BalanceHistoryDrawerProps {
 }
 
 function HistoryEntry({ entry }: { entry: BalanceHistoryEntry }) {
-  const changeColor = entry.changeAmount >= 0 ? 'text-green-600' : 'text-red-600'
+  const changeColor = entry.changeAmount >= 0 ? 'text-income' : 'text-expense'
   const changePrefix = entry.changeAmount >= 0 ? '+' : ''
 
   return (
-    <div className="p-4 border-b border-gray-100 last:border-b-0">
+    <div className="p-4 border-b border-border last:border-b-0">
       <div className="flex justify-between items-start mb-1">
-        <span className="text-sm text-gray-500">{formatDate(entry.changeDate)}</span>
+        <span className="text-sm text-muted-foreground">{formatDate(entry.changeDate)}</span>
         <Badge variant={entry.source === 'MANUAL' ? 'secondary' : 'default'}>
           {entry.source}
         </Badge>
@@ -39,10 +39,10 @@ function HistoryEntry({ entry }: { entry: BalanceHistoryEntry }) {
         </span>
       </div>
       {entry.comment && (
-        <p className="text-sm text-gray-500 mt-1">"{entry.comment}"</p>
+        <p className="text-sm text-muted-foreground mt-1">"{entry.comment}"</p>
       )}
       {entry.source === 'AUTOMATIC' && entry.budgetId && (
-        <p className="text-sm text-gray-500 mt-1">From budget</p>
+        <p className="text-sm text-muted-foreground mt-1">From budget</p>
       )}
     </div>
   )
@@ -101,8 +101,8 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
           <SheetTitle>Balance History</SheetTitle>
           {account && (
             <div className="text-left">
-              <p className="font-medium text-gray-900">{account.name}</p>
-              <p className="text-2xl font-semibold text-gray-900">
+              <p className="font-medium text-foreground">{account.name}</p>
+              <p className="text-2xl font-semibold text-foreground">
                 {formatCurrency(account.currentBalance)}
               </p>
             </div>
@@ -116,7 +116,7 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
           Update Balance
         </Button>
 
-        <div className="border rounded-lg bg-white">
+        <div className="rounded-2xl bg-card shadow-sm">
           {isLoading ? (
             <div className="p-4 space-y-4">
               {[1, 2, 3].map((i) => (
@@ -127,7 +127,7 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
               ))}
             </div>
           ) : allEntries.length === 0 ? (
-            <p className="p-4 text-center text-gray-500">No history yet</p>
+            <p className="p-4 text-center text-muted-foreground">No history yet</p>
           ) : (
             <>
               {allEntries.map((entry) => (
@@ -138,13 +138,13 @@ export function BalanceHistoryDrawer({ account, open, onOpenChange }: BalanceHis
               {hasNextPage && (
                 <div ref={sentinelRef} className="p-4 flex justify-center">
                   {isFetchingNextPage && (
-                    <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                    <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                   )}
                 </div>
               )}
 
               {pageInfo && (
-                <p className="text-xs text-center text-gray-400 pb-4">
+                <p className="text-xs text-center text-muted-foreground pb-4">
                   Showing {allEntries.length} of {pageInfo.totalElements} entries
                 </p>
               )}

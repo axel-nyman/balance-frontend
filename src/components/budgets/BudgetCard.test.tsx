@@ -92,7 +92,7 @@ describe('BudgetCard', () => {
     // Find the balance row
     const balanceLabel = screen.getByText('Balance')
     const balanceRow = balanceLabel.closest('div')
-    const balanceValue = balanceRow?.querySelector('.text-green-600')
+    const balanceValue = balanceRow?.querySelector('.text-income')
 
     expect(balanceValue).toBeInTheDocument()
   })
@@ -110,7 +110,7 @@ describe('BudgetCard', () => {
     // Balance would be negative
     const balanceLabel = screen.getByText('Balance')
     const balanceRow = balanceLabel.closest('div')
-    const balanceValue = balanceRow?.querySelector('.text-red-600')
+    const balanceValue = balanceRow?.querySelector('.text-expense')
 
     expect(balanceValue).toBeInTheDocument()
   })

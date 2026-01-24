@@ -161,39 +161,39 @@ export function StepSavings() {
     <div className="space-y-6">
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Savings</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-lg font-semibold text-foreground mb-1">Savings</h2>
+          <p className="text-sm text-muted-foreground">
             Allocate money to your savings accounts.
           </p>
         </div>
       </div>
 
       {/* Running balance display */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-lg">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4 bg-muted rounded-xl">
         <div>
-          <p className="text-xs text-gray-500 uppercase">Income</p>
-          <p className="text-lg font-semibold text-green-600">
+          <p className="text-xs text-muted-foreground uppercase">Income</p>
+          <p className="text-lg font-semibold text-income">
             {formatCurrency(totalIncome)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase">Expenses</p>
-          <p className="text-lg font-semibold text-red-600">
+          <p className="text-xs text-muted-foreground uppercase">Expenses</p>
+          <p className="text-lg font-semibold text-expense">
             {formatCurrency(totalExpenses)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase">Savings</p>
-          <p className="text-lg font-semibold text-blue-600">
+          <p className="text-xs text-muted-foreground uppercase">Savings</p>
+          <p className="text-lg font-semibold text-savings">
             {formatCurrency(totalSavings)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 uppercase">Remaining</p>
+          <p className="text-xs text-muted-foreground uppercase">Remaining</p>
           <p
             className={cn(
               'text-lg font-semibold',
-              remainingBalance >= 0 ? 'text-green-600' : 'text-red-600'
+              remainingBalance >= 0 ? 'text-income' : 'text-expense'
             )}
           >
             {formatCurrency(remainingBalance)}
@@ -222,7 +222,7 @@ export function StepSavings() {
       ) : (
         <>
           {/* Savings table */}
-          <div className="border rounded-lg">
+          <div className="bg-card rounded-2xl shadow-sm">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -238,7 +238,7 @@ export function StepSavings() {
                   <TableRow>
                     <TableCell
                       colSpan={4}
-                      className="text-center text-gray-500 py-8"
+                      className="text-center text-muted-foreground py-8"
                     >
                       No savings planned yet. Savings are optional.
                     </TableCell>
@@ -301,7 +301,7 @@ export function StepSavings() {
                             onClick={() => handleRemoveItem(item.id)}
                             aria-label="Remove item"
                           >
-                            <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500" />
+                            <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -309,7 +309,7 @@ export function StepSavings() {
 
                     {/* Separator row - only show if there are available items */}
                     {validAvailableItems.length > 0 && (
-                      <TableRow className="bg-gray-50 hover:bg-gray-50">
+                      <TableRow className="bg-muted hover:bg-muted">
                         <TableCell colSpan={4} className="p-0">
                           <div
                             className={cn(
@@ -320,7 +320,7 @@ export function StepSavings() {
                             )}
                           >
                             <div className="overflow-hidden min-h-0">
-                              <div className="py-2 px-4 text-xs font-medium text-gray-500 uppercase tracking-wide">
+                              <div className="py-2 px-4 text-xs font-medium text-muted-foreground uppercase tracking-wide">
                                 From last budget
                               </div>
                             </div>
@@ -346,18 +346,18 @@ export function StepSavings() {
                               <div className="overflow-hidden min-h-0">
                                 <div
                                   className={cn(
-                                    'flex items-center px-4 py-3 border-b border-gray-100 transition-colors duration-150',
-                                    isCopying && 'bg-green-50'
+                                    'flex items-center px-4 py-3 border-b border-border transition-colors duration-150',
+                                    isCopying && 'bg-income-muted'
                                   )}
                                 >
                                   <div className="flex-1 min-w-0 grid grid-cols-[35%_35%_1fr_50px] items-center gap-0">
-                                    <span className="text-gray-400">
+                                    <span className="text-muted-foreground/70">
                                       {item.name}
                                     </span>
-                                    <span className="text-gray-400">
+                                    <span className="text-muted-foreground/70">
                                       {item.bankAccount.name}
                                     </span>
-                                    <span className="text-right text-gray-400">
+                                    <span className="text-right text-muted-foreground/70">
                                       {formatCurrency(item.amount)}
                                     </span>
                                     <div className="flex justify-center">
@@ -372,14 +372,14 @@ export function StepSavings() {
                                         <div className="relative w-4 h-4">
                                           <Plus
                                             className={cn(
-                                              'w-4 h-4 text-gray-400 absolute inset-0 transition-all duration-100',
+                                              'w-4 h-4 text-muted-foreground absolute inset-0 transition-all duration-100',
                                               isCopying &&
                                                 'opacity-0 rotate-90 scale-0'
                                             )}
                                           />
                                           <Check
                                             className={cn(
-                                              'w-4 h-4 text-green-600 absolute inset-0',
+                                              'w-4 h-4 text-income absolute inset-0',
                                               isCopying
                                                 ? 'animate-pop-check'
                                                 : 'opacity-0 scale-0'
@@ -405,7 +405,7 @@ export function StepSavings() {
                     <TableCell colSpan={2} className="font-medium">
                       Total
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-blue-600">
+                    <TableCell className="text-right font-semibold text-savings">
                       {formatCurrency(totalSavings)}
                     </TableCell>
                     <TableCell></TableCell>

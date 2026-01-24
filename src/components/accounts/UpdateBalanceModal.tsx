@@ -77,8 +77,8 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
           <DialogTitle>Update Balance</DialogTitle>
         </DialogHeader>
 
-        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-500">{account.name}</p>
+        <div className="mb-4 p-3 bg-muted rounded-xl">
+          <p className="text-sm text-muted-foreground">{account.name}</p>
           <p className="text-lg font-medium">
             Current: {formatCurrency(account.currentBalance)}
           </p>
@@ -95,7 +95,7 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
               autoFocus
             />
             {errors.newBalance && (
-              <p className="text-sm text-red-600">{errors.newBalance.message}</p>
+              <p className="text-sm text-destructive">{errors.newBalance.message}</p>
             )}
           </div>
 
@@ -108,7 +108,7 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
               {...register('date')}
             />
             {errors.date && (
-              <p className="text-sm text-red-600">{errors.date.message}</p>
+              <p className="text-sm text-destructive">{errors.date.message}</p>
             )}
           </div>
 
@@ -122,7 +122,7 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
           </div>
 
           {updateBalance.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {updateBalance.error.message}
             </p>
           )}

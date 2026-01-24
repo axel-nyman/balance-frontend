@@ -28,18 +28,18 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 z-50',
+          'fixed top-0 left-0 h-full w-64 bg-sidebar border-r border-sidebar-border z-50',
           'transform transition-transform duration-200 ease-in-out',
           'lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
-          <h1 className="text-xl font-semibold text-gray-900">Balance</h1>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
+          <h1 className="text-xl font-semibold text-foreground">Balance</h1>
           <button
             onClick={onClose}
-            className="p-2 rounded-md hover:bg-gray-100 lg:hidden"
+            className="p-2 rounded-xl hover:bg-sidebar-accent lg:hidden"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
@@ -55,11 +55,11 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
                   'transition-colors duration-150',
                   isActive
-                    ? 'bg-blue-50 text-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-sidebar-accent text-sidebar-primary'
+                    : 'text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground'
                 )
               }
             >

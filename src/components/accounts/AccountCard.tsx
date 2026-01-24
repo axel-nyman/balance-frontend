@@ -24,17 +24,17 @@ export function AccountCard({ account, onEdit, onDelete, onClick }: AccountCardP
 
   return (
     <Card
-      className="cursor-pointer hover:border-gray-300 transition-colors"
+      className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={() => onClick(account)}
     >
       <CardContent className="p-4">
         <div className="flex justify-between items-center">
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-gray-900 truncate">{account.name}</h3>
-            <p className="text-sm text-gray-500 truncate">
+            <h3 className="font-medium text-foreground truncate">{account.name}</h3>
+            <p className="text-sm text-muted-foreground truncate">
               {account.description || 'No description'}
             </p>
-            <p className="text-lg font-semibold text-gray-900 mt-2">
+            <p className="text-lg font-semibold text-foreground mt-2">
               {formatCurrency(account.currentBalance)}
             </p>
           </div>

@@ -171,7 +171,7 @@ export function WizardShell() {
       />
 
       {/* Sections */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl shadow-sm overflow-hidden">
         {WIZARD_STEPS.map((step) => {
           const status = getStepStatus(step.id)
           const isExpanded = step.id === state.currentStep
@@ -179,7 +179,7 @@ export function WizardShell() {
           return (
             <div
               key={step.id}
-              className={step.id < WIZARD_STEPS.length ? 'border-b border-gray-100' : ''}
+              className={step.id < WIZARD_STEPS.length ? 'border-b border-border' : ''}
             >
               <SectionHeader
                 title={step.title}

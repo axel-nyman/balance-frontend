@@ -27,9 +27,9 @@ export function SectionHeader({
       disabled={!isClickable}
       className={cn(
         'w-full flex items-center justify-between p-4 text-left transition-colors',
-        isClickable && 'hover:bg-gray-50 cursor-pointer',
+        isClickable && 'hover:bg-accent cursor-pointer',
         !isClickable && 'cursor-not-allowed opacity-60',
-        status === 'current' && 'bg-blue-50/50'
+        status === 'current' && 'bg-accent'
       )}
     >
       <div className="flex items-center gap-3">
@@ -37,9 +37,9 @@ export function SectionHeader({
         <div
           className={cn(
             'w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0',
-            status === 'complete' && 'bg-green-100 text-green-600',
-            status === 'current' && 'bg-blue-100 text-blue-600',
-            status === 'upcoming' && 'bg-gray-100 text-gray-400'
+            status === 'complete' && 'bg-income-muted text-income',
+            status === 'current' && 'bg-savings-muted text-savings',
+            status === 'upcoming' && 'bg-muted text-muted-foreground'
           )}
         >
           {status === 'complete' ? (
@@ -54,15 +54,15 @@ export function SectionHeader({
           <h3
             className={cn(
               'text-sm font-medium',
-              status === 'current' ? 'text-gray-900' : 'text-gray-700'
+              status === 'current' ? 'text-foreground' : 'text-foreground/80'
             )}
           >
             {title}
           </h3>
           {!isExpanded && summary ? (
-            <p className="text-xs text-gray-500 mt-0.5">{summary}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{summary}</p>
           ) : (
-            <p className="text-xs text-gray-400 mt-0.5">{description}</p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">{description}</p>
           )}
         </div>
       </div>
@@ -71,7 +71,7 @@ export function SectionHeader({
       {isClickable && (
         <ChevronDown
           className={cn(
-            'w-4 h-4 text-gray-400 transition-transform duration-200',
+            'w-4 h-4 text-muted-foreground transition-transform duration-200',
             isExpanded && 'rotate-180'
           )}
         />

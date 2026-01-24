@@ -114,7 +114,7 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
               autoFocus
             />
             {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
+              <p className="text-sm text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -127,7 +127,7 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
               {...register('amount', { valueAsNumber: true })}
             />
             {errors.amount && (
-              <p className="text-sm text-red-600">{errors.amount.message}</p>
+              <p className="text-sm text-destructive">{errors.amount.message}</p>
             )}
           </div>
 
@@ -162,21 +162,21 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
           </div>
 
           {/* Read-only info */}
-          <div className="p-3 bg-gray-50 rounded-lg space-y-1 text-sm">
+          <div className="p-3 bg-muted rounded-xl space-y-1 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-500">Last used:</span>
-              <span className="text-gray-900">
+              <span className="text-muted-foreground">Last used:</span>
+              <span className="text-foreground">
                 {expense?.lastUsedDate ? formatDate(expense.lastUsedDate) : 'Never'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Next due:</span>
-              <span className="text-gray-900">{getNextDueDisplay()}</span>
+              <span className="text-muted-foreground">Next due:</span>
+              <span className="text-foreground">{getNextDueDisplay()}</span>
             </div>
           </div>
 
           {updateExpense.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-destructive">
               {updateExpense.error.message}
             </p>
           )}

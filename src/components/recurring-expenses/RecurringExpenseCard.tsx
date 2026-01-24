@@ -31,8 +31,8 @@ export function RecurringExpenseCard({ expense, onEdit, onDelete }: RecurringExp
                 lastUsedDate={expense.lastUsedDate}
               />
             </div>
-            <h3 className="font-medium text-gray-900 truncate">{expense.name}</h3>
-            <p className="text-sm text-gray-500">
+            <h3 className="font-medium text-foreground truncate">{expense.name}</h3>
+            <p className="text-sm text-muted-foreground">
               {formatCurrency(expense.amount)} • {INTERVAL_LABELS[expense.recurrenceInterval]}
             </p>
           </div>

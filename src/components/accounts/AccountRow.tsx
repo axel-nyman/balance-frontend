@@ -23,12 +23,12 @@ export function AccountRow({ account, onEdit, onDelete, onClick }: AccountRowPro
 
   return (
     <tr
-      className="hover:bg-gray-50 cursor-pointer"
+      className="hover:bg-accent cursor-pointer"
       onClick={() => onClick(account)}
     >
-      <td className="px-4 py-3 font-medium text-gray-900">{account.name}</td>
-      <td className="px-4 py-3 text-gray-500">{account.description || '—'}</td>
-      <td className="px-4 py-3 text-right font-medium text-gray-900">
+      <td className="px-4 py-3 font-medium text-foreground">{account.name}</td>
+      <td className="px-4 py-3 text-muted-foreground">{account.description || '—'}</td>
+      <td className="px-4 py-3 text-right font-medium text-foreground">
         {formatCurrency(account.currentBalance)}
       </td>
       <td className="px-4 py-3 text-right">

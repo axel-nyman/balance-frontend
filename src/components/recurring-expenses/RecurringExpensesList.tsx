@@ -85,7 +85,7 @@ export function RecurringExpensesList({
   return (
     <>
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-lg border border-gray-200">
+      <div className="hidden md:block bg-card rounded-2xl shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>

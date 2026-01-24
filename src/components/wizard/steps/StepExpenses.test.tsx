@@ -412,7 +412,7 @@ describe('StepExpenses', () => {
     await waitFor(() => {
       // Find the remaining balance element - it's the one with the negative sign
       const remainingText = screen.getByText(/−10 000,00 kr/)
-      expect(remainingText).toHaveClass('text-red-600')
+      expect(remainingText).toHaveClass('text-expense')
     })
   })
 })

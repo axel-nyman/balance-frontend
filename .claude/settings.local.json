@@ -54,7 +54,9 @@
       "Bash(docker images:*)",
       "Bash(npx yaml-lint:*)",
       "Bash(npm run typecheck:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(git push:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []

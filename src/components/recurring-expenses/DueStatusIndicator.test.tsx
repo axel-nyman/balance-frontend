@@ -15,7 +15,7 @@ describe('DueStatusIndicator', () => {
     expect(screen.getByText(/never used/i)).toBeInTheDocument()
   })
 
-  it('shows yellow indicator for never used items', () => {
+  it('shows warning indicator for never used items', () => {
     const { container } = render(
       <DueStatusIndicator
         isDue={false}
@@ -24,7 +24,7 @@ describe('DueStatusIndicator', () => {
       />
     )
 
-    expect(container.querySelector('.bg-yellow-500')).toBeInTheDocument()
+    expect(container.querySelector('.bg-warning')).toBeInTheDocument()
   })
 
   it('shows "Due now" for due items', () => {

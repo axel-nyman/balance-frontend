@@ -159,7 +159,7 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
           </p>
         )}
         {balance > 0 && !balanceInfo.isBalanced && (
-          <p className="text-sm text-yellow-600 mt-2">
+          <p className="text-sm text-warning mt-2">
             You have unallocated income. Consider adding savings or expenses.
           </p>
         )}

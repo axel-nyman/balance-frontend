@@ -11,7 +11,7 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
   if (lastUsedDate === null) {
     return (
       <div className="flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-yellow-500" aria-hidden="true" />
+        <span className="w-2 h-2 rounded-full bg-warning" aria-hidden="true" />
         <span className="text-sm text-muted-foreground">Never used</span>
       </div>
     )

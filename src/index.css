@@ -67,6 +67,8 @@
   --color-savings-muted: var(--savings-muted);
   --color-balanced: var(--balanced);
   --color-balanced-muted: var(--balanced-muted);
+  --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
 
   /* Shadow scale */
   --shadow-xs: var(--shadow-xs);
@@ -117,6 +119,8 @@
   --savings-muted: oklch(0.94 0.04 250);
   --balanced: oklch(0.50 0.14 145);              /* Green - balanced */
   --balanced-muted: oklch(0.94 0.04 145);
+  --warning: oklch(0.55 0.14 85);                /* Amber - caution */
+  --warning-muted: oklch(0.94 0.04 85);
 
   /* Charts - warmed to match palette */
   --chart-1: oklch(0.60 0.18 45);

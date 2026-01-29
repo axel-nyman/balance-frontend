@@ -65,7 +65,8 @@
       "WebFetch(domain:docs.klarna.com)",
       "WebFetch(domain:www.figma.com)",
       "WebFetch(domain:www.designstudiouiux.com)",
-      "WebFetch(domain:www.designmonks.co)"
+      "WebFetch(domain:www.designmonks.co)",
+      "Bash(gh repo view:*)"
     ],
     "deny": [],
     "ask": []

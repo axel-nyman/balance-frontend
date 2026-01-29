@@ -99,11 +99,11 @@ export function formatBalance(balance: number): {
   const isBalanced = isBudgetBalanced(balance)
 
   if (isBalanced) {
-    return { text: '0,00 kr', colorClass: 'text-balanced', isBalanced: true }
+    return { text: '0,00 kr', colorClass: 'text-income', isBalanced: true }
   }
 
   if (balance > 0) {
-    return { text: `+${formatCurrency(balance)}`, colorClass: 'text-balanced', isBalanced: false }
+    return { text: `+${formatCurrency(balance)}`, colorClass: 'text-income', isBalanced: false }
   }
 
   return { text: formatCurrency(balance), colorClass: 'text-expense', isBalanced: false }

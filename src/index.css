@@ -29,17 +29,12 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
   --color-input: var(--input);
@@ -49,14 +44,6 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 
   /* Semantic budget colors */
   --color-income: var(--income);
@@ -65,8 +52,6 @@
   --color-expense-muted: var(--expense-muted);
   --color-savings: var(--savings);
   --color-savings-muted: var(--savings-muted);
-  --color-balanced: var(--balanced);
-  --color-balanced-muted: var(--balanced-muted);
   --color-warning: var(--warning);
   --color-warning-muted: var(--warning-muted);
 
@@ -78,89 +63,96 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 1.25rem; /* 20px - organic softness */
 
   /*
-   * Unified Cream Palette
-   * All surfaces share hue 85 (warm beige) with whisper-quiet lightness shifts.
-   * Canvas is slightly deeper to give cards room to lift without going white.
+   * ═══════════════════════════════════════════════════════════
+   * PRIMITIVE PALETTE
+   * The actual color values. Everything else references these.
+   * ═══════════════════════════════════════════════════════════
    */
 
-  /* Surface elevation scale (all hue 85, chroma 0.015) */
-  --background: oklch(0.965 0.015 85);           /* Cream canvas */
-  --foreground: oklch(0.25 0.015 60);            /* Warm near-black */
-  --card: oklch(0.980 0.012 85);                 /* Lifted cream - subtle step up */
-  --card-foreground: oklch(0.25 0.015 60);
-  --popover: oklch(0.985 0.010 85);              /* Floating cream - another whisper up */
-  --popover-foreground: oklch(0.25 0.015 60);
-  --muted: oklch(0.950 0.018 85);                /* Recessed cream - inset areas */
-  --muted-foreground: oklch(0.45 0.015 60);      /* Warm medium gray */
-  --accent: oklch(0.955 0.016 85);               /* Hover states - between muted and canvas */
-  --accent-foreground: oklch(0.25 0.015 60);
-  --secondary: oklch(0.960 0.015 85);            /* Secondary surfaces */
-  --secondary-foreground: oklch(0.30 0.015 60);
+  /* Surface scale (neutral cool gray, hue 250) */
+  --surface-0: oklch(1 0 0);              /* Pure white - floating */
+  --surface-1: oklch(0.995 0.001 250);    /* Near white - elevated */
+  --surface-2: oklch(0.97 0.003 250);     /* Light gray - canvas */
+  --surface-3: oklch(0.94 0.005 250);     /* Subtle gray - interactive/muted */
+  --surface-4: oklch(0.91 0.003 250);     /* Border gray */
 
-  /* Interactive elements */
-  --primary: oklch(0.25 0.015 60);               /* Warm dark primary */
-  --primary-foreground: oklch(0.98 0.010 85);
-  --destructive: oklch(0.55 0.18 25);            /* Warmed red */
+  /* Text scale */
+  --text-primary: oklch(0.20 0.01 250);   /* Near black */
+  --text-secondary: oklch(0.45 0.01 250); /* Medium gray */
 
-  /* Borders - subtle warm separation */
-  --border: oklch(0.92 0.012 85);                /* Default border */
-  --input: oklch(0.94 0.010 85);                 /* Input borders - slightly lighter */
-  --ring: oklch(0.60 0.015 60);                  /* Warm focus ring */
+  /* Semantic colors */
+  --color-positive: oklch(0.55 0.17 155);        /* Teal green */
+  --color-positive-muted: oklch(0.96 0.03 155);  /* Pale green */
+  --color-negative: oklch(0.58 0.18 25);         /* Red */
+  --color-negative-muted: oklch(0.97 0.03 25);   /* Pale red */
+  --color-info: oklch(0.55 0.14 250);            /* Blue */
+  --color-info-muted: oklch(0.96 0.03 250);      /* Pale blue */
+  --color-warning: oklch(0.72 0.15 70);          /* Amber */
+  --color-warning-muted: oklch(0.97 0.04 70);    /* Pale amber */
 
-  /* Semantic colors - budget types */
-  --income: oklch(0.50 0.14 145);                /* Green - money in */
-  --income-muted: oklch(0.94 0.04 145);
-  --expense: oklch(0.50 0.16 25);                /* Red - money out */
-  --expense-muted: oklch(0.94 0.04 25);
-  --savings: oklch(0.50 0.14 250);               /* Blue - money aside */
-  --savings-muted: oklch(0.94 0.04 250);
-  --balanced: oklch(0.50 0.14 145);              /* Green - balanced */
-  --balanced-muted: oklch(0.94 0.04 145);
-  --warning: oklch(0.55 0.14 85);                /* Amber - caution */
-  --warning-muted: oklch(0.94 0.04 85);
+  /*
+   * ═══════════════════════════════════════════════════════════
+   * SEMANTIC TOKENS
+   * Component-facing API. All reference primitives above.
+   * ═══════════════════════════════════════════════════════════
+   */
 
-  /* Charts - warmed to match palette */
-  --chart-1: oklch(0.60 0.18 45);
-  --chart-2: oklch(0.55 0.12 180);
-  --chart-3: oklch(0.45 0.08 220);
-  --chart-4: oklch(0.75 0.15 85);
-  --chart-5: oklch(0.70 0.15 70);
+  /* Surfaces */
+  --background: var(--surface-2);
+  --foreground: var(--text-primary);
+  --card: var(--surface-1);
+  --popover: var(--surface-0);
+  --muted: var(--surface-3);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--surface-3);
 
-  /* Sidebar - matches canvas */
-  --sidebar: oklch(0.965 0.015 85);
-  --sidebar-foreground: oklch(0.25 0.015 60);
-  --sidebar-primary: oklch(0.25 0.015 60);
-  --sidebar-primary-foreground: oklch(0.98 0.010 85);
-  --sidebar-accent: oklch(0.955 0.016 85);
-  --sidebar-accent-foreground: oklch(0.25 0.015 60);
-  --sidebar-border: oklch(0.92 0.012 85);
-  --sidebar-ring: oklch(0.60 0.015 60);
+  /* Interactive */
+  --primary: var(--text-primary);
+  --primary-foreground: var(--surface-0);
+  --destructive: var(--color-negative);
 
-  /* Shadows - warm-tinted for cohesion */
-  --shadow-xs: 0 1px 2px oklch(0.25 0.02 60 / 0.05);
-  --shadow-sm: 0 1px 3px oklch(0.25 0.02 60 / 0.07), 0 1px 2px oklch(0.25 0.02 60 / 0.04);
-  --shadow-md: 0 4px 6px oklch(0.25 0.02 60 / 0.06), 0 2px 4px oklch(0.25 0.02 60 / 0.04);
-  --shadow-lg: 0 10px 15px oklch(0.25 0.02 60 / 0.08), 0 4px 6px oklch(0.25 0.02 60 / 0.04);
+  /* Borders & Focus */
+  --border: var(--surface-4);
+  --input: var(--surface-4);
+  --ring: var(--color-info);
+
+  /* Budget semantic colors */
+  --income: var(--color-positive);
+  --income-muted: var(--color-positive-muted);
+  --expense: var(--color-negative);
+  --expense-muted: var(--color-negative-muted);
+  --savings: var(--color-info);
+  --savings-muted: var(--color-info-muted);
+  --warning: var(--color-warning);
+  --warning-muted: var(--color-warning-muted);
+
+  /* Charts */
+  --chart-1: var(--color-info);
+  --chart-2: var(--color-positive);
+  --chart-3: oklch(0.65 0.15 300);  /* Purple - unique to charts */
+  --chart-4: var(--color-warning);
+  --chart-5: var(--color-negative);
+
+  /* Shadows - neutral, soft */
+  --shadow-xs: 0 1px 2px oklch(0.2 0 0 / 0.04);
+  --shadow-sm: 0 1px 3px oklch(0.2 0 0 / 0.06), 0 1px 2px oklch(0.2 0 0 / 0.03);
+  --shadow-md: 0 4px 6px oklch(0.2 0 0 / 0.05), 0 2px 4px oklch(0.2 0 0 / 0.03);
+  --shadow-lg: 0 10px 15px oklch(0.2 0 0 / 0.06), 0 4px 6px oklch(0.2 0 0 / 0.03);
 }
 
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
   --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -170,14 +162,6 @@
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {
@@ -186,6 +170,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 }
 

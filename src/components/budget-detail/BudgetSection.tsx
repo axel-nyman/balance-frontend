@@ -48,7 +48,7 @@ export function BudgetSection({
   }
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="bg-card rounded-2xl shadow-sm">
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="overflow-hidden bg-card rounded-2xl shadow-sm">
       <CollapsibleTrigger asChild>
         <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accent rounded-t-2xl">
           <div className="flex items-center gap-2">

@@ -150,7 +150,8 @@ export function StepIncome() {
         </div>
       </div>
 
-      <div className="bg-card rounded-2xl shadow-sm">
+      {/* Desktop Table */}
+      <div className="hidden md:block bg-card rounded-2xl shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -339,6 +340,163 @@ export function StepIncome() {
             </TableFooter>
           )}
         </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        {state.incomeItems.length === 0 && availableItems.length === 0 ? (
+          <div className="bg-card rounded-2xl shadow-sm p-6 text-center text-muted-foreground">
+            No income items yet. Add your first income source.
+          </div>
+        ) : (
+          <>
+            {/* Editable income items */}
+            {state.incomeItems.map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  'bg-card rounded-xl shadow-sm p-4 space-y-3',
+                  newlyAddedIds.has(item.id) && 'animate-fade-in-subtle'
+                )}
+              >
+                <div className="flex items-start gap-2">
+                  <Input
+                    value={item.name}
+                    onChange={(e) =>
+                      handleUpdateItem(item.id, 'name', e.target.value)
+                    }
+                    placeholder="e.g., Salary, Freelance"
+                    className="flex-1"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveItem(item.id)}
+                    aria-label="Remove item"
+                    className="shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                  </Button>
+                </div>
+                <AccountSelect
+                  value={item.bankAccountId}
+                  onValueChange={(accountId, accountName) => {
+                    dispatch({
+                      type: 'UPDATE_INCOME_ITEM',
+                      id: item.id,
+                      updates: {
+                        bankAccountId: accountId,
+                        bankAccountName: accountName,
+                      },
+                    })
+                  }}
+                  placeholder="Select account"
+                />
+                <Input
+                  type="number"
+                  value={item.amount || ''}
+                  onChange={(e) =>
+                    handleUpdateItem(
+                      item.id,
+                      'amount',
+                      parseFloat(e.target.value) || 0
+                    )
+                  }
+                  placeholder="0"
+                  className="text-right"
+                />
+              </div>
+            ))}
+
+            {/* From last budget section */}
+            {availableItems.length > 0 && (
+              <div
+                className={cn(
+                  'grid overflow-hidden',
+                  isLastItemsCopying
+                    ? 'animate-collapse-row'
+                    : 'grid-rows-[1fr]'
+                )}
+              >
+                <div className="overflow-hidden min-h-0 space-y-3">
+                  <div className="py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                    From last budget
+                  </div>
+                  {availableItems.map((item) => {
+                    const isCopying = copyingIds.has(item.id)
+                    return (
+                      <div
+                        key={`available-mobile-${item.id}`}
+                        className={cn(
+                          'grid overflow-hidden',
+                          isCopying
+                            ? 'animate-collapse-row'
+                            : 'grid-rows-[1fr]'
+                        )}
+                      >
+                        <div className="overflow-hidden min-h-0">
+                          <div
+                            className={cn(
+                              'bg-card rounded-xl shadow-sm p-4 flex items-center justify-between transition-colors duration-150',
+                              isCopying && 'bg-income-muted'
+                            )}
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-muted-foreground/70 truncate">
+                                {item.name}
+                              </p>
+                              <p className="text-sm text-muted-foreground/70">
+                                {item.bankAccount.name}
+                              </p>
+                              <p className="text-muted-foreground/70 mt-1">
+                                {formatCurrency(item.amount)}
+                              </p>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCopyItem(item)}
+                              disabled={isCopying}
+                              aria-label="Add item"
+                              className="h-8 w-8 p-0 shrink-0"
+                            >
+                              <div className="relative w-4 h-4">
+                                <Plus
+                                  className={cn(
+                                    'w-4 h-4 text-muted-foreground absolute inset-0 transition-all duration-100',
+                                    isCopying && 'opacity-0 rotate-90 scale-0'
+                                  )}
+                                />
+                                <Check
+                                  className={cn(
+                                    'w-4 h-4 text-income absolute inset-0',
+                                    isCopying
+                                      ? 'animate-pop-check'
+                                      : 'opacity-0 scale-0'
+                                  )}
+                                />
+                              </div>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Total summary */}
+            {state.incomeItems.length > 0 && (
+              <div className="bg-muted rounded-xl p-4 flex justify-between items-center">
+                <span className="font-medium">Total</span>
+                <span className="font-semibold text-income">
+                  {formatCurrency(totalIncome)}
+                </span>
+              </div>
+            )}
+          </>
+        )}
       </div>
 
       <Button variant="outline" onClick={handleAddItem}>

@@ -332,8 +332,8 @@ export function StepExpenses() {
         </Card>
       )}
 
-      {/* Expenses table */}
-      <div className="bg-card rounded-2xl shadow-sm">
+      {/* Desktop Expenses table */}
+      <div className="hidden md:block bg-card rounded-2xl shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -456,6 +456,104 @@ export function StepExpenses() {
             </TableFooter>
           )}
         </Table>
+      </div>
+
+      {/* Mobile Expenses Cards */}
+      <div className="md:hidden space-y-3">
+        {state.expenseItems.length === 0 ? (
+          <div className="bg-card rounded-2xl shadow-sm p-6 text-center text-muted-foreground">
+            No expenses yet. Add expenses manually or use quick-add above.
+          </div>
+        ) : (
+          <>
+            {state.expenseItems.map((item) => (
+              <div
+                key={item.id}
+                className={cn(
+                  'bg-card rounded-xl shadow-sm p-4 space-y-3',
+                  newlyAddedIds.has(item.id) && 'animate-fade-in-subtle',
+                  item.recurringExpenseId && 'bg-savings-muted/50'
+                )}
+              >
+                <div className="flex items-start gap-2">
+                  <Input
+                    value={item.name}
+                    onChange={(e) =>
+                      handleUpdateItem(item.id, 'name', e.target.value)
+                    }
+                    placeholder="e.g., Rent, Groceries"
+                    className="flex-1"
+                  />
+                  {item.recurringExpenseId && (
+                    <Repeat className="w-4 h-4 text-savings shrink-0 mt-2.5" />
+                  )}
+                </div>
+                <AccountSelect
+                  value={item.bankAccountId}
+                  onValueChange={(accountId, accountName) => {
+                    dispatch({
+                      type: 'UPDATE_EXPENSE_ITEM',
+                      id: item.id,
+                      updates: {
+                        bankAccountId: accountId,
+                        bankAccountName: accountName,
+                      },
+                    })
+                  }}
+                  placeholder="Select account"
+                />
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id={`manual-mobile-${item.id}`}
+                      checked={item.isManual}
+                      onCheckedChange={(checked) =>
+                        handleUpdateItem(item.id, 'isManual', checked === true)
+                      }
+                      aria-label="Manual payment"
+                    />
+                    <Label
+                      htmlFor={`manual-mobile-${item.id}`}
+                      className="text-sm text-muted-foreground"
+                    >
+                      Manual
+                    </Label>
+                  </div>
+                  <Input
+                    type="number"
+                    value={item.amount || ''}
+                    onChange={(e) =>
+                      handleUpdateItem(
+                        item.id,
+                        'amount',
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                    placeholder="0"
+                    className="flex-1 text-right"
+                  />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveItem(item.id)}
+                    aria-label="Remove item"
+                    className="shrink-0"
+                  >
+                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+
+            {/* Total summary */}
+            <div className="bg-muted rounded-xl p-4 flex justify-between items-center">
+              <span className="font-medium">Total</span>
+              <span className="font-semibold text-expense">
+                {formatCurrency(totalExpenses)}
+              </span>
+            </div>
+          </>
+        )}
       </div>
 
       <Button variant="outline" onClick={handleAddItem}>

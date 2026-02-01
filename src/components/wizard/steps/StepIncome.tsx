@@ -16,6 +16,8 @@ import { useWizard } from '../WizardContext'
 import { useAccounts } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
+import { WizardItemCard } from '../WizardItemCard'
+import { WizardIncomeEditModal } from '../WizardIncomeEditModal'
 import type { BudgetIncome } from '@/api/types'
 import type { WizardIncomeItem } from '../types'
 
@@ -25,6 +27,7 @@ export function StepIncome() {
   const { lastBudget } = useLastBudget()
   const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
+  const [editingItem, setEditingItem] = useState<WizardIncomeItem | null>(null)
 
   const accounts = accountsData?.accounts ?? []
 
@@ -90,6 +93,10 @@ export function StepIncome() {
 
   const handleRemoveItem = (id: string) => {
     dispatch({ type: 'REMOVE_INCOME_ITEM', id })
+  }
+
+  const handleSaveItem = (id: string, updates: Partial<WizardIncomeItem>) => {
+    dispatch({ type: 'UPDATE_INCOME_ITEM', id, updates })
   }
 
   const handleCopyItem = (item: BudgetIncome) => {
@@ -354,56 +361,14 @@ export function StepIncome() {
             {state.incomeItems.map((item) => (
               <div
                 key={item.id}
-                className={cn(
-                  'bg-card rounded-xl shadow-sm p-4 space-y-3',
-                  newlyAddedIds.has(item.id) && 'animate-fade-in-subtle'
-                )}
+                className={cn(newlyAddedIds.has(item.id) && 'animate-fade-in-subtle')}
               >
-                <div className="flex items-start gap-2">
-                  <Input
-                    value={item.name}
-                    onChange={(e) =>
-                      handleUpdateItem(item.id, 'name', e.target.value)
-                    }
-                    placeholder="e.g., Salary, Freelance"
-                    className="flex-1"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveItem(item.id)}
-                    aria-label="Remove item"
-                    className="shrink-0"
-                  >
-                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
-                  </Button>
-                </div>
-                <AccountSelect
-                  value={item.bankAccountId}
-                  onValueChange={(accountId, accountName) => {
-                    dispatch({
-                      type: 'UPDATE_INCOME_ITEM',
-                      id: item.id,
-                      updates: {
-                        bankAccountId: accountId,
-                        bankAccountName: accountName,
-                      },
-                    })
-                  }}
-                  placeholder="Select account"
-                />
-                <Input
-                  type="number"
-                  value={item.amount || ''}
-                  onChange={(e) =>
-                    handleUpdateItem(
-                      item.id,
-                      'amount',
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                  placeholder="0"
-                  className="text-right"
+                <WizardItemCard
+                  name={item.name}
+                  amount={item.amount}
+                  bankAccountName={item.bankAccountName}
+                  amountColorClass="text-income"
+                  onClick={() => setEditingItem(item)}
                 />
               </div>
             ))}
@@ -488,9 +453,9 @@ export function StepIncome() {
 
             {/* Total summary */}
             {state.incomeItems.length > 0 && (
-              <div className="bg-muted rounded-xl p-4 flex justify-between items-center">
-                <span className="font-medium">Total</span>
-                <span className="font-semibold text-income">
+              <div className="border-t border-border pt-4 flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total</span>
+                <span className="text-lg font-semibold text-income">
                   {formatCurrency(totalIncome)}
                 </span>
               </div>
@@ -509,6 +474,15 @@ export function StepIncome() {
           Add at least one income source to continue.
         </p>
       )}
+
+      {/* Edit Modal */}
+      <WizardIncomeEditModal
+        item={editingItem}
+        open={editingItem !== null}
+        onOpenChange={(open) => !open && setEditingItem(null)}
+        onSave={handleSaveItem}
+        onDelete={handleRemoveItem}
+      />
     </div>
   )
 }

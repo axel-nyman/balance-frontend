@@ -20,6 +20,8 @@ import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
 import { useAccounts, useRecurringExpenses } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
+import { WizardItemCard } from '../WizardItemCard'
+import { WizardExpenseEditModal } from '../WizardExpenseEditModal'
 import type { RecurringExpense } from '@/api/types'
 import type { WizardExpenseItem } from '../types'
 
@@ -29,6 +31,7 @@ export function StepExpenses() {
   const { data: recurringData } = useRecurringExpenses()
   const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
+  const [editingItem, setEditingItem] = useState<WizardExpenseItem | null>(null)
 
   const accounts = accountsData?.accounts ?? []
 
@@ -170,6 +173,10 @@ export function StepExpenses() {
 
   const handleRemoveItem = (id: string) => {
     dispatch({ type: 'REMOVE_EXPENSE_ITEM', id })
+  }
+
+  const handleSaveItem = (id: string, updates: Partial<WizardExpenseItem>) => {
+    dispatch({ type: 'UPDATE_EXPENSE_ITEM', id, updates })
   }
 
   const renderQuickAddItem = (recurring: RecurringExpense) => {
@@ -469,86 +476,24 @@ export function StepExpenses() {
             {state.expenseItems.map((item) => (
               <div
                 key={item.id}
-                className={cn(
-                  'bg-card rounded-xl shadow-sm p-4 space-y-3',
-                  newlyAddedIds.has(item.id) && 'animate-fade-in-subtle',
-                  item.recurringExpenseId && 'bg-savings-muted/50'
-                )}
+                className={cn(newlyAddedIds.has(item.id) && 'animate-fade-in-subtle')}
               >
-                <div className="flex items-start gap-2">
-                  <Input
-                    value={item.name}
-                    onChange={(e) =>
-                      handleUpdateItem(item.id, 'name', e.target.value)
-                    }
-                    placeholder="e.g., Rent, Groceries"
-                    className="flex-1"
-                  />
-                  {item.recurringExpenseId && (
-                    <Repeat className="w-4 h-4 text-savings shrink-0 mt-2.5" />
-                  )}
-                </div>
-                <AccountSelect
-                  value={item.bankAccountId}
-                  onValueChange={(accountId, accountName) => {
-                    dispatch({
-                      type: 'UPDATE_EXPENSE_ITEM',
-                      id: item.id,
-                      updates: {
-                        bankAccountId: accountId,
-                        bankAccountName: accountName,
-                      },
-                    })
-                  }}
-                  placeholder="Select account"
+                <WizardItemCard
+                  name={item.name}
+                  amount={item.amount}
+                  bankAccountName={item.bankAccountName}
+                  isRecurring={!!item.recurringExpenseId}
+                  isManual={item.isManual}
+                  amountColorClass="text-expense"
+                  onClick={() => setEditingItem(item)}
                 />
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id={`manual-mobile-${item.id}`}
-                      checked={item.isManual}
-                      onCheckedChange={(checked) =>
-                        handleUpdateItem(item.id, 'isManual', checked === true)
-                      }
-                      aria-label="Manual payment"
-                    />
-                    <Label
-                      htmlFor={`manual-mobile-${item.id}`}
-                      className="text-sm text-muted-foreground"
-                    >
-                      Manual
-                    </Label>
-                  </div>
-                  <Input
-                    type="number"
-                    value={item.amount || ''}
-                    onChange={(e) =>
-                      handleUpdateItem(
-                        item.id,
-                        'amount',
-                        parseFloat(e.target.value) || 0
-                      )
-                    }
-                    placeholder="0"
-                    className="flex-1 text-right"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveItem(item.id)}
-                    aria-label="Remove item"
-                    className="shrink-0"
-                  >
-                    <Trash2 className="w-4 h-4 text-muted-foreground hover:text-destructive" />
-                  </Button>
-                </div>
               </div>
             ))}
 
             {/* Total summary */}
-            <div className="bg-muted rounded-xl p-4 flex justify-between items-center">
-              <span className="font-medium">Total</span>
-              <span className="font-semibold text-expense">
+            <div className="border-t border-border pt-4 flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Total</span>
+              <span className="text-lg font-semibold text-expense">
                 {formatCurrency(totalExpenses)}
               </span>
             </div>
@@ -560,6 +505,15 @@ export function StepExpenses() {
         <Plus className="w-4 h-4 mr-2" />
         Add Expense
       </Button>
+
+      {/* Edit Modal */}
+      <WizardExpenseEditModal
+        item={editingItem}
+        open={editingItem !== null}
+        onOpenChange={(open) => !open && setEditingItem(null)}
+        onSave={handleSaveItem}
+        onDelete={handleRemoveItem}
+      />
     </div>
   )
 }

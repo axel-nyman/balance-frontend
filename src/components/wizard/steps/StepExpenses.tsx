@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, Check, Repeat, AlertTriangle } from 'lucide-react'
+import { Plus, Trash2, Repeat, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import {
@@ -14,7 +13,6 @@ import {
   TableRow,
   TableFooter,
 } from '@/components/ui/table'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
@@ -185,57 +183,23 @@ export function StepExpenses() {
     return (
       <div
         key={recurring.id}
-        className={cn('grid overflow-hidden', isCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]')}
+        className={cn(
+          'grid overflow-hidden',
+          isCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]'
+        )}
       >
         <div className="overflow-hidden min-h-0">
-          <div
-            className={cn(
-              'flex items-center justify-between p-3 rounded-lg border transition-colors duration-150',
-              isCopying ? 'bg-income-muted border-income' : 'border-border hover:border-border'
-            )}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">{recurring.name}</span>
-                {recurring.isDue && (
-                  <Badge variant="destructive" className="text-xs py-0">
-                    Due
-                  </Badge>
-                )}
-                {recurring.isManual && (
-                  <Badge variant="secondary" className="text-xs py-0">
-                    Manual
-                  </Badge>
-                )}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {formatCurrency(recurring.amount)}
-              </span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleAddRecurring(recurring)}
-              disabled={isCopying}
-              aria-label={`Add ${recurring.name}`}
-              className="h-8 w-8 p-0"
-            >
-              <div className="relative w-4 h-4">
-                <Plus
-                  className={cn(
-                    'w-4 h-4 text-muted-foreground absolute inset-0 transition-all duration-100',
-                    isCopying && 'opacity-0 rotate-90 scale-0'
-                  )}
-                />
-                <Check
-                  className={cn(
-                    'w-4 h-4 text-income absolute inset-0',
-                    isCopying ? 'animate-pop-check' : 'opacity-0 scale-0'
-                  )}
-                />
-              </div>
-            </Button>
-          </div>
+          <WizardItemCard
+            variant="quick-add"
+            name={recurring.name}
+            amount={recurring.amount}
+            bankAccountName=""
+            isDue={recurring.isDue}
+            isManual={recurring.isManual}
+            amountColorClass="text-expense"
+            onQuickAdd={() => handleAddRecurring(recurring)}
+            isCopying={isCopying}
+          />
         </div>
       </div>
     )
@@ -292,55 +256,40 @@ export function StepExpenses() {
             isLastItemsCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]'
           )}
         >
-          <div className="overflow-hidden min-h-0">
-            <Card>
-              <CardHeader className="py-3">
-                <CardTitle className="text-sm font-medium">
-                  Quick Add from Recurring
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="py-3 pt-0 space-y-4">
-                {dueExpenses.length > 0 && (
-                  <div>
-                    <h4 className="text-xs font-medium text-expense uppercase tracking-wide mb-2">
-                      Due this month
-                    </h4>
-                    <div className="space-y-2">
-                      {dueExpenses.map(renderQuickAddItem)}
-                    </div>
-                  </div>
-                )}
-                {otherExpenses.length > 0 && (
-                  <div>
-                    {dueExpenses.length > 0 && (
-                      <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                        Other recurring
-                      </h4>
-                    )}
-                    <div className="space-y-2">
-                      {otherExpenses.map(renderQuickAddItem)}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+          <div className="overflow-hidden min-h-0 space-y-4">
+            {dueExpenses.length > 0 && (
+              <div>
+                <h4 className="text-xs font-medium text-expense uppercase tracking-wide mb-2">
+                  Due this month
+                </h4>
+                <div className="space-y-3">
+                  {dueExpenses.map(renderQuickAddItem)}
+                </div>
+              </div>
+            )}
+            {otherExpenses.length > 0 && (
+              <div>
+                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
+                  {dueExpenses.length > 0 ? 'Other recurring' : 'Quick add from recurring'}
+                </h4>
+                <div className="space-y-3">
+                  {otherExpenses.map(renderQuickAddItem)}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {/* All recurring expenses added message */}
       {recurringExpenses.length > 0 && availableRecurring.length === 0 && (
-        <Card className="animate-fade-in-subtle">
-          <CardContent className="py-4">
-            <p className="text-sm text-muted-foreground text-center">
-              All recurring expenses have been added.
-            </p>
-          </CardContent>
-        </Card>
+        <p className="text-sm text-muted-foreground text-center py-4 animate-fade-in-subtle">
+          All recurring expenses have been added.
+        </p>
       )}
 
       {/* Desktop Expenses table */}
-      <div className="hidden md:block bg-card rounded-2xl shadow-sm">
+      <div className="hidden md:block bg-popover rounded-2xl shadow-card">
         <Table>
           <TableHeader>
             <TableRow>
@@ -468,7 +417,7 @@ export function StepExpenses() {
       {/* Mobile Expenses Cards */}
       <div className="md:hidden space-y-3">
         {state.expenseItems.length === 0 ? (
-          <div className="bg-card rounded-2xl shadow-sm p-6 text-center text-muted-foreground">
+          <div className="bg-popover rounded-2xl shadow-card p-6 text-center text-muted-foreground">
             No expenses yet. Add expenses manually or use quick-add above.
           </div>
         ) : (

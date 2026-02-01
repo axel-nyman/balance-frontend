@@ -229,7 +229,7 @@ export function StepSavings() {
       ) : (
         <>
           {/* Desktop Savings table */}
-          <div className="hidden md:block bg-card rounded-2xl shadow-sm">
+          <div className="hidden md:block bg-popover rounded-2xl shadow-card">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -426,7 +426,7 @@ export function StepSavings() {
           <div className="md:hidden space-y-3">
             {state.savingsItems.length === 0 &&
             validAvailableItems.length === 0 ? (
-              <div className="bg-card rounded-2xl shadow-sm p-6 text-center text-muted-foreground">
+              <div className="bg-popover rounded-2xl shadow-card p-6 text-center text-muted-foreground">
                 No savings planned yet. Savings are optional.
               </div>
             ) : (
@@ -474,49 +474,15 @@ export function StepSavings() {
                             )}
                           >
                             <div className="overflow-hidden min-h-0">
-                              <div
-                                className={cn(
-                                  'bg-card rounded-xl shadow-sm p-4 flex items-center justify-between transition-colors duration-150',
-                                  isCopying && 'bg-income-muted'
-                                )}
-                              >
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-medium text-muted-foreground/70 truncate">
-                                    {item.name}
-                                  </p>
-                                  <p className="text-sm text-muted-foreground/70">
-                                    {item.bankAccount.name}
-                                  </p>
-                                  <p className="text-muted-foreground/70 mt-1">
-                                    {formatCurrency(item.amount)}
-                                  </p>
-                                </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleCopyItem(item)}
-                                  disabled={isCopying}
-                                  aria-label="Add item"
-                                  className="h-8 w-8 p-0 shrink-0"
-                                >
-                                  <div className="relative w-4 h-4">
-                                    <Plus
-                                      className={cn(
-                                        'w-4 h-4 text-muted-foreground absolute inset-0 transition-all duration-100',
-                                        isCopying && 'opacity-0 rotate-90 scale-0'
-                                      )}
-                                    />
-                                    <Check
-                                      className={cn(
-                                        'w-4 h-4 text-income absolute inset-0',
-                                        isCopying
-                                          ? 'animate-pop-check'
-                                          : 'opacity-0 scale-0'
-                                      )}
-                                    />
-                                  </div>
-                                </Button>
-                              </div>
+                              <WizardItemCard
+                                variant="quick-add"
+                                name={item.name}
+                                amount={item.amount}
+                                bankAccountName={item.bankAccount.name}
+                                amountColorClass="text-savings"
+                                onQuickAdd={() => handleCopyItem(item)}
+                                isCopying={isCopying}
+                              />
                             </div>
                           </div>
                         )

@@ -60,6 +60,7 @@
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
+  --shadow-card: var(--shadow-card);
 }
 
 :root {
@@ -139,6 +140,7 @@
   /* Shadows - neutral, soft */
   --shadow-xs: 0 1px 2px oklch(0.2 0 0 / 0.04);
   --shadow-sm: 0 1px 3px oklch(0.2 0 0 / 0.06), 0 1px 2px oklch(0.2 0 0 / 0.03);
+  --shadow-card: 0 1px 3px oklch(0.2 0 0 / 0.08), 0 1px 2px oklch(0.2 0 0 / 0.05);
   --shadow-md: 0 4px 6px oklch(0.2 0 0 / 0.05), 0 2px 4px oklch(0.2 0 0 / 0.03);
   --shadow-lg: 0 10px 15px oklch(0.2 0 0 / 0.06), 0 4px 6px oklch(0.2 0 0 / 0.03);
 }

@@ -31,6 +31,7 @@ export function StepExpenses() {
   const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
   const [editingItem, setEditingItem] = useState<WizardExpenseItem | null>(null)
+  const [isAddingAllDue, setIsAddingAllDue] = useState(false)
 
   const accounts = accountsData?.accounts ?? []
 
@@ -150,6 +151,28 @@ export function StepExpenses() {
     }, 700)
   }
 
+  const handleAddAllDue = () => {
+    if (isAddingAllDue) return
+
+    const itemsToAdd = dueExpenses.filter((exp) => !copyingIds.has(exp.id))
+    if (itemsToAdd.length === 0) return
+
+    setIsAddingAllDue(true)
+
+    // Stagger each item by 100ms for cascade effect
+    itemsToAdd.forEach((recurring, index) => {
+      setTimeout(() => {
+        handleAddRecurring(recurring)
+      }, index * 100)
+    })
+
+    // Reset state after all animations complete
+    const totalTime = (itemsToAdd.length - 1) * 100 + 700
+    setTimeout(() => {
+      setIsAddingAllDue(false)
+    }, totalTime)
+  }
+
   const handleUpdateItem = (
     id: string,
     field: keyof WizardExpenseItem,
@@ -264,9 +287,23 @@ export function StepExpenses() {
           <div className="overflow-hidden min-h-0 space-y-4 pb-1">
             {dueExpenses.length > 0 && (
               <div>
-                <h4 className="text-xs font-medium text-expense uppercase tracking-wide mb-2">
-                  Due this month
-                </h4>
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-xs font-medium text-expense uppercase tracking-wide">
+                    Due this month
+                  </h4>
+                  {dueExpenses.some((exp) => !copyingIds.has(exp.id)) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleAddAllDue}
+                      disabled={isAddingAllDue}
+                      className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      Add All ({dueExpenses.filter((exp) => !copyingIds.has(exp.id)).length})
+                    </Button>
+                  )}
+                </div>
                 <div className="space-y-3">
                   {dueExpenses.map(renderQuickAddItem)}
                 </div>

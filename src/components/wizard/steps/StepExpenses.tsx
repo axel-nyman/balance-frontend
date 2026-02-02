@@ -16,7 +16,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
-import { useAccounts, useRecurringExpenses } from '@/hooks'
+import { useAccounts, useRecurringExpenses, useIsMobile } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardExpenseEditModal } from '../WizardExpenseEditModal'
@@ -27,6 +27,7 @@ export function StepExpenses() {
   const { state, dispatch } = useWizard()
   const { data: accountsData } = useAccounts()
   const { data: recurringData } = useRecurringExpenses()
+  const isMobile = useIsMobile()
   const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
   const [editingItem, setEditingItem] = useState<WizardExpenseItem | null>(null)
@@ -86,17 +87,21 @@ export function StepExpenses() {
   const remainingBalance = totalIncome - totalExpenses
 
   const handleAddItem = () => {
-    dispatch({
-      type: 'ADD_EXPENSE_ITEM',
-      item: {
-        id: generateId(),
-        name: '',
-        amount: 0,
-        bankAccountId: '',
-        bankAccountName: '',
-        isManual: false,
-      },
-    })
+    const newItem = {
+      id: generateId(),
+      name: '',
+      amount: 0,
+      bankAccountId: '',
+      bankAccountName: '',
+      isManual: false,
+    }
+
+    dispatch({ type: 'ADD_EXPENSE_ITEM', item: newItem })
+
+    // Auto-open modal on mobile
+    if (isMobile) {
+      setEditingItem(newItem)
+    }
   }
 
   const handleAddRecurring = (recurring: RecurringExpense) => {
@@ -184,7 +189,7 @@ export function StepExpenses() {
       <div
         key={recurring.id}
         className={cn(
-          'grid overflow-hidden',
+          'grid overflow-hidden rounded-xl shadow-card',
           isCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]'
         )}
       >
@@ -256,7 +261,7 @@ export function StepExpenses() {
             isLastItemsCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]'
           )}
         >
-          <div className="overflow-hidden min-h-0 space-y-4">
+          <div className="overflow-hidden min-h-0 space-y-4 pb-1">
             {dueExpenses.length > 0 && (
               <div>
                 <h4 className="text-xs font-medium text-expense uppercase tracking-wide mb-2">

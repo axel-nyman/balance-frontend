@@ -14,7 +14,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AccountSelect } from '@/components/accounts'
 import { useWizard } from '../WizardContext'
-import { useAccounts } from '@/hooks'
+import { useAccounts, useIsMobile } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
@@ -26,6 +26,7 @@ export function StepSavings() {
   const { state, dispatch } = useWizard()
   const { data: accountsData } = useAccounts()
   const { lastBudget } = useLastBudget()
+  const isMobile = useIsMobile()
   const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
   const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
   const [editingItem, setEditingItem] = useState<WizardSavingsItem | null>(null)
@@ -66,16 +67,20 @@ export function StepSavings() {
     availableItems.every((item) => copyingIds.has(item.id))
 
   const handleAddItem = () => {
-    dispatch({
-      type: 'ADD_SAVINGS_ITEM',
-      item: {
-        id: generateId(),
-        name: '',
-        amount: 0,
-        bankAccountId: '',
-        bankAccountName: '',
-      },
-    })
+    const newItem = {
+      id: generateId(),
+      name: '',
+      amount: 0,
+      bankAccountId: '',
+      bankAccountName: '',
+    }
+
+    dispatch({ type: 'ADD_SAVINGS_ITEM', item: newItem })
+
+    // Auto-open modal on mobile
+    if (isMobile) {
+      setEditingItem(newItem)
+    }
   }
 
   const handleUpdateItem = (
@@ -457,7 +462,7 @@ export function StepSavings() {
                         : 'grid-rows-[1fr]'
                     )}
                   >
-                    <div className="overflow-hidden min-h-0 space-y-3">
+                    <div className="overflow-hidden min-h-0 space-y-3 pb-1">
                       <div className="py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         From last budget
                       </div>
@@ -467,7 +472,7 @@ export function StepSavings() {
                           <div
                             key={`available-mobile-${item.id}`}
                             className={cn(
-                              'grid overflow-hidden',
+                              'grid overflow-hidden rounded-xl shadow-card',
                               isCopying
                                 ? 'animate-collapse-row'
                                 : 'grid-rows-[1fr]'

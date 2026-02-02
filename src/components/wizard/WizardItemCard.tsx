@@ -37,7 +37,7 @@ export function WizardItemCard({
     return (
       <div
         className={cn(
-          'w-full bg-popover rounded-xl shadow-card p-4 transition-colors duration-150',
+          'w-full bg-popover rounded-xl p-4 transition-colors duration-150',
           isCopying && 'bg-income-muted'
         )}
       >

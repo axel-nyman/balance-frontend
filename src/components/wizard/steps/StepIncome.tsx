@@ -412,7 +412,7 @@ export function StepIncome() {
       </Button>
 
       {state.incomeItems.length === 0 && (
-        <p className="text-sm text-amber-600">
+        <p className="text-sm text-warning">
           Add at least one income source to continue.
         </p>
       )}

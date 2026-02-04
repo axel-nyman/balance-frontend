@@ -111,7 +111,7 @@ export function WizardItemCard({
           )}
           {isManual && (
             <HandCoins
-              className="w-4 h-4 shrink-0 text-amber-500"
+              className="w-4 h-4 shrink-0 text-warning"
               aria-label="Manual payment"
             />
           )}

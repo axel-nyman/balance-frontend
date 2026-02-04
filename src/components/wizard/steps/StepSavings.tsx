@@ -19,6 +19,7 @@ import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
+import { useCopyAnimation } from '../hooks'
 import type { BudgetSavings } from '@/api/types'
 import type { WizardSavingsItem } from '../types'
 
@@ -27,8 +28,12 @@ export function StepSavings() {
   const { data: accountsData } = useAccounts()
   const { lastBudget } = useLastBudget()
   const isMobile = useIsMobile()
-  const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
-  const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
+  const {
+    copyingIds,
+    newlyAddedIds,
+    startCopyAnimation,
+    isLastItemsCopying: checkLastItemsCopying,
+  } = useCopyAnimation()
   const [editingItem, setEditingItem] = useState<WizardSavingsItem | null>(null)
 
   const accounts = accountsData?.accounts ?? []
@@ -60,11 +65,6 @@ export function StepSavings() {
         !existingNames.has(item.name.toLowerCase()) || copyingIds.has(item.id)
     )
   }, [lastBudget, state.savingsItems, copyingIds])
-
-  // Check if all remaining available items are being copied (header should collapse)
-  const isLastItemsCopying =
-    availableItems.length > 0 &&
-    availableItems.every((item) => copyingIds.has(item.id))
 
   const handleAddItem = () => {
     const newItem = {
@@ -116,23 +116,11 @@ export function StepSavings() {
   }
 
   const handleCopyItem = (item: BudgetSavings) => {
-    // Prevent double-clicks
-    if (copyingIds.has(item.id)) return
-
     // Check if account still exists
     const accountExists = accounts.some((a) => a.id === item.bankAccount.id)
     if (!accountExists) return
 
-    // Start animation phase (icon pop + green highlight)
-    setCopyingIds((prev) => new Set(prev).add(item.id))
-
-    // Generate new ID for the item
-    const newId = generateId()
-
-    // Delay adding the item until collapse starts (250ms)
-    setTimeout(() => {
-      setNewlyAddedIds((prev) => new Set(prev).add(newId))
-
+    startCopyAnimation(item.id, (newId) => {
       dispatch({
         type: 'ADD_SAVINGS_ITEM',
         item: {
@@ -143,31 +131,16 @@ export function StepSavings() {
           bankAccountName: item.bankAccount.name,
         },
       })
-
-      // Clear newly added state after entrance animation (250ms)
-      setTimeout(() => {
-        setNewlyAddedIds((prev) => {
-          const next = new Set(prev)
-          next.delete(newId)
-          return next
-        })
-      }, 250)
-    }, 250)
-
-    // Clean up copying state after collapse animation completes
-    setTimeout(() => {
-      setCopyingIds((prev) => {
-        const next = new Set(prev)
-        next.delete(item.id)
-        return next
-      })
-    }, 700)
+    })
   }
 
   // Filter out items whose accounts no longer exist
   const validAvailableItems = availableItems.filter((item) => {
     return accounts.some((a) => a.id === item.bankAccount.id)
   })
+
+  // Check if all remaining available items are being copied (header should collapse)
+  const isLastItemsCopying = checkLastItemsCopying(validAvailableItems)
 
   return (
     <div className="space-y-6">

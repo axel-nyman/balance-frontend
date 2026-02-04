@@ -20,9 +20,8 @@ import { useAccounts, useRecurringExpenses, useIsMobile } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
+import { useCopyAnimation } from '../hooks'
 import {
-  COPY_ACTION_DELAY,
-  ENTRANCE_DURATION,
   TOTAL_ANIMATION_DURATION,
   CASCADE_STAGGER_DELAY,
 } from '../constants'
@@ -34,8 +33,12 @@ export function StepExpenses() {
   const { data: accountsData } = useAccounts()
   const { data: recurringData } = useRecurringExpenses()
   const isMobile = useIsMobile()
-  const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
-  const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
+  const {
+    copyingIds,
+    newlyAddedIds,
+    startCopyAnimation,
+    isLastItemsCopying: checkLastItemsCopying,
+  } = useCopyAnimation()
   const [editingItem, setEditingItem] = useState<WizardExpenseItem | null>(null)
   const [isAddingAllDue, setIsAddingAllDue] = useState(false)
 
@@ -83,9 +86,7 @@ export function StepExpenses() {
   const otherExpenses = availableRecurring.filter((exp) => !exp.isDue)
 
   // Check if all remaining available items are being copied (Card should collapse)
-  const isLastItemsCopying =
-    availableRecurring.length > 0 &&
-    availableRecurring.every((item) => copyingIds.has(item.id))
+  const isLastItemsCopying = checkLastItemsCopying(availableRecurring)
 
   const totalExpenses = state.expenseItems.reduce(
     (sum, item) => sum + (item.amount || 0),
@@ -112,18 +113,7 @@ export function StepExpenses() {
   }
 
   const handleAddRecurring = (recurring: RecurringExpense) => {
-    // Prevent double-clicks
-    if (copyingIds.has(recurring.id)) return
-
-    // Start animation phase
-    setCopyingIds((prev) => new Set(prev).add(recurring.id))
-
-    const newId = generateId()
-
-    // Delay adding the item until collapse starts
-    setTimeout(() => {
-      setNewlyAddedIds((prev) => new Set(prev).add(newId))
-
+    startCopyAnimation(recurring.id, (newId) => {
       dispatch({
         type: 'ADD_EXPENSE_ITEM',
         item: {
@@ -136,25 +126,7 @@ export function StepExpenses() {
           recurringExpenseId: recurring.id,
         },
       })
-
-      // Clear newly added state after entrance animation
-      setTimeout(() => {
-        setNewlyAddedIds((prev) => {
-          const next = new Set(prev)
-          next.delete(newId)
-          return next
-        })
-      }, ENTRANCE_DURATION)
-    }, COPY_ACTION_DELAY)
-
-    // Clean up copying state after collapse animation completes
-    setTimeout(() => {
-      setCopyingIds((prev) => {
-        const next = new Set(prev)
-        next.delete(recurring.id)
-        return next
-      })
-    }, TOTAL_ANIMATION_DURATION)
+    })
   }
 
   const handleAddAllDue = () => {

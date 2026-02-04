@@ -18,6 +18,7 @@ import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
+import { useCopyAnimation } from '../hooks'
 import type { BudgetIncome } from '@/api/types'
 import type { WizardIncomeItem } from '../types'
 
@@ -26,8 +27,12 @@ export function StepIncome() {
   const { data: accountsData } = useAccounts()
   const { lastBudget } = useLastBudget()
   const isMobile = useIsMobile()
-  const [copyingIds, setCopyingIds] = useState<Set<string>>(new Set())
-  const [newlyAddedIds, setNewlyAddedIds] = useState<Set<string>>(new Set())
+  const {
+    copyingIds,
+    newlyAddedIds,
+    startCopyAnimation,
+    isLastItemsCopying: checkLastItemsCopying,
+  } = useCopyAnimation()
   const [editingItem, setEditingItem] = useState<WizardIncomeItem | null>(null)
 
   const accounts = accountsData?.accounts ?? []
@@ -51,9 +56,7 @@ export function StepIncome() {
   )
 
   // Check if all remaining available items are being copied (header should collapse)
-  const isLastItemsCopying =
-    availableItems.length > 0 &&
-    availableItems.every((item) => copyingIds.has(item.id))
+  const isLastItemsCopying = checkLastItemsCopying(availableItems)
 
   const handleAddItem = () => {
     const newItem = {
@@ -105,20 +108,7 @@ export function StepIncome() {
   }
 
   const handleCopyItem = (item: BudgetIncome) => {
-    // Prevent double-clicks
-    if (copyingIds.has(item.id)) return
-
-    // Start animation phase (icon pop + green highlight)
-    setCopyingIds((prev) => new Set(prev).add(item.id))
-
-    // Generate new ID for the item
-    const newId = generateId()
-
-    // Delay adding the item until collapse starts (250ms)
-    // This syncs the new item appearance with the source row disappearing
-    setTimeout(() => {
-      setNewlyAddedIds((prev) => new Set(prev).add(newId))
-
+    startCopyAnimation(item.id, (newId) => {
       dispatch({
         type: 'ADD_INCOME_ITEM',
         item: {
@@ -129,26 +119,7 @@ export function StepIncome() {
           bankAccountName: item.bankAccount.name,
         },
       })
-
-      // Clear newly added state after entrance animation (250ms)
-      setTimeout(() => {
-        setNewlyAddedIds((prev) => {
-          const next = new Set(prev)
-          next.delete(newId)
-          return next
-        })
-      }, 250)
-    }, 250)
-
-    // Clean up copying state after collapse animation completes
-    // Icon pop: 200ms + pause: 250ms + collapse: 250ms = 700ms total
-    setTimeout(() => {
-      setCopyingIds((prev) => {
-        const next = new Set(prev)
-        next.delete(item.id)
-        return next
-      })
-    }, 700)
+    })
   }
 
   return (

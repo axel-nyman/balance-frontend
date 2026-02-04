@@ -19,7 +19,7 @@ import { useWizard } from '../WizardContext'
 import { useAccounts, useRecurringExpenses, useIsMobile } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
-import { WizardExpenseEditModal } from '../WizardExpenseEditModal'
+import { WizardItemEditModal } from '../WizardItemEditModal'
 import type { RecurringExpense } from '@/api/types'
 import type { WizardExpenseItem } from '../types'
 
@@ -498,7 +498,8 @@ export function StepExpenses() {
       </Button>
 
       {/* Edit Modal */}
-      <WizardExpenseEditModal
+      <WizardItemEditModal
+        itemType="expense"
         item={editingItem}
         open={editingItem !== null}
         onOpenChange={(open) => !open && setEditingItem(null)}

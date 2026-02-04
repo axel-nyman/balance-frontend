@@ -18,7 +18,7 @@ import { useAccounts, useIsMobile } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
-import { WizardSavingsEditModal } from '../WizardSavingsEditModal'
+import { WizardItemEditModal } from '../WizardItemEditModal'
 import type { BudgetSavings } from '@/api/types'
 import type { WizardSavingsItem } from '../types'
 
@@ -515,7 +515,8 @@ export function StepSavings() {
           </Button>
 
           {/* Edit Modal */}
-          <WizardSavingsEditModal
+          <WizardItemEditModal
+            itemType="savings"
             item={editingItem}
             open={editingItem !== null}
             onOpenChange={(open) => !open && setEditingItem(null)}

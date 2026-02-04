@@ -17,7 +17,7 @@ import { useAccounts, useIsMobile } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
-import { WizardIncomeEditModal } from '../WizardIncomeEditModal'
+import { WizardItemEditModal } from '../WizardItemEditModal'
 import type { BudgetIncome } from '@/api/types'
 import type { WizardIncomeItem } from '../types'
 
@@ -447,7 +447,8 @@ export function StepIncome() {
       )}
 
       {/* Edit Modal */}
-      <WizardIncomeEditModal
+      <WizardItemEditModal
+        itemType="income"
         item={editingItem}
         open={editingItem !== null}
         onOpenChange={(open) => !open && setEditingItem(null)}

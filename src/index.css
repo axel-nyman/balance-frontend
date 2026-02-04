@@ -177,6 +177,20 @@
 }
 
 @layer utilities {
+  /*
+   * Animation Timing - IMPORTANT
+   *
+   * These timing values are synchronized with JavaScript constants in:
+   * src/components/wizard/constants/animations.ts
+   *
+   * If you change any animation duration or delay here,
+   * you MUST update the corresponding constants.
+   *
+   * Current values:
+   * - pop-check: 200ms
+   * - fade-in-subtle: 250ms
+   * - collapse-row: 250ms duration, 250ms delay
+   */
   @keyframes pop-check {
     0% {
       transform: scale(0) rotate(-45deg);

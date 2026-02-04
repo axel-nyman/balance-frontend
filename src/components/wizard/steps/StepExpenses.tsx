@@ -20,6 +20,12 @@ import { useAccounts, useRecurringExpenses, useIsMobile } from '@/hooks'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
+import {
+  COPY_ACTION_DELAY,
+  ENTRANCE_DURATION,
+  TOTAL_ANIMATION_DURATION,
+  CASCADE_STAGGER_DELAY,
+} from '../constants'
 import type { RecurringExpense } from '@/api/types'
 import type { WizardExpenseItem } from '../types'
 
@@ -138,8 +144,8 @@ export function StepExpenses() {
           next.delete(newId)
           return next
         })
-      }, 250)
-    }, 250)
+      }, ENTRANCE_DURATION)
+    }, COPY_ACTION_DELAY)
 
     // Clean up copying state after collapse animation completes
     setTimeout(() => {
@@ -148,7 +154,7 @@ export function StepExpenses() {
         next.delete(recurring.id)
         return next
       })
-    }, 700)
+    }, TOTAL_ANIMATION_DURATION)
   }
 
   const handleAddAllDue = () => {
@@ -159,15 +165,15 @@ export function StepExpenses() {
 
     setIsAddingAllDue(true)
 
-    // Stagger each item by 100ms for cascade effect
+    // Stagger each item for cascade effect
     itemsToAdd.forEach((recurring, index) => {
       setTimeout(() => {
         handleAddRecurring(recurring)
-      }, index * 100)
+      }, index * CASCADE_STAGGER_DELAY)
     })
 
     // Reset state after all animations complete
-    const totalTime = (itemsToAdd.length - 1) * 100 + 700
+    const totalTime = (itemsToAdd.length - 1) * CASCADE_STAGGER_DELAY + TOTAL_ANIMATION_DURATION
     setTimeout(() => {
       setIsAddingAllDue(false)
     }, totalTime)

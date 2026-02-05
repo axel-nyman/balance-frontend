@@ -21,6 +21,7 @@ import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
 import { useCopyAnimation } from '../hooks'
+import { CollapseWrapper } from '../CollapseWrapper'
 import {
   TOTAL_ANIMATION_DURATION,
   CASCADE_STAGGER_DELAY,
@@ -187,27 +188,23 @@ export function StepExpenses() {
     const isCopying = copyingIds.has(recurring.id)
 
     return (
-      <div
+      <CollapseWrapper
         key={recurring.id}
-        className={cn(
-          'grid overflow-hidden rounded-xl shadow-card',
-          isCopying ? 'animate-collapse-row' : 'grid-rows-[1fr]'
-        )}
+        isCollapsing={isCopying}
+        className="rounded-xl shadow-card"
       >
-        <div className="overflow-hidden min-h-0">
-          <WizardItemCard
-            variant="quick-add"
-            name={recurring.name}
-            amount={recurring.amount}
-            bankAccountName=""
-            isDue={recurring.isDue}
-            isManual={recurring.isManual}
-            amountColorClass="text-expense"
-            onQuickAdd={() => handleAddRecurring(recurring)}
-            isCopying={isCopying}
-          />
-        </div>
-      </div>
+        <WizardItemCard
+          variant="quick-add"
+          name={recurring.name}
+          amount={recurring.amount}
+          bankAccountName=""
+          isDue={recurring.isDue}
+          isManual={recurring.isManual}
+          amountColorClass="text-expense"
+          onQuickAdd={() => handleAddRecurring(recurring)}
+          isCopying={isCopying}
+        />
+      </CollapseWrapper>
     )
   }
 

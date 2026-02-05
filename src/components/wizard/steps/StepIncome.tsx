@@ -19,6 +19,7 @@ import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
 import { WizardItemEditModal } from '../WizardItemEditModal'
 import { useCopyAnimation } from '../hooks'
+import { CollapseWrapper } from '../CollapseWrapper'
 import type { BudgetIncome } from '@/api/types'
 import type { WizardIncomeItem } from '../types'
 
@@ -366,27 +367,21 @@ export function StepIncome() {
                   {availableItems.map((item) => {
                     const isCopying = copyingIds.has(item.id)
                     return (
-                      <div
+                      <CollapseWrapper
                         key={`available-mobile-${item.id}`}
-                        className={cn(
-                          'grid overflow-hidden rounded-xl shadow-card',
-                          isCopying
-                            ? 'animate-collapse-row'
-                            : 'grid-rows-[1fr]'
-                        )}
+                        isCollapsing={isCopying}
+                        className="rounded-xl shadow-card"
                       >
-                        <div className="overflow-hidden min-h-0">
-                          <WizardItemCard
-                            variant="quick-add"
-                            name={item.name}
-                            amount={item.amount}
-                            bankAccountName={item.bankAccount.name}
-                            amountColorClass="text-income"
-                            onQuickAdd={() => handleCopyItem(item)}
-                            isCopying={isCopying}
-                          />
-                        </div>
-                      </div>
+                        <WizardItemCard
+                          variant="quick-add"
+                          name={item.name}
+                          amount={item.amount}
+                          bankAccountName={item.bankAccount.name}
+                          amountColorClass="text-income"
+                          onQuickAdd={() => handleCopyItem(item)}
+                          isCopying={isCopying}
+                        />
+                      </CollapseWrapper>
                     )
                   })}
                 </div>

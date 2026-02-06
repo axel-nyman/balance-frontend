@@ -436,7 +436,7 @@ export function StepSavings() {
                         : 'grid-rows-[1fr]'
                     )}
                   >
-                    <div className="overflow-hidden min-h-0 space-y-3 pb-1">
+                    <div className="overflow-hidden min-h-0 flex flex-col pb-1">
                       <div className="py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
                         From last budget
                       </div>
@@ -446,6 +446,7 @@ export function StepSavings() {
                           <CollapseWrapper
                             key={`available-mobile-${item.id}`}
                             isCollapsing={isCopying}
+                            withSpacing
                             className="rounded-xl shadow-card"
                           >
                             <WizardItemCard

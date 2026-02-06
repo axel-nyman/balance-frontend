@@ -184,13 +184,14 @@ export function StepExpenses() {
     dispatch({ type: 'UPDATE_EXPENSE_ITEM', id, updates })
   }
 
-  const renderQuickAddItem = (recurring: RecurringExpense) => {
+  const renderQuickAddItem = (recurring: RecurringExpense, withSpacing = true) => {
     const isCopying = copyingIds.has(recurring.id)
 
     return (
       <CollapseWrapper
         key={recurring.id}
         isCollapsing={isCopying}
+        withSpacing={withSpacing}
         className="rounded-xl shadow-card"
       >
         <WizardItemCard
@@ -279,8 +280,8 @@ export function StepExpenses() {
                     </Button>
                   )}
                 </div>
-                <div className="space-y-3">
-                  {dueExpenses.map(renderQuickAddItem)}
+                <div className="flex flex-col">
+                  {dueExpenses.map((item, index) => renderQuickAddItem(item, index > 0))}
                 </div>
               </div>
             )}
@@ -289,8 +290,8 @@ export function StepExpenses() {
                 <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
                   {dueExpenses.length > 0 ? 'Other recurring' : 'Quick add from recurring'}
                 </h4>
-                <div className="space-y-3">
-                  {otherExpenses.map(renderQuickAddItem)}
+                <div className="flex flex-col">
+                  {otherExpenses.map((item, index) => renderQuickAddItem(item, index > 0))}
                 </div>
               </div>
             )}

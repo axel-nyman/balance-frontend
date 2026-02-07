@@ -77,7 +77,7 @@ describe('StepExpenses', () => {
   it('shows empty state message when no items', () => {
     renderWithWizard()
 
-    expect(screen.getByText(/no expenses yet/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/no expenses yet/i).length).toBeGreaterThanOrEqual(1)
   })
 
   it('adds expense item when add button clicked', async () => {
@@ -140,16 +140,16 @@ describe('StepExpenses', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /add expense/i }))
 
-    const accountSelect = screen.getByRole('combobox')
-    await userEvent.click(accountSelect)
+    const accountSelects = screen.getAllByRole('combobox')
+    await userEvent.click(accountSelects[0])
 
     await waitFor(() => {
-      expect(screen.getByText('Checking')).toBeInTheDocument()
+      expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
     })
 
-    await userEvent.click(screen.getByText('Checking'))
+    await userEvent.click(screen.getAllByText('Checking')[0])
 
-    expect(screen.getByText('Checking')).toBeInTheDocument()
+    expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
   })
 
   it('allows toggling manual checkbox', async () => {
@@ -180,9 +180,9 @@ describe('StepExpenses', () => {
     renderWithWizard()
 
     await waitFor(() => {
-      expect(screen.getByText(/quick add/i)).toBeInTheDocument()
-      expect(screen.getByText('Rent')).toBeInTheDocument()
-      expect(screen.getByText('Netflix')).toBeInTheDocument()
+      expect(screen.getAllByText(/due this month/i).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Rent').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Netflix').length).toBeGreaterThanOrEqual(1)
     })
   })
 

@@ -106,7 +106,7 @@ describe('StepSavings', () => {
     renderWithWizard()
 
     await waitFor(() => {
-      expect(screen.getByText(/no savings planned/i)).toBeInTheDocument()
+      expect(screen.getAllByText(/no savings planned/i).length).toBeGreaterThanOrEqual(1)
     })
   })
 
@@ -250,16 +250,16 @@ describe('StepSavings', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
 
-    const accountSelect = screen.getByRole('combobox')
-    await userEvent.click(accountSelect)
+    const accountSelects = screen.getAllByRole('combobox')
+    await userEvent.click(accountSelects[0])
 
     await waitFor(() => {
-      expect(screen.getByText('Savings Account')).toBeInTheDocument()
+      expect(screen.getAllByText('Savings Account').length).toBeGreaterThanOrEqual(1)
     })
 
-    await userEvent.click(screen.getByText('Savings Account'))
+    await userEvent.click(screen.getAllByText('Savings Account')[0])
 
-    expect(screen.getByText('Savings Account')).toBeInTheDocument()
+    expect(screen.getAllByText('Savings Account').length).toBeGreaterThanOrEqual(1)
   })
 
   it('shows warning when no accounts exist', async () => {
@@ -372,8 +372,8 @@ describe('StepSavings', () => {
     renderWithWizard()
 
     await waitFor(() => {
-      expect(screen.getByText(/from last budget/i)).toBeInTheDocument()
-      expect(screen.getByText('Emergency Fund')).toBeInTheDocument()
+      expect(screen.getAllByText(/from last budget/i).length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Emergency Fund').length).toBeGreaterThanOrEqual(1)
     })
   })
 

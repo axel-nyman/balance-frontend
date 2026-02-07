@@ -44,7 +44,7 @@ describe('StepIncome', () => {
   it('shows empty state message when no items', () => {
     renderWithWizard()
 
-    expect(screen.getByText(/no income items yet/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/no income items yet/i).length).toBeGreaterThanOrEqual(1)
   })
 
   it('shows validation message when no items', () => {
@@ -102,7 +102,7 @@ describe('StepIncome', () => {
     await userEvent.type(amountInput, '50000')
 
     await waitFor(() => {
-      expect(screen.getByText(/50 000,00 kr/)).toBeInTheDocument()
+      expect(screen.getAllByText(/50 000,00 kr/).length).toBeGreaterThanOrEqual(1)
     })
   })
 
@@ -143,11 +143,11 @@ describe('StepIncome', () => {
 
     // Wait for "From last budget" section to appear
     await waitFor(() => {
-      expect(screen.getByText(/from last budget/i)).toBeInTheDocument()
+      expect(screen.getAllByText(/from last budget/i).length).toBeGreaterThanOrEqual(1)
     })
 
     // Should show the item from last budget
-    expect(screen.getByText('Salary')).toBeInTheDocument()
+    expect(screen.getAllByText('Salary').length).toBeGreaterThanOrEqual(1)
   })
 
   it('does not show "From last budget" section when no previous budgets', () => {
@@ -183,16 +183,16 @@ describe('StepIncome', () => {
 
     // Wait for item to appear
     await waitFor(() => {
-      expect(screen.getByText('Salary')).toBeInTheDocument()
+      expect(screen.getAllByText('Salary').length).toBeGreaterThanOrEqual(1)
     })
 
     // Click the "Add item" button (plus icon) for this item
-    const addButton = screen.getByRole('button', { name: /add item/i })
-    await userEvent.click(addButton)
+    const addButtons = screen.getAllByRole('button', { name: /add item/i })
+    await userEvent.click(addButtons[0])
 
     // Wait for the item to be copied to the income list (appears as editable input)
     await waitFor(() => {
-      expect(screen.getByDisplayValue('Salary')).toBeInTheDocument()
+      expect(screen.getAllByDisplayValue('Salary').length).toBeGreaterThanOrEqual(1)
     }, { timeout: 2000 })
   })
 
@@ -224,8 +224,8 @@ describe('StepIncome', () => {
 
     // Wait for items to appear
     await waitFor(() => {
-      expect(screen.getByText('Salary')).toBeInTheDocument()
-      expect(screen.getByText('Side gig')).toBeInTheDocument()
+      expect(screen.getAllByText('Salary').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getAllByText('Side gig').length).toBeGreaterThanOrEqual(1)
     })
 
     // Click the first "Add item" button
@@ -234,11 +234,11 @@ describe('StepIncome', () => {
 
     // Wait for the item to be copied (appears as editable input)
     await waitFor(() => {
-      expect(screen.getByDisplayValue('Salary')).toBeInTheDocument()
+      expect(screen.getAllByDisplayValue('Salary').length).toBeGreaterThanOrEqual(1)
     }, { timeout: 2000 })
 
     // The "From last budget" section should still show Side gig
-    expect(screen.getByText('Side gig')).toBeInTheDocument()
+    expect(screen.getAllByText('Side gig').length).toBeGreaterThanOrEqual(1)
   })
 
   it('allows selecting account for income item', async () => {
@@ -246,18 +246,18 @@ describe('StepIncome', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /add income/i }))
 
-    // Find and click the account select
-    const accountSelect = screen.getByRole('combobox')
-    await userEvent.click(accountSelect)
+    // Find and click the account select (first one, desktop view)
+    const accountSelects = screen.getAllByRole('combobox')
+    await userEvent.click(accountSelects[0])
 
     // Wait for accounts to load and select one
     await waitFor(() => {
-      expect(screen.getByText('Checking')).toBeInTheDocument()
+      expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
     })
 
-    await userEvent.click(screen.getByText('Checking'))
+    await userEvent.click(screen.getAllByText('Checking')[0])
 
     // Verify the account is selected
-    expect(screen.getByText('Checking')).toBeInTheDocument()
+    expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
   })
 })

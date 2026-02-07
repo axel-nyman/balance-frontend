@@ -130,6 +130,7 @@ export function IncomeItemModal({ budgetId, item, open, onOpenChange }: IncomeIt
               value={selectedAccountId}
               onValueChange={(accountId) => setValue('bankAccountId', accountId)}
               placeholder="Select account"
+              label="Account"
             />
             {errors.bankAccountId && (
               <p className="text-sm text-destructive">{errors.bankAccountId.message}</p>

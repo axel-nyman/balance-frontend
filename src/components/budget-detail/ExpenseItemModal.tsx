@@ -135,6 +135,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
               value={selectedAccountId}
               onValueChange={(accountId) => setValue('bankAccountId', accountId)}
               placeholder="Select account"
+              label="Account"
             />
             {errors.bankAccountId && (
               <p className="text-sm text-destructive">{errors.bankAccountId.message}</p>

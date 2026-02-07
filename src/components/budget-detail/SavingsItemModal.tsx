@@ -130,6 +130,7 @@ export function SavingsItemModal({ budgetId, item, open, onOpenChange }: Savings
               value={selectedAccountId}
               onValueChange={(accountId) => setValue('bankAccountId', accountId)}
               placeholder="Select account"
+              label="Account"
             />
             {errors.bankAccountId && (
               <p className="text-sm text-destructive">{errors.bankAccountId.message}</p>

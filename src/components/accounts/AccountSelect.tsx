@@ -17,6 +17,7 @@ interface AccountSelectProps {
   onValueChange: (accountId: string, accountName: string) => void
   placeholder?: string
   triggerClassName?: string
+  label?: string
 }
 
 export function AccountSelect({
@@ -24,6 +25,7 @@ export function AccountSelect({
   onValueChange,
   placeholder = 'Select account',
   triggerClassName,
+  label,
 }: AccountSelectProps) {
   const { data: accountsData } = useAccounts()
   const accounts = accountsData?.accounts ?? []
@@ -49,7 +51,7 @@ export function AccountSelect({
   return (
     <>
       <Select value={value} onValueChange={handleValueChange}>
-        <SelectTrigger className={triggerClassName}>
+        <SelectTrigger className={triggerClassName} aria-label={label}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

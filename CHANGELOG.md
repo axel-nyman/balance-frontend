@@ -1,5 +1,46 @@
 # Changelog
 
+## [1.4.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.3.0...balance-frontend-v1.4.0) (2026-02-07)
+
+
+### Features
+
+* **a11y:** add aria-label support to AccountSelect ([ca2c285](https://github.com/axel-nyman/balance-frontend/commit/ca2c28509c928eb516becffba2fb7702dbf8ca65))
+* **accounts:** add inline account creation from dropdowns ([6aaf3dd](https://github.com/axel-nyman/balance-frontend/commit/6aaf3ddbce8e2ff8d9460629c4423dfa4ab7c66b))
+* **budget creation wizard:** implement responsive mobile cards for budget creation wizard ([33e76c3](https://github.com/axel-nyman/balance-frontend/commit/33e76c3589665f595ad0badb166dc194edac6d05))
+* **budgets:** disable new budget button when unlocked budget exists ([f3913b0](https://github.com/axel-nyman/balance-frontend/commit/f3913b051da0090d199b3d1d418f2e0573896404))
+* **claude:** add design-engineer skill for interface design guidance ([e68a514](https://github.com/axel-nyman/balance-frontend/commit/e68a514f960f28ca4f826138bf825665beee8822))
+* **ui:** add smooth animations to collapsible sections ([01276af](https://github.com/axel-nyman/balance-frontend/commit/01276af4a40e368fc46cc88729f21befbe9e4d18))
+* **ui:** add unified cream color palette and semantic tokens ([8edb573](https://github.com/axel-nyman/balance-frontend/commit/8edb573b681468f141be46dd453ebe64c1ce8599))
+* **wizard:** add "Add All Due" button with cascade animation ([a0d35f7](https://github.com/axel-nyman/balance-frontend/commit/a0d35f7813a75783a3466fc297f00bd08fae18a7))
+* **wizard:** add balance display to expenses step ([0c5418d](https://github.com/axel-nyman/balance-frontend/commit/0c5418d70abaa02270bb756132b905f389534732))
+* **wizard:** fix quick-add card shadows and auto-open modal on mobile ([eb9cf0d](https://github.com/axel-nyman/balance-frontend/commit/eb9cf0dd0dcd8bcdfb38a9a4cf58bf3aabf403cf))
+* **wizard:** hide lock checkbox when budget is unbalanced ([961251d](https://github.com/axel-nyman/balance-frontend/commit/961251d9742837b316062f63ff8509f39deeb4c2))
+* **wizard:** redesign mobile item cards with iOS-style bottom sheet modals ([4001bc4](https://github.com/axel-nyman/balance-frontend/commit/4001bc41420f8877cefaaf221ddbb46f75ac3e13))
+* **wizard:** redesign quick-add cards with unified WizardItemCard variant ([50e9705](https://github.com/axel-nyman/balance-frontend/commit/50e970578c12390d7675fa5f6535a5048b15bffa))
+
+
+### Bug Fixes
+
+* **BudgetSection:** add overflow-hidden to clip hover backgrounds to rounded corners ([9f5b923](https://github.com/axel-nyman/balance-frontend/commit/9f5b923af58c8bd3bea939f8e41b648677db7ad8))
+* fixed hardcoded color values ([d632e14](https://github.com/axel-nyman/balance-frontend/commit/d632e14dcd4b39d88a8bc3fdb976e9a45af1dc5c))
+* **layout:** add z-index to mobile header for proper stacking ([f116779](https://github.com/axel-nyman/balance-frontend/commit/f116779366e6d12722698f00934852a2173e3f42))
+* **table:** improve cell padding and fix hover border-radius clipping ([627b86e](https://github.com/axel-nyman/balance-frontend/commit/627b86ec755b67f9571aaed158ea060e9361269d))
+* **wizard:** animate margin during quick-add collapse for smooth transitions ([e4f5818](https://github.com/axel-nyman/balance-frontend/commit/e4f581867a686328659f17835c86fe303d7d0620))
+* **wizard:** fix horizontal stacking of copy items from last budget ([f747dc0](https://github.com/axel-nyman/balance-frontend/commit/f747dc0a40ede1d3347fb8e1e290753f004eb7f7))
+* **wizard:** handle duplicate DOM elements in step tests ([8f61825](https://github.com/axel-nyman/balance-frontend/commit/8f6182547bd085a6913921758726edaf5ff82a3e))
+
+
+### Code Refactoring
+
+* **components:** adopt semantic color tokens ([1bf17d2](https://github.com/axel-nyman/balance-frontend/commit/1bf17d253a5d34e54327387fb3f671b4d81cf402))
+* **css:** consolidate redundant color tokens ([c4b8b11](https://github.com/axel-nyman/balance-frontend/commit/c4b8b115201feba3d06f6e27c38701038137d223))
+* **wizard:** consolidate three edit modals into unified component ([1f02c5d](https://github.com/axel-nyman/balance-frontend/commit/1f02c5dc671e105fcfcf9c4ed7a007c36c4aa1f4))
+* **wizard:** extract animation timing constants ([28fc1b8](https://github.com/axel-nyman/balance-frontend/commit/28fc1b8815625ddf4f1a54d8c0177fa9aecdf148))
+* **wizard:** extract CollapseWrapper component for collapse animations ([49214fc](https://github.com/axel-nyman/balance-frontend/commit/49214fc8b9f9fea7e424e9c3f5ae1817508ea306))
+* **wizard:** extract copy animation logic into useCopyAnimation hook ([b2cf026](https://github.com/axel-nyman/balance-frontend/commit/b2cf026f13796f3e7dffeaa842f7ad2d6262ff09))
+* **wizard:** replace hardcoded amber colors with warning token ([91d04bb](https://github.com/axel-nyman/balance-frontend/commit/91d04bbcc2e55d582330bd5f306c094e1887b2f1))
+
 ## [1.3.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.2.0...balance-frontend-v1.3.0) (2026-01-14)
 
 

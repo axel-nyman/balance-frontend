@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { AccountSelect } from '@/components/accounts'
 import { useCreateRecurringExpense } from '@/hooks'
 import { createRecurringExpenseSchema, type CreateRecurringExpenseFormData } from './schemas'
 
@@ -51,6 +52,7 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
       amount: undefined,
       recurrenceInterval: 'MONTHLY',
       isManual: false,
+      bankAccountId: '',
     },
   })
 
@@ -64,6 +66,7 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
         amount: data.amount,
         recurrenceInterval: data.recurrenceInterval,
         isManual: data.isManual,
+        bankAccountId: data.bankAccountId || undefined,
       })
       toast.success('Recurring expense created')
       reset()
@@ -133,6 +136,15 @@ export function CreateRecurringExpenseModal({ open, onOpenChange }: CreateRecurr
             {errors.recurrenceInterval && (
               <p className="text-sm text-destructive">{errors.recurrenceInterval.message}</p>
             )}
+          </div>
+
+          <div className="space-y-2">
+            <Label>Account</Label>
+            <AccountSelect
+              value={watch('bankAccountId') ?? ''}
+              onValueChange={(accountId) => setValue('bankAccountId', accountId)}
+              placeholder="No account (optional)"
+            />
           </div>
 
           <div className="flex items-center space-x-2">

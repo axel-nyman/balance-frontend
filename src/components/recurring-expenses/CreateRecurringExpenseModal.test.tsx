@@ -52,7 +52,7 @@ describe('CreateRecurringExpenseModal', () => {
     render(<CreateRecurringExpenseModal {...defaultProps} />)
 
     // The select trigger shows "Monthly" as the selected value
-    const selectTrigger = screen.getByRole('combobox')
+    const selectTrigger = screen.getByLabelText(/interval/i)
     expect(selectTrigger).toHaveTextContent('Monthly')
   })
 
@@ -85,15 +85,50 @@ describe('CreateRecurringExpenseModal', () => {
     })
   })
 
+  it('submits form with bank account when selected', async () => {
+    let requestBody: unknown
+    server.use(
+      http.post('/api/recurring-expenses', async ({ request }) => {
+        requestBody = await request.json()
+        return HttpResponse.json({ id: '123', name: 'Rent' }, { status: 201 })
+      })
+    )
+
+    const onOpenChange = vi.fn()
+    render(<CreateRecurringExpenseModal open={true} onOpenChange={onOpenChange} />)
+
+    await userEvent.type(screen.getByLabelText(/name/i), 'Rent')
+    await userEvent.type(screen.getByLabelText(/amount/i), '8000')
+
+    // Select a bank account - find the combobox showing the placeholder
+    const accountTrigger = screen.getByText(/no account/i).closest('button')!
+    await userEvent.click(accountTrigger)
+    await userEvent.click(await screen.findByRole('option', { name: 'Checking' }))
+
+    await userEvent.click(screen.getByRole('button', { name: /create/i }))
+
+    await waitFor(() => {
+      expect(onOpenChange).toHaveBeenCalledWith(false)
+    })
+
+    expect(requestBody).toEqual({
+      name: 'Rent',
+      amount: 8000,
+      recurrenceInterval: 'MONTHLY',
+      isManual: false,
+      bankAccountId: '1',
+    })
+  })
+
   it('allows selecting different intervals', async () => {
     render(<CreateRecurringExpenseModal {...defaultProps} />)
 
-    await userEvent.click(screen.getByRole('combobox'))
+    await userEvent.click(screen.getByLabelText(/interval/i))
     // Click the option in the dropdown (role="option")
     await userEvent.click(screen.getByRole('option', { name: 'Yearly' }))
 
     // The select trigger should now show "Yearly"
-    const selectTrigger = screen.getByRole('combobox')
+    const selectTrigger = screen.getByLabelText(/interval/i)
     expect(selectTrigger).toHaveTextContent('Yearly')
   })
 

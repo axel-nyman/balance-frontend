@@ -61,11 +61,16 @@ export function WizardItemCard({
               </span>
             </div>
 
-            {/* Row 2: Amount only */}
-            <div className="mt-1">
+            {/* Row 2: Amount + Account */}
+            <div className="mt-1 flex items-center gap-2">
               <span className="font-semibold text-muted-foreground/70">
                 {formatCurrency(amount)}
               </span>
+              {bankAccountName && (
+                <span className="text-xs text-muted-foreground/50">
+                  • {bankAccountName}
+                </span>
+              )}
             </div>
           </div>
 

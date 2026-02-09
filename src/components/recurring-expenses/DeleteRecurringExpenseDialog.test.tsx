@@ -12,6 +12,7 @@ const mockExpense: RecurringExpense = {
   amount: 169,
   recurrenceInterval: 'MONTHLY',
   isManual: false,
+  bankAccount: null,
   lastUsedDate: '2025-01-01',
   nextDueDate: '2025-02-01',
   isDue: false,

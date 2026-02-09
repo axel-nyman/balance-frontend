@@ -37,7 +37,7 @@ export const handlers = [
   http.get('/api/recurring-expenses', () => {
     return HttpResponse.json({
       expenses: [
-        { id: '1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: true, lastUsedDate: null, nextDueDate: '2025-02-01', isDue: true, createdAt: '2025-01-01T00:00:00Z' },
+        { id: '1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: true, bankAccount: { id: '1', name: 'Checking' }, lastUsedDate: null, nextDueDate: '2025-02-01', isDue: true, createdAt: '2025-01-01T00:00:00Z' },
       ],
     })
   }),

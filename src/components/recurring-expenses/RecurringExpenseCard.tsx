@@ -34,6 +34,7 @@ export function RecurringExpenseCard({ expense, onEdit, onDelete }: RecurringExp
             <h3 className="font-medium text-foreground truncate">{expense.name}</h3>
             <p className="text-sm text-muted-foreground">
               {formatCurrency(expense.amount)} • {INTERVAL_LABELS[expense.recurrenceInterval]}
+              {expense.bankAccount && ` • ${expense.bankAccount.name}`}
             </p>
           </div>
           <div className="flex flex-col gap-1 ml-2">

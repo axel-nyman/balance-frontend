@@ -12,6 +12,7 @@ const mockExpense: RecurringExpense = {
   amount: 8000,
   recurrenceInterval: 'MONTHLY',
   isManual: true,
+  bankAccount: null,
   lastUsedDate: '2025-01-15',
   nextDueDate: '2025-02-15',
   isDue: false,
@@ -41,7 +42,7 @@ describe('EditRecurringExpenseModal', () => {
     expect(screen.getByDisplayValue('Rent')).toBeInTheDocument()
     expect(screen.getByDisplayValue('8000')).toBeInTheDocument()
     // The select trigger shows "Monthly" as the selected value
-    const selectTrigger = screen.getByRole('combobox')
+    const selectTrigger = screen.getByLabelText(/interval/i)
     expect(selectTrigger).toHaveTextContent('Monthly')
   })
 
@@ -50,6 +51,21 @@ describe('EditRecurringExpenseModal', () => {
 
     const checkbox = screen.getByRole('checkbox')
     expect(checkbox).toBeChecked()
+  })
+
+  it('pre-fills bank account when expense has one', async () => {
+    const expenseWithAccount = {
+      ...mockExpense,
+      bankAccount: { id: '1', name: 'Checking' },
+    }
+    render(<EditRecurringExpenseModal expense={expenseWithAccount} onClose={vi.fn()} />)
+
+    // The AccountSelect should show "Checking" as the selected value
+    // Accounts load asynchronously, so we need to wait for them
+    // getAllByText because Radix renders both a visible span and hidden native option
+    await waitFor(() => {
+      expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
+    })
   })
 
   it('shows last used and next due dates', () => {

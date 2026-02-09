@@ -91,6 +91,7 @@ export function RecurringExpensesList({
             <TableRow>
               <TableHead className="w-[300px]">Name</TableHead>
               <TableHead className="text-right">Amount</TableHead>
+              <TableHead>Account</TableHead>
               <TableHead>Interval</TableHead>
               <TableHead className="w-[100px]"></TableHead>
             </TableRow>

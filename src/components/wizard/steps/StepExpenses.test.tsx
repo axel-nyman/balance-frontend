@@ -170,8 +170,8 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
-            { id: 're-2', name: 'Netflix', amount: 169, recurrenceInterval: 'MONTHLY', isManual: true, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-2', name: 'Netflix', amount: 169, recurrenceInterval: 'MONTHLY', isManual: true, bankAccount: null, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -191,7 +191,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -209,7 +209,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Utility Bill', amount: 500, recurrenceInterval: 'MONTHLY', isManual: true, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Utility Bill', amount: 500, recurrenceInterval: 'MONTHLY', isManual: true, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -227,7 +227,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -252,7 +252,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -288,7 +288,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -315,7 +315,7 @@ describe('StepExpenses', () => {
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Utility Bill', amount: 500, recurrenceInterval: 'MONTHLY', isManual: true, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Utility Bill', amount: 500, recurrenceInterval: 'MONTHLY', isManual: true, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })
@@ -335,13 +335,61 @@ describe('StepExpenses', () => {
     })
   })
 
+  it('pre-fills bank account when quick-adding recurring expense with account', async () => {
+    server.use(
+      http.get('/api/recurring-expenses', () => {
+        return HttpResponse.json({
+          expenses: [
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: { id: 'acc-1', name: 'Checking' }, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+          ],
+        })
+      })
+    )
+
+    renderWithWizard()
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /add rent/i })).toBeInTheDocument()
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: /add rent/i }))
+
+    // The bank account should be pre-filled in the expense row
+    await waitFor(() => {
+      expect(screen.getByDisplayValue('Rent')).toBeInTheDocument()
+      // The AccountSelect should show "Checking" as the pre-filled account
+      const comboboxes = screen.getAllByRole('combobox')
+      const accountCombobox = comboboxes.find(el => el.textContent?.includes('Checking'))
+      expect(accountCombobox).toBeTruthy()
+    })
+  })
+
+  it('shows bank account name on quick-add card', async () => {
+    server.use(
+      http.get('/api/recurring-expenses', () => {
+        return HttpResponse.json({
+          expenses: [
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: { id: 'acc-1', name: 'Checking' }, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+          ],
+        })
+      })
+    )
+
+    renderWithWizard()
+
+    // Account name appears as "• Checking" in the quick-add card
+    await waitFor(() => {
+      expect(screen.getByText(/Checking/)).toBeInTheDocument()
+    })
+  })
+
   it('groups due expenses separately from other recurring', async () => {
     server.use(
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
           expenses: [
-            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
-            { id: 're-2', name: 'Netflix', amount: 169, recurrenceInterval: 'MONTHLY', isManual: false, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-1', name: 'Rent', amount: 8000, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: true, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
+            { id: 're-2', name: 'Netflix', amount: 169, recurrenceInterval: 'MONTHLY', isManual: false, bankAccount: null, isDue: false, lastUsedDate: null, nextDueDate: null, createdAt: '2025-01-01' },
           ],
         })
       })

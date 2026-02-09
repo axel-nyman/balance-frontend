@@ -9,6 +9,7 @@ export const createRecurringExpenseSchema = z.object({
     message: 'Please select an interval',
   }),
   isManual: z.boolean(),
+  bankAccountId: z.string().optional(),
 })
 
 export const updateRecurringExpenseSchema = createRecurringExpenseSchema

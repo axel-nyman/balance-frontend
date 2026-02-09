@@ -76,12 +76,18 @@ export interface BalanceHistoryResponse {
 // RECURRING EXPENSES
 // =============================================================================
 
+export interface BankAccountSummary {
+  id: string
+  name: string
+}
+
 export interface RecurringExpense {
   id: string
   name: string
   amount: number
   recurrenceInterval: RecurrenceInterval
   isManual: boolean
+  bankAccount: BankAccountSummary | null
   lastUsedDate: string | null
   nextDueDate: string | null
   isDue: boolean
@@ -97,6 +103,7 @@ export interface CreateRecurringExpenseRequest {
   amount: number
   recurrenceInterval: RecurrenceInterval
   isManual: boolean
+  bankAccountId?: string
 }
 
 export interface UpdateRecurringExpenseRequest {
@@ -104,6 +111,7 @@ export interface UpdateRecurringExpenseRequest {
   amount: number
   recurrenceInterval: RecurrenceInterval
   isManual: boolean
+  bankAccountId?: string
 }
 
 // =============================================================================

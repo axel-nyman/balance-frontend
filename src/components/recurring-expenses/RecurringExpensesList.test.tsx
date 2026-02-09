@@ -11,6 +11,7 @@ const mockExpenses: RecurringExpense[] = [
     amount: 8000,
     recurrenceInterval: 'MONTHLY',
     isManual: true,
+    bankAccount: { id: '1', name: 'Checking' },
     lastUsedDate: '2025-01-01',
     nextDueDate: '2025-02-01',
     isDue: true,
@@ -22,6 +23,7 @@ const mockExpenses: RecurringExpense[] = [
     amount: 3000,
     recurrenceInterval: 'BIANNUALLY',
     isManual: false,
+    bankAccount: null,
     lastUsedDate: '2025-01-01',
     nextDueDate: '2025-07-01',
     isDue: false,
@@ -33,6 +35,7 @@ const mockExpenses: RecurringExpense[] = [
     amount: 100,
     recurrenceInterval: 'MONTHLY',
     isManual: false,
+    bankAccount: null,
     lastUsedDate: null,
     nextDueDate: null,
     isDue: false,
@@ -136,6 +139,21 @@ describe('RecurringExpensesList', () => {
     await userEvent.click(editButtons[0])
 
     expect(onEdit).toHaveBeenCalled()
+  })
+
+  it('shows bank account name in table', () => {
+    render(<RecurringExpensesList {...defaultProps} />)
+
+    // "Checking" appears in both desktop table and mobile card for the first expense
+    expect(screen.getAllByText('Checking').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('shows em-dash for expenses without bank account', () => {
+    render(<RecurringExpensesList {...defaultProps} />)
+
+    // Em-dash appears for expenses without a bank account (Car Insurance and New Subscription)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(2)
   })
 
   it('calls onDelete when delete button is clicked', async () => {

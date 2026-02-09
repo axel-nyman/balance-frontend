@@ -34,6 +34,9 @@ export function RecurringExpenseRow({ expense, onEdit, onDelete }: RecurringExpe
         {formatCurrency(expense.amount)}
       </td>
       <td className="px-4 py-3 text-muted-foreground">
+        {expense.bankAccount?.name ?? '—'}
+      </td>
+      <td className="px-4 py-3 text-muted-foreground">
         {INTERVAL_LABELS[expense.recurrenceInterval]}
       </td>
       <td className="px-4 py-3 text-right">

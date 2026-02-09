@@ -121,8 +121,8 @@ export function StepExpenses() {
           id: newId,
           name: recurring.name,
           amount: recurring.amount,
-          bankAccountId: '',
-          bankAccountName: '',
+          bankAccountId: recurring.bankAccount?.id ?? '',
+          bankAccountName: recurring.bankAccount?.name ?? '',
           isManual: recurring.isManual,
           recurringExpenseId: recurring.id,
         },
@@ -198,7 +198,7 @@ export function StepExpenses() {
           variant="quick-add"
           name={recurring.name}
           amount={recurring.amount}
-          bankAccountName=""
+          bankAccountName={recurring.bankAccount?.name ?? ''}
           isDue={recurring.isDue}
           isManual={recurring.isManual}
           amountColorClass="text-expense"

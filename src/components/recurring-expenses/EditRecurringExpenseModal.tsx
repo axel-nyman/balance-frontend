@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { AccountSelect } from '@/components/accounts'
 import { useUpdateRecurringExpense } from '@/hooks'
 import { formatDate, formatMonthYear } from '@/lib/utils'
 import { updateRecurringExpenseSchema, type UpdateRecurringExpenseFormData } from './schemas'
@@ -63,6 +64,7 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
         amount: expense.amount,
         recurrenceInterval: expense.recurrenceInterval,
         isManual: expense.isManual,
+        bankAccountId: expense.bankAccount?.id ?? '',
       })
     }
   }, [expense, reset])
@@ -78,6 +80,7 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
           amount: data.amount,
           recurrenceInterval: data.recurrenceInterval,
           isManual: data.isManual,
+          bankAccountId: data.bankAccountId || undefined,
         },
       })
       toast.success('Recurring expense updated')
@@ -148,6 +151,15 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
                 ))}
               </SelectContent>
             </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Account</Label>
+            <AccountSelect
+              value={watch('bankAccountId') ?? ''}
+              onValueChange={(accountId) => setValue('bankAccountId', accountId)}
+              placeholder="No account (optional)"
+            />
           </div>
 
           <div className="flex items-center space-x-2">

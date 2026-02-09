@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.4.0...balance-frontend-v1.5.0) (2026-02-09)
+
+
+### Features
+
+* **recurring-expenses:** add optional bank account support ([b53351a](https://github.com/axel-nyman/balance-frontend/commit/b53351a6ad999185ee153fd62c9294839e361f43))
+
 ## [1.4.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.3.0...balance-frontend-v1.4.0) (2026-02-07)
 
 

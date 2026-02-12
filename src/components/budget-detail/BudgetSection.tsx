@@ -61,7 +61,7 @@ export function BudgetSection({
             <span className="font-medium text-foreground">{title}</span>
             <span className="text-sm text-muted-foreground">({items.length})</span>
           </div>
-          <span className={cn('font-semibold', colorClasses[totalColor])}>
+          <span className={cn('tabular-nums font-semibold', colorClasses[totalColor])}>
             {formatCurrency(total)}
           </span>
         </div>
@@ -95,7 +95,7 @@ export function BudgetSection({
                       )}
                     </div>
                     <div className="flex items-center gap-2 ml-4">
-                      <span className="font-medium text-foreground">
+                      <span className="tabular-nums font-medium text-foreground">
                         {formatCurrency(item.amount)}
                       </span>
                       {isEditable && (

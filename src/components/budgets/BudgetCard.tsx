@@ -26,7 +26,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
     >
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-3">
-          <h3 className="font-semibold text-lg text-foreground">
+          <h3 className="font-semibold text-lg tracking-tight text-foreground">
             {formatMonthYear(budget.month, budget.year)}
           </h3>
           <Badge
@@ -47,29 +47,28 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </Badge>
         </div>
 
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Income</span>
-            <span className="font-medium text-income">
+        <div className="space-y-2">
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm text-muted-foreground">Income</span>
+            <span className="text-lg tabular-nums font-normal text-income">
               {formatCurrency(budget.totals.income)}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Expenses</span>
-            <span className="font-medium text-expense">
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm text-muted-foreground">Expenses</span>
+            <span className="text-lg tabular-nums font-normal text-expense">
               {formatCurrency(budget.totals.expenses)}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-muted-foreground">Savings</span>
-            <span className="font-medium text-savings">
+          <div className="flex justify-between items-baseline">
+            <span className="text-sm text-muted-foreground">Savings</span>
+            <span className="text-lg tabular-nums font-normal text-savings">
               {formatCurrency(budget.totals.savings)}
             </span>
           </div>
-          <hr className="my-2" />
-          <div className="flex justify-between">
-            <span className="text-foreground font-medium">Balance</span>
-            <span className={`font-semibold ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
+          <div className="flex justify-between items-baseline mt-3 pt-3 border-t border-border">
+            <span className="text-sm text-foreground font-medium">Balance</span>
+            <span className={`text-2xl tabular-nums font-light ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
               {formatCurrency(balance)}
             </span>
           </div>

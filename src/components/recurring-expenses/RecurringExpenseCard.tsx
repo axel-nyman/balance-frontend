@@ -32,7 +32,7 @@ export function RecurringExpenseCard({ expense, onEdit, onDelete }: RecurringExp
               />
             </div>
             <h3 className="font-medium text-foreground truncate">{expense.name}</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm tabular-nums text-muted-foreground">
               {formatCurrency(expense.amount)} • {INTERVAL_LABELS[expense.recurrenceInterval]}
               {expense.bankAccount && ` • ${expense.bankAccount.name}`}
             </p>

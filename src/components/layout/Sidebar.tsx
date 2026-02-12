@@ -28,7 +28,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 h-full w-64 bg-background border-r border-border z-50',
+          'fixed top-0 left-0 h-full w-64 bg-background z-50',
+          'shadow-[1px_0_3px_oklch(0.2_0_0/0.04),0_0_1px_oklch(0.2_0_0/0.02)]',
           'transform transition-transform duration-200 ease-in-out',
           'lg:translate-x-0',
           open ? 'translate-x-0' : '-translate-x-full'
@@ -55,11 +56,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               onClick={onClose}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium',
-                  'transition-colors duration-150',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors duration-150',
                   isActive
-                    ? 'bg-accent text-primary'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    ? 'text-foreground font-semibold'
+                    : 'text-muted-foreground font-medium hover:bg-accent hover:text-foreground'
                 )
               }
             >

@@ -30,7 +30,7 @@ export function RecurringExpenseRow({ expense, onEdit, onDelete }: RecurringExpe
           <span className="font-medium text-foreground">{expense.name}</span>
         </div>
       </td>
-      <td className="px-4 py-3 text-right font-medium text-foreground">
+      <td className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
         {formatCurrency(expense.amount)}
       </td>
       <td className="px-4 py-3 text-muted-foreground">

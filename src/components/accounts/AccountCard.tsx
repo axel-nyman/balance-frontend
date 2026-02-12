@@ -34,7 +34,7 @@ export function AccountCard({ account, onEdit, onDelete, onClick }: AccountCardP
             <p className="text-sm text-muted-foreground truncate">
               {account.description || 'No description'}
             </p>
-            <p className="text-lg font-semibold text-foreground mt-2">
+            <p className="text-lg tabular-nums font-normal text-foreground mt-2">
               {formatCurrency(account.currentBalance)}
             </p>
           </div>

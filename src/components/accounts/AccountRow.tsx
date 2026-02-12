@@ -28,7 +28,7 @@ export function AccountRow({ account, onEdit, onDelete, onClick }: AccountRowPro
     >
       <td className="px-4 py-3 font-medium text-foreground">{account.name}</td>
       <td className="px-4 py-3 text-muted-foreground">{account.description || '—'}</td>
-      <td className="px-4 py-3 text-right font-medium text-foreground">
+      <td className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
         {formatCurrency(account.currentBalance)}
       </td>
       <td className="px-4 py-3 text-right">

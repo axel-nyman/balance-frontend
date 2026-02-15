@@ -26,9 +26,9 @@ export function RecurringExpenseCard({ expense, onEdit, onDelete }: RecurringExp
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <DueStatusIndicator
-                isDue={expense.isDue}
-                nextDueDate={expense.nextDueDate}
-                lastUsedDate={expense.lastUsedDate}
+                dueMonth={expense.dueMonth}
+                dueYear={expense.dueYear}
+                dueDisplay={expense.dueDisplay}
               />
             </div>
             <h3 className="font-medium text-foreground truncate">{expense.name}</h3>

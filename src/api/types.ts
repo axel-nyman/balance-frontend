@@ -88,9 +88,9 @@ export interface RecurringExpense {
   recurrenceInterval: RecurrenceInterval
   isManual: boolean
   bankAccount: BankAccountSummary | null
-  lastUsedDate: string | null
-  nextDueDate: string | null
-  isDue: boolean
+  dueMonth: number | null
+  dueYear: number | null
+  dueDisplay: string | null
   createdAt: string
 }
 

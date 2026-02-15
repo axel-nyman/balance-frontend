@@ -77,14 +77,20 @@ export function StepExpenses() {
           !addedRecurringExpenseIds.has(exp.id) || copyingIds.has(exp.id)
       )
       .sort((a, b) => {
-        if (a.isDue !== b.isDue) return a.isDue ? -1 : 1
+        const aIsDue = a.dueMonth === state.month && a.dueYear === state.year
+        const bIsDue = b.dueMonth === state.month && b.dueYear === state.year
+        if (aIsDue !== bIsDue) return aIsDue ? -1 : 1
         return a.name.localeCompare(b.name)
       })
-  }, [recurringExpenses, addedRecurringExpenseIds, copyingIds])
+  }, [recurringExpenses, addedRecurringExpenseIds, copyingIds, state.month, state.year])
 
   // Separate into due and not due
-  const dueExpenses = availableRecurring.filter((exp) => exp.isDue)
-  const otherExpenses = availableRecurring.filter((exp) => !exp.isDue)
+  const dueExpenses = availableRecurring.filter(
+    (exp) => exp.dueMonth === state.month && exp.dueYear === state.year
+  )
+  const otherExpenses = availableRecurring.filter(
+    (exp) => !(exp.dueMonth === state.month && exp.dueYear === state.year)
+  )
 
   // Check if all remaining available items are being copied (Card should collapse)
   const isLastItemsCopying = checkLastItemsCopying(availableRecurring)
@@ -199,7 +205,7 @@ export function StepExpenses() {
           name={recurring.name}
           amount={recurring.amount}
           bankAccountName={recurring.bankAccount?.name ?? ''}
-          isDue={recurring.isDue}
+          isDue={recurring.dueMonth === state.month && recurring.dueYear === state.year}
           isManual={recurring.isManual}
           amountColorClass="text-expense"
           onQuickAdd={() => handleAddRecurring(recurring)}

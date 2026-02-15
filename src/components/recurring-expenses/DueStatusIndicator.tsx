@@ -1,14 +1,14 @@
-import { formatMonthYear } from '@/lib/utils'
+import { getCurrentMonthYear } from '@/lib/utils'
 
 interface DueStatusIndicatorProps {
-  isDue: boolean
-  nextDueDate: string | null
-  lastUsedDate: string | null
+  dueMonth: number | null
+  dueYear: number | null
+  dueDisplay: string | null
 }
 
-export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStatusIndicatorProps) {
+export function DueStatusIndicator({ dueMonth, dueYear, dueDisplay }: DueStatusIndicatorProps) {
   // Never used
-  if (lastUsedDate === null) {
+  if (dueMonth === null) {
     return (
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-warning" aria-hidden="true" />
@@ -17,8 +17,9 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
     )
   }
 
-  // Due now
-  if (isDue) {
+  // Due now — matches current calendar month
+  const { month: currentMonth, year: currentYear } = getCurrentMonthYear()
+  if (dueMonth === currentMonth && dueYear === currentYear) {
     return (
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-expense" aria-hidden="true" />
@@ -27,16 +28,12 @@ export function DueStatusIndicator({ isDue, nextDueDate, lastUsedDate }: DueStat
     )
   }
 
-  // Not due - show next due date
-  if (nextDueDate) {
-    const date = new Date(nextDueDate)
-    const month = date.getMonth() + 1
-    const year = date.getFullYear()
-
+  // Future due date
+  if (dueDisplay) {
     return (
       <div className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-income" aria-hidden="true" />
-        <span className="text-sm text-muted-foreground">{formatMonthYear(month, year)}</span>
+        <span className="text-sm text-muted-foreground">{dueDisplay}</span>
       </div>
     )
   }

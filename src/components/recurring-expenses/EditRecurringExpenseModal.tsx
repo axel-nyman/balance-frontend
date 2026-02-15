@@ -22,7 +22,6 @@ import {
 } from '@/components/ui/select'
 import { AccountSelect } from '@/components/accounts'
 import { useUpdateRecurringExpense } from '@/hooks'
-import { formatDate, formatMonthYear } from '@/lib/utils'
 import { updateRecurringExpenseSchema, type UpdateRecurringExpenseFormData } from './schemas'
 import type { RecurringExpense } from '@/api/types'
 
@@ -88,17 +87,6 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
     } catch {
       // Error displayed inline
     }
-  }
-
-  const getNextDueDisplay = () => {
-    if (!expense) return null
-    if (expense.lastUsedDate === null) return 'Never used'
-    if (expense.isDue) return 'Due now'
-    if (expense.nextDueDate) {
-      const date = new Date(expense.nextDueDate)
-      return formatMonthYear(date.getMonth() + 1, date.getFullYear())
-    }
-    return 'Unknown'
   }
 
   return (
@@ -176,14 +164,10 @@ export function EditRecurringExpenseModal({ expense, onClose }: EditRecurringExp
           {/* Read-only info */}
           <div className="p-3 bg-muted rounded-xl space-y-1 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Last used:</span>
-              <span className="text-foreground">
-                {expense?.lastUsedDate ? formatDate(expense.lastUsedDate) : 'Never'}
-              </span>
-            </div>
-            <div className="flex justify-between">
               <span className="text-muted-foreground">Next due:</span>
-              <span className="text-foreground">{getNextDueDisplay()}</span>
+              <span className="text-foreground">
+                {expense?.dueDisplay ?? 'Never used'}
+              </span>
             </div>
           </div>
 

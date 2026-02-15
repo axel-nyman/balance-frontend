@@ -13,9 +13,9 @@ const mockExpense: RecurringExpense = {
   recurrenceInterval: 'MONTHLY',
   isManual: true,
   bankAccount: null,
-  lastUsedDate: '2025-01-15',
-  nextDueDate: '2025-02-15',
-  isDue: false,
+  dueMonth: 3,
+  dueYear: 2025,
+  dueDisplay: 'March 2025',
   createdAt: '2025-01-01',
 }
 
@@ -68,18 +68,18 @@ describe('EditRecurringExpenseModal', () => {
     })
   })
 
-  it('shows last used and next due dates', () => {
+  it('shows next due display value', () => {
     render(<EditRecurringExpenseModal expense={mockExpense} onClose={vi.fn()} />)
 
-    expect(screen.getByText(/last used/i)).toBeInTheDocument()
     expect(screen.getByText(/next due/i)).toBeInTheDocument()
+    expect(screen.getByText('March 2025')).toBeInTheDocument()
   })
 
-  it('shows "Never" for last used when null', () => {
-    const neverUsedExpense = { ...mockExpense, lastUsedDate: null, nextDueDate: null }
+  it('shows "Never used" when dueDisplay is null', () => {
+    const neverUsedExpense = { ...mockExpense, dueMonth: null, dueYear: null, dueDisplay: null }
     render(<EditRecurringExpenseModal expense={neverUsedExpense} onClose={vi.fn()} />)
 
-    expect(screen.getByText('Never')).toBeInTheDocument()
+    expect(screen.getByText('Never used')).toBeInTheDocument()
   })
 
   it('submits updated data', async () => {
@@ -157,19 +157,5 @@ describe('EditRecurringExpenseModal', () => {
     await userEvent.click(screen.getByRole('button', { name: /save/i }))
 
     expect(screen.getByRole('button', { name: /saving/i })).toBeDisabled()
-  })
-
-  it('shows "Never used" for next due when never used', () => {
-    const neverUsedExpense = { ...mockExpense, lastUsedDate: null, nextDueDate: null }
-    render(<EditRecurringExpenseModal expense={neverUsedExpense} onClose={vi.fn()} />)
-
-    expect(screen.getByText('Never used')).toBeInTheDocument()
-  })
-
-  it('shows "Due now" when expense is due', () => {
-    const dueExpense = { ...mockExpense, isDue: true }
-    render(<EditRecurringExpenseModal expense={dueExpense} onClose={vi.fn()} />)
-
-    expect(screen.getByText('Due now')).toBeInTheDocument()
   })
 })

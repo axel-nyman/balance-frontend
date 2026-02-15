@@ -7,6 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { LoadingState, EmptyState, ErrorState } from '@/components/shared'
+import { getCurrentMonthYear, monthYearToNumber } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { RecurringExpenseRow } from './RecurringExpenseRow'
 import { RecurringExpenseCard } from './RecurringExpenseCard'
@@ -22,23 +23,28 @@ interface RecurringExpensesListProps {
   onCreateNew: () => void
 }
 
-// Sort: due items first, then by next due date ascending
+// Sort: due items first, then never-used, then by due month/year ascending
 function sortExpenses(expenses: RecurringExpense[]): RecurringExpense[] {
+  const { month: currentMonth, year: currentYear } = getCurrentMonthYear()
+
   return [...expenses].sort((a, b) => {
+    const aIsDue = a.dueMonth === currentMonth && a.dueYear === currentYear
+    const bIsDue = b.dueMonth === currentMonth && b.dueYear === currentYear
+
     // Never used items (yellow) come after due items but before not-due items
-    const aScore = a.isDue ? 0 : a.lastUsedDate === null ? 1 : 2
-    const bScore = b.isDue ? 0 : b.lastUsedDate === null ? 1 : 2
+    const aScore = aIsDue ? 0 : a.dueMonth === null ? 1 : 2
+    const bScore = bIsDue ? 0 : b.dueMonth === null ? 1 : 2
 
     if (aScore !== bScore) return aScore - bScore
 
-    // Within same category, sort by next due date
-    if (a.nextDueDate && b.nextDueDate) {
-      return new Date(a.nextDueDate).getTime() - new Date(b.nextDueDate).getTime()
+    // Within same category, sort by due month/year
+    if (a.dueMonth != null && a.dueYear != null && b.dueMonth != null && b.dueYear != null) {
+      return monthYearToNumber(a.dueMonth, a.dueYear) - monthYearToNumber(b.dueMonth, b.dueYear)
     }
 
-    // Items without next due date come last
-    if (!a.nextDueDate) return 1
-    if (!b.nextDueDate) return -1
+    // Items without due month come last
+    if (a.dueMonth == null) return 1
+    if (b.dueMonth == null) return -1
 
     return 0
   })

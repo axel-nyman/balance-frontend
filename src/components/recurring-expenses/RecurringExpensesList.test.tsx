@@ -2,7 +2,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
 import { RecurringExpensesList } from './RecurringExpensesList'
+import { getCurrentMonthYear } from '@/lib/utils'
 import type { RecurringExpense } from '@/api/types'
+
+const { month: currentMonth, year: currentYear } = getCurrentMonthYear()
 
 const mockExpenses: RecurringExpense[] = [
   {
@@ -12,9 +15,9 @@ const mockExpenses: RecurringExpense[] = [
     recurrenceInterval: 'MONTHLY',
     isManual: true,
     bankAccount: { id: '1', name: 'Checking' },
-    lastUsedDate: '2025-01-01',
-    nextDueDate: '2025-02-01',
-    isDue: true,
+    dueMonth: currentMonth,
+    dueYear: currentYear,
+    dueDisplay: 'February',
     createdAt: '2025-01-01',
   },
   {
@@ -24,9 +27,9 @@ const mockExpenses: RecurringExpense[] = [
     recurrenceInterval: 'BIANNUALLY',
     isManual: false,
     bankAccount: null,
-    lastUsedDate: '2025-01-01',
-    nextDueDate: '2025-07-01',
-    isDue: false,
+    dueMonth: 7,
+    dueYear: 2025,
+    dueDisplay: 'July 2025',
     createdAt: '2025-01-01',
   },
   {
@@ -36,9 +39,9 @@ const mockExpenses: RecurringExpense[] = [
     recurrenceInterval: 'MONTHLY',
     isManual: false,
     bankAccount: null,
-    lastUsedDate: null,
-    nextDueDate: null,
-    isDue: false,
+    dueMonth: null,
+    dueYear: null,
+    dueDisplay: null,
     createdAt: '2025-01-01',
   },
 ]

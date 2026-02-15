@@ -23,9 +23,9 @@ export function RecurringExpenseRow({ expense, onEdit, onDelete }: RecurringExpe
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
           <DueStatusIndicator
-            isDue={expense.isDue}
-            nextDueDate={expense.nextDueDate}
-            lastUsedDate={expense.lastUsedDate}
+            dueMonth={expense.dueMonth}
+            dueYear={expense.dueYear}
+            dueDisplay={expense.dueDisplay}
           />
           <span className="font-medium text-foreground">{expense.name}</span>
         </div>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.5.0...balance-frontend-v1.6.0) (2026-02-15)
+
+
+### Features
+
+* **recurring-expenses:** migrate to month-based due date model ([8e8ce64](https://github.com/axel-nyman/balance-frontend/commit/8e8ce64d73c3155489ae224cb0f166237ce5346c))
+
 ## [1.5.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.4.0...balance-frontend-v1.5.0) (2026-02-09)
 
 

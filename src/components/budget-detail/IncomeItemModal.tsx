@@ -76,6 +76,7 @@ export function IncomeItemModal({ budgetId, item, open, onOpenChange }: IncomeIt
         await addIncome.mutateAsync(data)
         toast.success('Income added')
       }
+      reset()
       onOpenChange(false)
     } catch {
       // Error displayed inline

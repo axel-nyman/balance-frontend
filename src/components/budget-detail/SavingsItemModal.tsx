@@ -76,6 +76,7 @@ export function SavingsItemModal({ budgetId, item, open, onOpenChange }: Savings
         await addSavings.mutateAsync(data)
         toast.success('Savings added')
       }
+      reset()
       onOpenChange(false)
     } catch {
       // Error displayed inline

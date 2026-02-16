@@ -81,6 +81,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
         await addExpense.mutateAsync(data)
         toast.success('Expense added')
       }
+      reset()
       onOpenChange(false)
     } catch {
       // Error displayed inline

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.6.0...balance-frontend-v1.6.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* **budget-detail:** reset form on modal submit to prevent stale prefill ([472d1ee](https://github.com/axel-nyman/balance-frontend/commit/472d1ee550884e0ca2f7b43aa56ac38400644491))
+
 ## [1.6.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.5.0...balance-frontend-v1.6.0) (2026-02-15)
 
 

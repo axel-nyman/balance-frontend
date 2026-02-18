@@ -20,6 +20,20 @@ export function formatCurrency(amount: number): string {
 }
 
 /**
+ * Format currency without decimals for overview/summary display
+ * Examples: 1234.56 -> "1 235 kr", -500 -> "-500 kr"
+ */
+export function formatCurrencyCompact(amount: number): string {
+  const formatted = new Intl.NumberFormat('sv-SE', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount)
+
+  return `${formatted} kr`
+}
+
+/**
  * Format a date string for display
  * Examples: "2025-03-15" -> "15 mar 2025"
  */

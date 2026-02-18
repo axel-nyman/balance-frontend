@@ -62,19 +62,19 @@ describe('BudgetCard', () => {
   it('displays income formatted as SEK', () => {
     render(<BudgetCard budget={mockDraftBudget} />)
 
-    expect(screen.getByText(/50 000,00 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/50 000 kr/)).toBeInTheDocument()
   })
 
   it('displays expenses formatted as SEK', () => {
     render(<BudgetCard budget={mockDraftBudget} />)
 
-    expect(screen.getByText(/35 000,00 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/35 000 kr/)).toBeInTheDocument()
   })
 
   it('displays savings formatted as SEK', () => {
     render(<BudgetCard budget={mockDraftBudget} />)
 
-    expect(screen.getByText(/10 000,00 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/10 000 kr/)).toBeInTheDocument()
   })
 
   it('displays balance', () => {
@@ -83,7 +83,7 @@ describe('BudgetCard', () => {
     // Find the balance row and check the value
     const balanceLabel = screen.getByText('Balance')
     const balanceRow = balanceLabel.closest('div')
-    expect(balanceRow).toHaveTextContent('5 000,00 kr')
+    expect(balanceRow).toHaveTextContent('5 000 kr')
   })
 
   it('shows positive balance in green', () => {

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import { Lock, FileEdit } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { formatCurrency, formatMonthYear } from '@/lib/utils'
+import { formatCurrencyCompact, formatMonthYear } from '@/lib/utils'
 import type { BudgetSummary, BudgetStatus } from '@/api/types'
 
 interface BudgetCardProps {
@@ -24,7 +24,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
       className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={handleClick}
     >
-      <CardContent className="p-4">
+      <CardContent>
         <div className="flex justify-between items-start mb-3">
           <h3 className="font-semibold text-lg tracking-tight text-foreground">
             {formatMonthYear(budget.month, budget.year)}
@@ -47,29 +47,29 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           </Badge>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           <div className="flex justify-between items-baseline">
             <span className="text-sm text-muted-foreground">Income</span>
-            <span className="text-lg tabular-nums font-normal text-income">
-              {formatCurrency(budget.totals.income)}
+            <span className="text-sm tabular-nums text-foreground">
+              {formatCurrencyCompact(budget.totals.income)}
             </span>
           </div>
           <div className="flex justify-between items-baseline">
             <span className="text-sm text-muted-foreground">Expenses</span>
-            <span className="text-lg tabular-nums font-normal text-expense">
-              {formatCurrency(budget.totals.expenses)}
+            <span className="text-sm tabular-nums text-foreground">
+              {formatCurrencyCompact(budget.totals.expenses)}
             </span>
           </div>
           <div className="flex justify-between items-baseline">
             <span className="text-sm text-muted-foreground">Savings</span>
-            <span className="text-lg tabular-nums font-normal text-savings">
-              {formatCurrency(budget.totals.savings)}
+            <span className="text-sm tabular-nums text-foreground">
+              {formatCurrencyCompact(budget.totals.savings)}
             </span>
           </div>
-          <div className="flex justify-between items-baseline mt-3 pt-3 border-t border-border">
+          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
             <span className="text-sm text-foreground font-medium">Balance</span>
-            <span className={`text-2xl tabular-nums font-light ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
-              {formatCurrency(balance)}
+            <span className={`text-xl tabular-nums font-semibold ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
+              {formatCurrencyCompact(balance)}
             </span>
           </div>
         </div>

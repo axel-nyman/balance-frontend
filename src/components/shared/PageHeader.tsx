@@ -10,7 +10,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, action, backLink }: PageHeaderProps) {
   return (
-    <div className="mb-6">
+    <div className="mb-4">
       {backLink && <div className="mb-2">{backLink}</div>}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>

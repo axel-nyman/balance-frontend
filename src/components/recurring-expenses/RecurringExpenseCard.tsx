@@ -21,7 +21,7 @@ const INTERVAL_LABELS: Record<string, string> = {
 export function RecurringExpenseCard({ expense, onEdit, onDelete }: RecurringExpenseCardProps) {
   return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent>
         <div className="flex justify-between items-center">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">

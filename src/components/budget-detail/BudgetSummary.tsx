@@ -13,7 +13,7 @@ export function BudgetSummary({ totalIncome, totalExpenses, totalSavings }: Budg
 
   return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-income-muted rounded-xl p-3">
             <p className="text-xs text-muted-foreground uppercase tracking-wide">Income</p>

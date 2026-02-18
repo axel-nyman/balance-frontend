@@ -27,7 +27,7 @@ export function AccountCard({ account, onEdit, onDelete, onClick }: AccountCardP
       className="cursor-pointer hover:shadow-md transition-shadow"
       onClick={() => onClick(account)}
     >
-      <CardContent className="p-4">
+      <CardContent>
         <div className="flex justify-between items-center">
           <div className="flex-1 min-w-0">
             <h3 className="font-medium text-foreground truncate">{account.name}</h3>

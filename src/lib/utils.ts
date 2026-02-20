@@ -33,6 +33,18 @@ export function formatCurrencyCompact(amount: number): string {
   return `${formatted} kr`
 }
 
+/** Smart currency: no decimals for whole amounts, 2 decimals otherwise. Always positive. */
+export function formatCurrencySmart(amount: number): string {
+  const abs = Math.abs(amount)
+  const isWhole = abs % 1 === 0
+  const formatted = new Intl.NumberFormat('sv-SE', {
+    style: 'decimal',
+    minimumFractionDigits: isWhole ? 0 : 2,
+    maximumFractionDigits: isWhole ? 0 : 2,
+  }).format(abs)
+  return `${formatted} kr`
+}
+
 /**
  * Format a date string for display
  * Examples: "2025-03-15" -> "15 mar 2025"

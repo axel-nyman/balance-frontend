@@ -12,9 +12,12 @@ interface TodoItemListProps {
 export function TodoItemList({ budgetId, items }: TodoItemListProps) {
   const [balanceModalItem, setBalanceModalItem] = useState<TodoItem | null>(null)
 
-  // Separate items by type
-  const paymentItems = items.filter((item) => item.type === 'PAYMENT')
-  const transferItems = items.filter((item) => item.type === 'TRANSFER')
+  // Separate items by type, sorted by createdAt for stable order across refetches
+  const sorted = (arr: TodoItem[]) =>
+    [...arr].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+
+  const paymentItems = sorted(items.filter((item) => item.type === 'PAYMENT'))
+  const transferItems = sorted(items.filter((item) => item.type === 'TRANSFER'))
 
   const handleUpdateBalance = (item: TodoItem) => {
     setBalanceModalItem(item)
@@ -36,7 +39,7 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
       {/* Transfer Items */}
       {transferItems.length > 0 && (
         <Card>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium">Transfers</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -57,7 +60,7 @@ export function TodoItemList({ budgetId, items }: TodoItemListProps) {
       {/* Payment Items */}
       {paymentItems.length > 0 && (
         <Card>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-2">
             <CardTitle className="text-base font-medium">Payments</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">

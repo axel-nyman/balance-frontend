@@ -1,10 +1,9 @@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Wallet } from 'lucide-react'
 import { toast } from 'sonner'
 import { useUpdateTodoItem } from '@/hooks'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrencySmart } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 import type { TodoItem } from '@/api/types'
 
@@ -14,11 +13,22 @@ interface TodoItemRowProps {
   onUpdateBalance?: () => void
 }
 
+function getDisplayName(item: TodoItem): string {
+  if (item.type === 'TRANSFER') {
+    const from = item.fromAccount.name
+    const to = item.toAccount?.name ?? ''
+    return `${from} → ${to}`
+  }
+  // Payment: extract payee from backend name like "Pay Netflix (100.00) from Checking"
+  return item.name.replace(/^Pay /, '').replace(/ \(.*$/, '')
+}
+
 export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProps) {
   const updateTodo = useUpdateTodoItem(budgetId)
 
   const isCompleted = item.status === 'COMPLETED'
   const isTransfer = item.type === 'TRANSFER'
+  const displayName = getDisplayName(item)
 
   const handleToggle = async () => {
     const newStatus = isCompleted ? 'PENDING' : 'COMPLETED'
@@ -39,7 +49,7 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
         checked={isCompleted}
         onCheckedChange={handleToggle}
         disabled={updateTodo.isPending}
-        aria-label={`Mark "${item.name}" as ${isCompleted ? 'pending' : 'completed'}`}
+        aria-label={`Mark "${displayName}" as ${isCompleted ? 'pending' : 'completed'}`}
       />
 
       <div className="flex-1 min-w-0">
@@ -47,40 +57,27 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
           'font-medium text-foreground',
           isCompleted && 'line-through text-muted-foreground'
         )}>
-          {item.name}
+          {displayName}
         </p>
-        {isTransfer && item.toAccount && (
-          <p className="text-sm text-muted-foreground">
-            To: {item.toAccount.name}
-          </p>
-        )}
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Badge variant="outline" className={cn(
-          'text-xs',
-          isCompleted && 'opacity-50'
+        <div className={cn(
+          'inline-flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums',
+          isCompleted && 'line-through'
         )}>
-          {isTransfer ? 'Transfer' : 'Payment'}
-        </Badge>
-
-        <span className={cn(
-          'font-medium text-foreground tabular-nums',
-          isCompleted && 'line-through text-muted-foreground'
-        )}>
-          {formatCurrency(item.amount)}
-        </span>
-
-        {isTransfer && isCompleted && onUpdateBalance && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onUpdateBalance}
-            title="Update account balance"
-          >
-            <Wallet className="w-4 h-4 text-muted-foreground" />
-          </Button>
-        )}
+          {isTransfer
+            ? formatCurrencySmart(item.amount)
+            : `${formatCurrencySmart(item.amount)} from ${item.fromAccount.name}`}
+          {isTransfer && isCompleted && onUpdateBalance && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 no-underline"
+              onClick={onUpdateBalance}
+              title="Update account balance"
+            >
+              <Wallet className="w-3.5 h-3.5 text-muted-foreground" />
+            </Button>
+          )}
+        </div>
       </div>
     </li>
   )

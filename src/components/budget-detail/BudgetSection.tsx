@@ -50,7 +50,7 @@ export function BudgetSection({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="overflow-hidden bg-card rounded-2xl shadow-sm">
       <CollapsibleTrigger asChild>
-        <div className="flex items-center justify-between p-4 cursor-pointer hover:bg-accent rounded-t-2xl">
+        <div className="flex items-center justify-between px-6 py-4 cursor-pointer hover:bg-accent rounded-t-2xl">
           <div className="flex items-center gap-2">
             <ChevronDown
               className={cn(
@@ -86,7 +86,7 @@ export function BudgetSection({
                 {items.map((item) => (
                   <li
                     key={item.id}
-                    className="flex items-center justify-between px-4 py-3 hover:bg-accent"
+                    className="flex items-center justify-between px-6 py-3 hover:bg-accent"
                   >
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-foreground truncate">{item.label}</p>
@@ -125,7 +125,7 @@ export function BudgetSection({
               {isEditable && onAdd && (
                 <button
                   onClick={onAdd}
-                  className="flex items-center gap-2 w-full px-4 py-3 text-muted-foreground hover:bg-accent hover:text-foreground border-t border-border transition-colors rounded-b-2xl"
+                  className="flex items-center gap-2 w-full px-6 py-3 text-muted-foreground hover:bg-accent hover:text-foreground border-t border-border transition-colors rounded-b-2xl"
                 >
                   <Plus className="w-4 h-4" />
                   <span className="text-sm">Add {title.toLowerCase()}</span>

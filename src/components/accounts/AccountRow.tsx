@@ -26,12 +26,12 @@ export function AccountRow({ account, onEdit, onDelete, onClick }: AccountRowPro
       className="hover:bg-accent cursor-pointer"
       onClick={() => onClick(account)}
     >
-      <td className="px-4 py-3 font-medium text-foreground">{account.name}</td>
+      <td className="pl-6 pr-4 py-3 font-medium text-foreground">{account.name}</td>
       <td className="px-4 py-3 text-muted-foreground">{account.description || '—'}</td>
       <td className="px-4 py-3 text-right tabular-nums font-medium text-foreground">
         {formatCurrency(account.currentBalance)}
       </td>
-      <td className="px-4 py-3 text-right">
+      <td className="pl-4 pr-6 py-3 text-right">
         <div className="flex justify-end gap-1">
           <Button
             variant="ghost"

@@ -15,7 +15,6 @@ export function Header({ onMenuClick }: HeaderProps) {
         >
           <Menu className="w-6 h-6" />
         </button>
-        <h1 className="ml-3 text-lg font-semibold text-foreground">Balance</h1>
       </div>
     </header>
   )

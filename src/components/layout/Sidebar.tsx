@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router'
 import { LayoutDashboard, Wallet, RefreshCw, X } from 'lucide-react'
+import logo from '@/assets/logo.png'
 import { cn } from '@/lib/utils'
 import { ROUTES } from '@/routes'
 
@@ -37,7 +38,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-border">
-          <h1 className="text-xl font-semibold text-foreground">Balance</h1>
+          <div className="flex items-center gap-2.5">
+            <img src={logo} alt="" className="w-8 h-8" />
+            <h1 className="text-xl font-semibold text-foreground">Balance</h1>
+          </div>
           <button
             onClick={onClose}
             className="p-2 rounded-xl hover:bg-accent lg:hidden"

@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router'
-import { Lock, FileEdit } from 'lucide-react'
+import { Lock, FileEdit, Check, ListChecks, TrendingUp } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrencyCompact, formatMonthYear } from '@/lib/utils'
+import { deriveCardLifecycleState } from '@/lib/budget-lifecycle'
+import { useTodoList } from '@/hooks/use-todo'
 import type { BudgetSummary, BudgetStatus } from '@/api/types'
 
 interface BudgetCardProps {
@@ -13,10 +15,70 @@ export function BudgetCard({ budget }: BudgetCardProps) {
   const navigate = useNavigate()
 
   const isLocked: boolean = budget.status === ('LOCKED' as BudgetStatus)
-  const balance = budget.totals.balance
+
+  const { data: todoData, isError: todoError } = useTodoList(budget.id, {
+    enabled: isLocked,
+    staleTime: 5 * 60 * 1000,
+  })
+
+  const state = deriveCardLifecycleState(budget.totals, isLocked, todoData?.summary, todoError)
 
   const handleClick = () => {
     navigate(`/budgets/${budget.id}`)
+  }
+
+  function renderHero() {
+    if (state === null) {
+      // Loading state
+      return (
+        <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
+          <span className="text-sm text-foreground font-medium">Todos</span>
+          <div className="h-7 w-24 bg-muted animate-pulse rounded" />
+        </div>
+      )
+    }
+
+    switch (state.type) {
+      case 'draft-unbalanced':
+        return (
+          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
+            <span className="text-sm text-foreground font-medium">Balance</span>
+            <span className={`text-xl tabular-nums font-semibold ${state.balance >= 0 ? 'text-income' : 'text-expense'}`}>
+              {formatCurrencyCompact(state.balance)}
+            </span>
+          </div>
+        )
+      case 'draft-balanced':
+        return (
+          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
+            <span className="text-sm text-foreground font-medium">Balance</span>
+            <span className="text-xl font-semibold text-income flex items-center gap-1.5">
+              <Check className="w-5 h-5" />
+              Balanced
+            </span>
+          </div>
+        )
+      case 'locked-in-progress':
+        return (
+          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
+            <span className="text-sm text-foreground font-medium">Todos</span>
+            <span className="text-xl font-semibold text-muted-foreground flex items-center gap-1.5">
+              <ListChecks className="w-5 h-5" />
+              {state.completed}/{state.total} done
+            </span>
+          </div>
+        )
+      case 'locked-complete':
+        return (
+          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
+            <span className="text-sm text-foreground font-medium">Saved</span>
+            <span className="text-xl tabular-nums font-semibold text-income flex items-center gap-1.5">
+              <TrendingUp className="w-5 h-5" />
+              {state.savingsRate}%
+            </span>
+          </div>
+        )
+    }
   }
 
   return (
@@ -66,12 +128,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
               {formatCurrencyCompact(budget.totals.savings)}
             </span>
           </div>
-          <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
-            <span className="text-sm text-foreground font-medium">Balance</span>
-            <span className={`text-xl tabular-nums font-semibold ${balance >= 0 ? 'text-income' : 'text-expense'}`}>
-              {formatCurrencyCompact(balance)}
-            </span>
-          </div>
+          {renderHero()}
         </div>
       </CardContent>
     </Card>

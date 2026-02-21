@@ -216,11 +216,7 @@ export function BudgetDetailPage() {
       />
 
       <div className="space-y-6">
-        <BudgetSummary
-          totalIncome={budget.totals.income}
-          totalExpenses={budget.totals.expenses}
-          totalSavings={budget.totals.savings}
-        />
+        <BudgetSummary budget={budget} />
 
         <BudgetSection
           title="Income"

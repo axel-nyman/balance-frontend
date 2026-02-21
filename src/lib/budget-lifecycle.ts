@@ -52,7 +52,7 @@ export function deriveDetailLifecycleState(
 
 export type CardLifecycleState =
   | { type: 'draft-unbalanced'; balance: number }
-  | { type: 'draft-balanced' }
+  | { type: 'draft-balanced'; balance: number }
   | { type: 'locked-in-progress'; completed: number; total: number }
   | { type: 'locked-complete'; savingsRate: number }
 
@@ -64,7 +64,7 @@ export function deriveCardLifecycleState(
 ): CardLifecycleState | null {
   if (!isLocked) {
     if (isBudgetBalanced(totals.balance)) {
-      return { type: 'draft-balanced' }
+      return { type: 'draft-balanced', balance: totals.balance }
     }
     return { type: 'draft-unbalanced', balance: totals.balance }
   }

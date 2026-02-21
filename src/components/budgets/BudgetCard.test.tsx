@@ -160,18 +160,21 @@ describe('BudgetCard', () => {
   })
 
   // Draft balanced state
-  it('shows "Balanced" with check icon for balanced draft budget', () => {
+  it('shows balance amount for balanced draft budget', () => {
     render(<BudgetCard budget={mockBalancedDraftBudget} />)
 
-    expect(screen.getByText('Balanced')).toBeInTheDocument()
-    expect(screen.getByText('Balance')).toBeInTheDocument()
+    const balanceLabel = screen.getByText('Balance')
+    const balanceRow = balanceLabel.closest('div')
+    expect(balanceRow).toHaveTextContent('0 kr')
   })
 
-  it('shows "Balanced" in green for balanced draft', () => {
+  it('shows balanced amount in green for balanced draft', () => {
     render(<BudgetCard budget={mockBalancedDraftBudget} />)
 
-    const balanced = screen.getByText('Balanced')
-    expect(balanced.closest('span')).toHaveClass('text-income')
+    const balanceLabel = screen.getByText('Balance')
+    const balanceRow = balanceLabel.closest('div')
+    const balanceValue = balanceRow?.querySelector('.text-income')
+    expect(balanceValue).toBeInTheDocument()
   })
 
   // Locked, todos in progress

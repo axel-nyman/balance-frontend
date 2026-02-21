@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { Lock, FileEdit, Check, ListChecks, TrendingUp } from 'lucide-react'
+import { Lock, FileEdit, ListChecks, TrendingUp } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { formatCurrencyCompact, formatMonthYear } from '@/lib/utils'
@@ -52,9 +52,8 @@ export function BudgetCard({ budget }: BudgetCardProps) {
         return (
           <div className="flex justify-between items-baseline pt-3 mt-2 border-t border-border">
             <span className="text-sm text-foreground font-medium">Balance</span>
-            <span className="text-xl font-semibold text-income flex items-center gap-1.5">
-              <Check className="w-5 h-5" />
-              Balanced
+            <span className="text-xl tabular-nums font-semibold text-income">
+              {formatCurrencyCompact(state.balance)}
             </span>
           </div>
         )

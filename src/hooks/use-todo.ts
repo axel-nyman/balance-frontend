@@ -3,11 +3,12 @@ import { queryKeys } from './query-keys'
 import { getTodoList, updateTodoItem } from '@/api'
 import type { UpdateTodoItemRequest, TodoList } from '@/api'
 
-export function useTodoList(budgetId: string) {
+export function useTodoList(budgetId: string, options?: { enabled?: boolean; staleTime?: number }) {
   return useQuery({
     queryKey: queryKeys.budgets.todo(budgetId),
     queryFn: () => getTodoList(budgetId),
-    enabled: !!budgetId,
+    enabled: !!budgetId && (options?.enabled !== false),
+    staleTime: options?.staleTime,
   })
 }
 

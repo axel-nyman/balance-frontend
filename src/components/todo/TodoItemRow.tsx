@@ -54,14 +54,18 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
 
       <div className="flex-1 min-w-0">
         <p className={cn(
-          'font-medium text-foreground',
-          isCompleted && 'line-through text-muted-foreground'
+          'font-medium transition-colors duration-200 animate-strikethrough',
+          isCompleted
+            ? 'text-muted-foreground line-through decoration-current'
+            : 'text-foreground decoration-transparent'
         )}>
           {displayName}
         </p>
         <div className={cn(
-          'inline-flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums',
-          isCompleted && 'line-through'
+          'inline-flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums transition-colors duration-200 animate-strikethrough',
+          isCompleted
+            ? 'line-through decoration-current'
+            : 'decoration-transparent'
         )}>
           {isTransfer
             ? formatCurrencySmart(item.amount)

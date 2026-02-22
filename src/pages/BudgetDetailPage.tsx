@@ -30,6 +30,7 @@ function mapExpensesToSectionItems(expenses: BudgetExpense[]) {
     label: item.name,
     amount: item.amount,
     sublabel: item.bankAccount.name,
+    isManual: item.isManual,
   }))
 }
 

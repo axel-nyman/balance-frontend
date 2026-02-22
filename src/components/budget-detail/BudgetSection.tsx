@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, Plus, Pencil, Trash2 } from 'lucide-react'
+import { ChevronDown, Plus, Pencil, Trash2, HandCoins } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Collapsible,
@@ -14,6 +14,7 @@ interface BudgetSectionItem {
   label: string
   amount: number
   sublabel?: string
+  isManual?: boolean
 }
 
 interface BudgetSectionProps {
@@ -89,7 +90,12 @@ export function BudgetSection({
                     className="flex items-center justify-between px-6 py-3 hover:bg-accent"
                   >
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-foreground truncate">{item.label}</p>
+                      <div className="flex items-center gap-1.5">
+                        <p className="font-medium text-foreground truncate">{item.label}</p>
+                        {item.isManual && (
+                          <HandCoins className="w-4 h-4 shrink-0 text-warning" aria-label="Manual payment" />
+                        )}
+                      </div>
                       {item.sublabel && (
                         <p className="text-sm text-muted-foreground truncate">{item.sublabel}</p>
                       )}

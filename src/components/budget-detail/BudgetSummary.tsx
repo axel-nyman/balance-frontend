@@ -170,7 +170,7 @@ function DraftBalanced({ state }: { state: Extract<DetailLifecycleState, { type:
         </div>
         <div>
           <p className="text-income font-medium">Budget balanced</p>
-          <p className="text-sm text-muted-foreground">Ready to lock and start tracking</p>
+          <p className="text-sm text-muted-foreground hidden sm:block">Ready to lock and start tracking</p>
         </div>
       </div>
       <StatsRow income={totals.income} expenses={totals.expenses} savings={totals.savings} />

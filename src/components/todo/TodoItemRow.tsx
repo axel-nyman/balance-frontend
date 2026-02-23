@@ -54,7 +54,7 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
 
       <div className="flex-1 min-w-0">
         <p className={cn(
-          'font-medium transition-colors duration-200 animate-strikethrough',
+          'font-medium transition-colors duration-200 transition-strikethrough',
           isCompleted
             ? 'text-muted-foreground line-through decoration-current'
             : 'text-foreground decoration-transparent'
@@ -62,7 +62,7 @@ export function TodoItemRow({ budgetId, item, onUpdateBalance }: TodoItemRowProp
           {displayName}
         </p>
         <div className={cn(
-          'inline-flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums transition-colors duration-200 animate-strikethrough',
+          'inline-flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums transition-colors duration-200 transition-strikethrough',
           isCompleted
             ? 'line-through decoration-current'
             : 'decoration-transparent'

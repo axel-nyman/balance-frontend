@@ -285,7 +285,7 @@
     }
   }
 
-  .animate-strikethrough {
+  .transition-strikethrough {
     text-decoration-color: inherit;
     transition: text-decoration-color 200ms ease-out;
   }

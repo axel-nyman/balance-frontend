@@ -1,11 +1,10 @@
 import { Sparkles, Check, ListChecks, CircleCheckBig } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { formatCurrency, getMonthName } from '@/lib/utils'
-import { deriveDetailLifecycleState } from '@/lib/budget-lifecycle'
+import { cn, formatCurrency, getMonthName, isBudgetBalanced } from '@/lib/utils'
+import { deriveDetailLifecycleState, TODO_STALE_TIME } from '@/lib/budget-lifecycle'
 import type { DetailLifecycleState } from '@/lib/budget-lifecycle'
 import { useTodoList } from '@/hooks/use-todo'
-import { cn } from '@/lib/utils'
 import type { BudgetDetail } from '@/api/types'
 
 interface BudgetSummaryProps {
@@ -24,7 +23,7 @@ function BalanceBar({ income, expenses, savings, subdued }: {
 }) {
   const total = income + expenses + savings
   const overAllocated = expenses + savings > income
-  const isBalanced = income > 0 && expenses + savings === income
+  const isBalanced = income > 0 && isBudgetBalanced(income - expenses - savings)
 
   if (total === 0) {
     return (
@@ -197,13 +196,21 @@ function LockedInProgress({ state }: { state: Extract<DetailLifecycleState, { ty
   )
 }
 
+function LockedErrorFallback({ state }: { state: Extract<DetailLifecycleState, { type: 'locked-error-fallback' }> }) {
+  const { totals } = state
+  return (
+    <div className="space-y-3">
+      <BalanceBar income={totals.income} expenses={totals.expenses} savings={totals.savings} subdued />
+      <StatsRow income={totals.income} expenses={totals.expenses} savings={totals.savings} />
+    </div>
+  )
+}
+
 function LockedComplete({ state, monthName }: {
   state: Extract<DetailLifecycleState, { type: 'locked-complete' }>
   monthName: string
 }) {
-  const { totals, savingsRate } = state
-  const expensePercent = totals.income > 0 ? Math.round((totals.expenses / totals.income) * 100) : 0
-  const savingsPercent = totals.income > 0 ? Math.round((totals.savings / totals.income) * 100) : 0
+  const { totals, savingsRate, expenseRate } = state
 
   return (
     <div className="space-y-3 text-center">
@@ -220,12 +227,12 @@ function LockedComplete({ state, monthName }: {
           <div className="text-center">
             <p className="text-xs text-muted-foreground uppercase tracking-wide">Expenses</p>
             <p className="text-sm tabular-nums font-medium">{formatCurrency(totals.expenses)}</p>
-            <p className="text-xs tabular-nums text-muted-foreground">{expensePercent}%</p>
+            <p className="text-xs tabular-nums text-muted-foreground">{expenseRate}%</p>
           </div>
           <div className="text-center">
             <p className="text-xs text-muted-foreground uppercase tracking-wide">Savings</p>
             <p className="text-sm tabular-nums font-medium">{formatCurrency(totals.savings)}</p>
-            <p className="text-xs tabular-nums text-muted-foreground">{savingsPercent}%</p>
+            <p className="text-xs tabular-nums text-muted-foreground">{savingsRate}%</p>
           </div>
         </div>
       </div>
@@ -261,7 +268,7 @@ export function BudgetSummary({ budget }: BudgetSummaryProps) {
 
   const { data: todoData, isError: todoError } = useTodoList(budget.id, {
     enabled: isLocked,
-    staleTime: 5 * 60 * 1000,
+    staleTime: TODO_STALE_TIME,
   })
 
   const state = deriveDetailLifecycleState(budget.totals, isLocked, hasItems, todoData?.summary, todoError)
@@ -284,6 +291,8 @@ export function BudgetSummary({ budget }: BudgetSummaryProps) {
         return <LockedInProgress state={state} />
       case 'locked-complete':
         return <LockedComplete state={state} monthName={getMonthName(budget.month)} />
+      case 'locked-error-fallback':
+        return <LockedErrorFallback state={state} />
     }
   }
 

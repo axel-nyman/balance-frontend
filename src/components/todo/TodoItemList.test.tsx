@@ -44,29 +44,29 @@ describe('TodoItemList', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
 
     expect(screen.getByText('Payments')).toBeInTheDocument()
-    expect(screen.getByText('Pay Rent')).toBeInTheDocument()
-    expect(screen.getByText('Pay Insurance')).toBeInTheDocument()
+    expect(screen.getByText('Rent')).toBeInTheDocument()
+    expect(screen.getByText('Insurance')).toBeInTheDocument()
   })
 
   it('renders transfer items under Transfers section', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
 
     expect(screen.getByText('Transfers')).toBeInTheDocument()
-    expect(screen.getByText('Transfer to Savings')).toBeInTheDocument()
+    expect(screen.getByText('Main Account → Savings Account')).toBeInTheDocument()
   })
 
-  it('shows destination account for transfer items', () => {
+  it('shows transfer as from → to format', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
 
-    expect(screen.getByText(/to: savings account/i)).toBeInTheDocument()
+    expect(screen.getByText(/Main Account → Savings Account/)).toBeInTheDocument()
   })
 
   it('shows amounts for all items', () => {
     render(<TodoItemList budgetId="123" items={mockItems} />)
 
-    expect(screen.getByText(/8 000,00 kr/)).toBeInTheDocument()
-    expect(screen.getByText(/500,00 kr/)).toBeInTheDocument()
-    expect(screen.getByText(/5 000,00 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/8 000 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/500 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/5 000 kr/)).toBeInTheDocument()
   })
 
   it('does not show Payments section when no payments', () => {

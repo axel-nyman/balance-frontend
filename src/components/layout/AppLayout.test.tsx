@@ -7,8 +7,7 @@ describe('AppLayout', () => {
   it('renders sidebar with app title', () => {
     render(<AppLayout />)
 
-    // Balance appears twice (sidebar and header), so we check for multiple
-    expect(screen.getAllByText('Balance')).toHaveLength(2)
+    expect(screen.getByText('Balance')).toBeInTheDocument()
   })
 
   it('renders navigation links', () => {

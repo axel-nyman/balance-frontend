@@ -4,12 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { Header } from './Header'
 
 describe('Header', () => {
-  it('renders app title', () => {
-    render(<Header onMenuClick={vi.fn()} />)
-
-    expect(screen.getByText('Balance')).toBeInTheDocument()
-  })
-
   it('renders menu button', () => {
     render(<Header onMenuClick={vi.fn()} />)
 

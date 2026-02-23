@@ -186,7 +186,7 @@ describe('BudgetSummary', () => {
   })
 
   // Error fallback
-  it('falls back to building state on todo fetch error', () => {
+  it('shows stats without balance row on todo fetch error', () => {
     const budget = makeBudget({
       status: 'LOCKED',
       lockedAt: '2025-03-31',
@@ -201,7 +201,7 @@ describe('BudgetSummary', () => {
     render(<BudgetSummary budget={budget} />)
 
     expect(screen.getAllByText('Income').length).toBeGreaterThanOrEqual(1)
-    expect(screen.getByText('Balance')).toBeInTheDocument()
+    expect(screen.queryByText('Balance')).not.toBeInTheDocument()
   })
 
   // useTodoList options

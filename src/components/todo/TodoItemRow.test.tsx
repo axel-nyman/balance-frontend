@@ -42,13 +42,13 @@ describe('TodoItemRow', () => {
   it('renders item name', () => {
     render(<TodoItemRow budgetId="123" item={pendingPayment} />)
 
-    expect(screen.getByText('Pay Rent')).toBeInTheDocument()
+    expect(screen.getByText('Rent')).toBeInTheDocument()
   })
 
   it('renders item amount', () => {
     render(<TodoItemRow budgetId="123" item={pendingPayment} />)
 
-    expect(screen.getByText(/8 000,00 kr/)).toBeInTheDocument()
+    expect(screen.getByText(/8 000 kr/)).toBeInTheDocument()
   })
 
   it('shows unchecked checkbox for pending items', () => {
@@ -68,26 +68,14 @@ describe('TodoItemRow', () => {
   it('applies strikethrough to completed items', () => {
     render(<TodoItemRow budgetId="123" item={completedTransfer} />)
 
-    const name = screen.getByText('Transfer to Savings')
+    const name = screen.getByText('Main Account → Savings Account')
     expect(name).toHaveClass('line-through')
   })
 
-  it('shows Payment badge for payment items', () => {
-    render(<TodoItemRow budgetId="123" item={pendingPayment} />)
-
-    expect(screen.getByText('Payment')).toBeInTheDocument()
-  })
-
-  it('shows Transfer badge for transfer items', () => {
+  it('shows transfer as from → to format', () => {
     render(<TodoItemRow budgetId="123" item={completedTransfer} />)
 
-    expect(screen.getByText('Transfer')).toBeInTheDocument()
-  })
-
-  it('shows destination account for transfer items', () => {
-    render(<TodoItemRow budgetId="123" item={completedTransfer} />)
-
-    expect(screen.getByText(/to: savings account/i)).toBeInTheDocument()
+    expect(screen.getByText(/Main Account → Savings Account/)).toBeInTheDocument()
   })
 
   it('calls API when checkbox toggled', async () => {

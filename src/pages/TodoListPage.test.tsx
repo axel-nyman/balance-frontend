@@ -102,8 +102,8 @@ describe('TodoListPage', () => {
     renderTodoListPage()
 
     await waitFor(() => {
-      expect(screen.getByText('Pay Rent')).toBeInTheDocument()
-      expect(screen.getByText(/transfer to savings/i)).toBeInTheDocument()
+      expect(screen.getByText('Rent')).toBeInTheDocument()
+      expect(screen.getByText(/Main Account → Savings Account/)).toBeInTheDocument()
     })
   })
 

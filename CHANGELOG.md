@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.7.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.6.0...balance-frontend-v1.7.0) (2026-02-23)
+
+
+### Features
+
+* **branding:** add logo, favicon, and update app title ([c50aa7a](https://github.com/axel-nyman/balance-frontend/commit/c50aa7abfc6821ff775da59774b0a6aea21dc87e))
+* **budget:** add lifecycle state derivation and extend useTodoList ([99c4a2b](https://github.com/axel-nyman/balance-frontend/commit/99c4a2b57b45adad552b6770ec7f478e8ced6ae4))
+* **budget:** redesign BudgetSummary and BudgetCard with lifecycle states ([2d9d63b](https://github.com/axel-nyman/balance-frontend/commit/2d9d63b7289b83fc46f696383072fc931ab9249f))
+* **budget:** show manual payment indicator on budget detail expenses ([3d6c1f8](https://github.com/axel-nyman/balance-frontend/commit/3d6c1f8ee75d42e439002fd17e1dfa013434c15c))
+* **design:** add consistent horizontal inset padding to tables and lists ([306c80f](https://github.com/axel-nyman/balance-frontend/commit/306c80fe39de01fa3519126994c934f6f91c92ce))
+* **design:** add Geist font and update CSS foundation ([3121683](https://github.com/axel-nyman/balance-frontend/commit/3121683c1ca52dfb7c9b3dd66b49dc19cd42fce1))
+* **design:** apply typography and depth refinements to components ([17f6381](https://github.com/axel-nyman/balance-frontend/commit/17f6381f070cda7ef22513e543b2c19ac668164b))
+* **design:** redesign BudgetCard with compact currency and tighter typography ([89746cd](https://github.com/axel-nyman/balance-frontend/commit/89746cd77217442936b750845e376a088707cf30))
+* **design:** tighten vertical spacing across cards and PageHeader ([0b87816](https://github.com/axel-nyman/balance-frontend/commit/0b87816fae4b4450880c553734405a3d638ba900))
+* **todo:** redesign todo items with cleaner names and compact layout ([14f2701](https://github.com/axel-nyman/balance-frontend/commit/14f27013d3f668460b147ff55a0ad10daa978609))
+
+
+### Bug Fixes
+
+* **budget-detail:** reset form on modal submit to prevent stale prefill ([472d1ee](https://github.com/axel-nyman/balance-frontend/commit/472d1ee550884e0ca2f7b43aa56ac38400644491))
+* **budget:** show balance amount instead of "Balanced" label on draft cards ([61b9b8e](https://github.com/axel-nyman/balance-frontend/commit/61b9b8eb26178acf298826818c7a26ff02ba52a7))
+
+
+### Code Refactoring
+
+* **lifecycle:** extract shared locked-state logic and add error fallback type ([cc49616](https://github.com/axel-nyman/balance-frontend/commit/cc496168d6fd4c12cdb7854bd8dbbe4489b16c1d))
+
 ## [1.6.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.5.0...balance-frontend-v1.6.0) (2026-02-15)
 
 

@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { toast } from 'sonner'
 import { Toaster } from '@/components/ui/sonner'
 import { ROUTES } from './routes'
 import { AppLayout } from './components/layout'
@@ -25,6 +27,13 @@ const queryClient = new QueryClient({
 })
 
 function App() {
+  useEffect(() => {
+    if (sessionStorage.getItem('pwa-updated')) {
+      sessionStorage.removeItem('pwa-updated')
+      toast.success('App updated')
+    }
+  }, [])
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.7.0...balance-frontend-v1.8.0) (2026-02-25)
+
+
+### Features
+
+* add PWA support with installable app shell and auto-updates ([d373602](https://github.com/axel-nyman/balance-frontend/commit/d373602e073d68cd4c1f939d85e616c1e7cffe38))
+
 ## [1.7.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.6.0...balance-frontend-v1.7.0) (2026-02-23)
 
 

@@ -4,6 +4,7 @@ import {
   ENTRANCE_CLEANUP_DELAY,
   TOTAL_ANIMATION_DURATION,
 } from '../constants'
+import { generateId } from '@/lib/utils'
 
 interface CopyAnimationItem {
   id: string
@@ -56,7 +57,7 @@ export function useCopyAnimation(): UseCopyAnimationReturn {
       setCopyingIds((prev) => new Set(prev).add(sourceId))
 
       // Generate ID for the new item
-      const newId = crypto.randomUUID()
+      const newId = generateId()
 
       // After collapse delay, execute the copy and show entrance animation
       setTimeout(() => {

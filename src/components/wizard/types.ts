@@ -3,6 +3,7 @@ import type {
   CreateBudgetExpenseRequest,
   CreateBudgetSavingsRequest,
 } from '@/api/types'
+import { generateId } from '@/lib/utils'
 
 // =============================================================================
 // WIZARD ITEM TYPES
@@ -129,7 +130,7 @@ export function toSavingsRequest(item: WizardSavingsItem): CreateBudgetSavingsRe
 
 export function createEmptyIncomeItem(): WizardIncomeItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     name: '',
     amount: 0,
     bankAccountId: '',
@@ -139,7 +140,7 @@ export function createEmptyIncomeItem(): WizardIncomeItem {
 
 export function createEmptyExpenseItem(): WizardExpenseItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     name: '',
     amount: 0,
     bankAccountId: '',
@@ -152,7 +153,7 @@ export function createEmptyExpenseItem(): WizardExpenseItem {
 
 export function createEmptySavingsItem(): WizardSavingsItem {
   return {
-    id: crypto.randomUUID(),
+    id: generateId(),
     name: '',
     amount: 0,
     bankAccountId: '',

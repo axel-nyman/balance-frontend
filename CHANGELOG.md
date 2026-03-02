@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.0...balance-frontend-v1.8.1) (2026-03-02)
+
+
+### Bug Fixes
+
+* prevent auto-focus on mobile bottom sheet to avoid keyboard blocking modal ([6880f1f](https://github.com/axel-nyman/balance-frontend/commit/6880f1fdcaaf8ba52306ed0860f9e224ea2e33b9))
+* use generateId() instead of crypto.randomUUID() in wizard ([223ea14](https://github.com/axel-nyman/balance-frontend/commit/223ea14e568db05e977294fd7d38f4166a829df3))
+
 ## [1.8.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.7.0...balance-frontend-v1.8.0) (2026-02-25)
 
 

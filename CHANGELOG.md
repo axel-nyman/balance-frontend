@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.2](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.1...balance-frontend-v1.8.2) (2026-03-05)
+
+
+### Code Refactoring
+
+* move quick-add sections above budget items in wizard steps ([0fa5fea](https://github.com/axel-nyman/balance-frontend/commit/0fa5fea0885de83cf6ff6b581829dd6144d4c70a))
+
 ## [1.8.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.0...balance-frontend-v1.8.1) (2026-03-02)
 
 

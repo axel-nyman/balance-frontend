@@ -416,10 +416,10 @@ describe('StepSavings', () => {
     renderWithWizard()
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /add emergency fund/i })).toBeInTheDocument()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: /add item/i }))
+    await userEvent.click(screen.getByRole('button', { name: /add emergency fund/i }))
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Emergency Fund')).toBeInTheDocument()
@@ -466,16 +466,16 @@ describe('StepSavings', () => {
     renderWithWizard()
 
     await waitFor(() => {
-      expect(screen.getByRole('button', { name: /add item/i })).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /add emergency fund/i })).toBeInTheDocument()
     })
 
-    await userEvent.click(screen.getByRole('button', { name: /add item/i }))
+    await userEvent.click(screen.getByRole('button', { name: /add emergency fund/i }))
 
     // Wait for animation to complete and item to be removed
     await waitFor(
       () => {
         expect(
-          screen.queryByRole('button', { name: /add item/i })
+          screen.queryByRole('button', { name: /add emergency fund/i })
         ).not.toBeInTheDocument()
       },
       { timeout: 1000 }

@@ -187,7 +187,7 @@ describe('StepIncome', () => {
     })
 
     // Click the "Add item" button (plus icon) for this item
-    const addButtons = screen.getAllByRole('button', { name: /add item/i })
+    const addButtons = screen.getAllByRole('button', { name: /add salary/i })
     await userEvent.click(addButtons[0])
 
     // Wait for the item to be copied to the income list (appears as editable input)
@@ -229,7 +229,7 @@ describe('StepIncome', () => {
     })
 
     // Click the first "Add item" button
-    const addButtons = screen.getAllByRole('button', { name: /add item/i })
+    const addButtons = screen.getAllByRole('button', { name: /add salary/i })
     await userEvent.click(addButtons[0])
 
     // Wait for the item to be copied (appears as editable input)

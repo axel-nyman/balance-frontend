@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.8.2](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.1...balance-frontend-v1.8.2) (2026-03-09)
+
+
+### Bug Fixes
+
+* prevent stale data on iOS PWA by disabling caches and polling for SW updates ([4017887](https://github.com/axel-nyman/balance-frontend/commit/4017887e0ae6807bdfb995792c37567818b1fe5c))
+* update wizard test queries to match dynamic aria-labels ([13e8f59](https://github.com/axel-nyman/balance-frontend/commit/13e8f59e75e5732fd20eda0698a5e47517dd0bd6))
+
+
+### Code Refactoring
+
+* move quick-add sections above budget items in wizard steps ([0fa5fea](https://github.com/axel-nyman/balance-frontend/commit/0fa5fea0885de83cf6ff6b581829dd6144d4c70a))
+
 ## [1.8.1](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.0...balance-frontend-v1.8.1) (2026-03-02)
 
 

@@ -8,8 +8,14 @@ server {
     gzip on;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml text/javascript;
 
+    # index.html must not be cached (ensures fresh asset references for SW updates)
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+
     # SPA routing - serve index.html for all routes
     location / {
+        add_header Cache-Control "no-cache";
         try_files $uri $uri/ /index.html;
     }
 

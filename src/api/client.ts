@@ -61,7 +61,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 }
 
 export async function apiGet<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`)
+  const response = await fetch(`${API_BASE}${path}`, { cache: 'no-store' })
   return handleResponse<T>(response)
 }
 

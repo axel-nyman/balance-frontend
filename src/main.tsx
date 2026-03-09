@@ -23,6 +23,10 @@ const updateSW = registerSW({
           registration.update()
         }
       })
+      // Poll every 15 minutes (iOS standalone doesn't reliably fire visibilitychange)
+      setInterval(() => {
+        registration.update()
+      }, 15 * 60 * 1000)
     }
   },
 })

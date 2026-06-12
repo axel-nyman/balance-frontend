@@ -26,9 +26,9 @@ npm test                       # Run tests
 
 ## Tech Stack
 
-- React 18 + TypeScript + Vite
-- TanStack Query (server state), React Hook Form + Zod (forms)
-- Tailwind CSS + shadcn/ui (Radix primitives) + Sonner (toasts)
+- React 19 + TypeScript + Vite (PWA-enabled)
+- TanStack Query v5 (server state), React Hook Form + Zod v4 (forms)
+- Tailwind CSS v4 + shadcn/ui (Radix primitives) + Sonner (toasts)
 - Backend: Spring Boot REST API at `/api`
 
 ## Project Structure
@@ -81,6 +81,18 @@ export async function fetchBudgets(): Promise<Budget[]> {
 ## Currency
 
 Swedish Krona (SEK), locale `sv-SE`. Format: `8 500 kr`
+
+## Product Workflow
+
+Ongoing feature work for the whole app (frontend + backend) is tracked in the
+**balance-backend repo** under `product/`:
+
+- `product/STATE.md` — what the app contains today (read first)
+- `product/backlog/` — prioritized feature specs (items may have `Scope: frontend`)
+- `product/ROUTINE_PROMPT.md` — operating manual for the scheduled daily agent
+
+Completing a backlog item requires bookkeeping in balance-backend (move the
+spec to `product/done/`, update `STATE.md`) even for frontend-only changes.
 
 ## Documentation
 

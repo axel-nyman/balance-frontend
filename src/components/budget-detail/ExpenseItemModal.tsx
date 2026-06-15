@@ -18,14 +18,24 @@ import { useAddExpense, useUpdateExpense } from '@/hooks'
 import { expenseItemSchema, type ExpenseItemFormData } from './schemas'
 import type { BudgetExpense } from '@/api/types'
 
+export interface ExpenseModalPrefill {
+  name: string
+  amount: number
+  isManual: boolean
+  recurringExpenseId?: string
+}
+
 interface ExpenseItemModalProps {
   budgetId: string
   item: BudgetExpense | null // null = create mode
   open: boolean
   onOpenChange: (open: boolean) => void
+  // Optional starting values for create mode (e.g. adding a due recurring
+  // expense that has no default account). Ignored when editing an item.
+  prefill?: ExpenseModalPrefill | null
 }
 
-export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: ExpenseItemModalProps) {
+export function ExpenseItemModal({ budgetId, item, open, onOpenChange, prefill }: ExpenseItemModalProps) {
   const addExpense = useAddExpense(budgetId)
   const updateExpense = useUpdateExpense(budgetId)
   const isEditing = item !== null
@@ -50,7 +60,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
   const selectedAccountId = watch('bankAccountId')
   const isManual = watch('isManual')
 
-  // Reset form when item changes
+  // Reset form when item or prefill changes
   useEffect(() => {
     if (item) {
       reset({
@@ -58,6 +68,13 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
         amount: item.amount,
         bankAccountId: item.bankAccount.id,
         isManual: item.isManual,
+      })
+    } else if (prefill) {
+      reset({
+        name: prefill.name,
+        amount: prefill.amount,
+        bankAccountId: '',
+        isManual: prefill.isManual,
       })
     } else {
       reset({
@@ -67,7 +84,7 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
         isManual: false,
       })
     }
-  }, [item, reset])
+  }, [item, prefill, reset])
 
   const onSubmit = async (data: ExpenseItemFormData) => {
     try {
@@ -78,7 +95,12 @@ export function ExpenseItemModal({ budgetId, item, open, onOpenChange }: Expense
         })
         toast.success('Expense updated')
       } else {
-        await addExpense.mutateAsync(data)
+        await addExpense.mutateAsync({
+          ...data,
+          ...(prefill?.recurringExpenseId
+            ? { recurringExpenseId: prefill.recurringExpenseId }
+            : {}),
+        })
         toast.success('Expense added')
       }
       reset()

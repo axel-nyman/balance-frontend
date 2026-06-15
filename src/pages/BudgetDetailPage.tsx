@@ -11,6 +11,7 @@ import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
 import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
 import { SavingsItemModal } from '@/components/budget-detail/SavingsItemModal'
 import { BudgetActions } from '@/components/budget-detail/BudgetActions'
+import { DueRecurringHint } from '@/components/budget-detail/DueRecurringHint'
 import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
@@ -229,6 +230,14 @@ export function BudgetDetailPage() {
           onAdd={handleAddIncome}
           onEdit={handleEditIncome}
           onDelete={handleDeleteIncomeClick}
+        />
+
+        <DueRecurringHint
+          budgetId={id!}
+          month={budget.month}
+          year={budget.year}
+          expenses={budget.expenses}
+          isLocked={isLocked}
         />
 
         <BudgetSection

@@ -1,0 +1,113 @@
+name: PR Preview Image
+
+# Builds and pushes a per-PR Docker image tagged `pr-<number>` so a candidate
+# build can be deployed to the test environment before it is merged. This never
+# touches the versioned/`latest` tags — those remain release-please's job (see
+# release.yml). See README "Docker preview images" for how the tags are used.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    # Docs-only changes don't change the runtime image, so skip them.
+    paths-ignore:
+      - "**.md"
+      - ".claude/**"
+      - "product/**"
+
+# One in-flight run per PR; newer pushes cancel older preview builds.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  # Self-contained gate: the image is only built if these checks pass. We run
+  # them here (rather than reusing ci.yml via workflow_run) so the build-push
+  # job can `needs:` it directly and derive the PR number from the
+  # pull_request event — workflow_run runs in the default-branch context, which
+  # makes that awkward. The trade-off is that the checks also run in ci.yml on
+  # the same PR; the duplicate run is acceptable for a clear, atomic gate.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test -- --run
+
+      - name: Build
+        run: npm run build
+
+  build-push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same-repo PRs (the routine's claude/* branches) have access to secrets;
+      # forked PRs do not. Detect their presence and no-op the push steps when
+      # absent so the workflow never fails on a fork.
+      - name: Check Docker credentials
+        id: creds
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        run: |
+          if [ -n "$DOCKER_USERNAME" ] && [ -n "$DOCKER_TOKEN" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Docker Hub credentials not available (likely a fork) — skipping image push."
+          fi
+
+      - name: Set up QEMU
+        if: steps.creds.outputs.available == 'true'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.creds.outputs.available == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        if: steps.creds.outputs.available == 'true'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Docker metadata
+        if: steps.creds.outputs.available == 'true'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: axelnyman/balance-frontend
+          # `type=ref,event=pr` -> pr-<number> (branch-name agnostic).
+          # `type=sha` adds a short-SHA tag for traceability. No semver/latest.
+          tags: |
+            type=ref,event=pr
+            type=sha
+
+      - name: Build and push
+        if: steps.creds.outputs.available == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -210,7 +210,7 @@ export function WizardItemEditModal({
             </div>
           )}
 
-          <SheetFooter className="flex-col gap-2 px-0 pb-2">
+          <SheetFooter className="flex-col gap-2 px-0 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
             <Button type="submit" className="w-full">
               Done
             </Button>

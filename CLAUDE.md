@@ -103,4 +103,6 @@ See `.claude/thoughts/` for plans and research. Key files:
 
 ## Non-Goals
 
-No auth, bank integrations, investments, debt tracking, reports/charts, data export, dark mode.
+No auth, bank integrations, investments, debt tracking, data export, dark mode.
+
+(Data visualizations/charts are **not** a non-goal — focused charts that aid the monthly routine are welcome. See `balance-backend/product/STATE.md`.)

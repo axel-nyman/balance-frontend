@@ -1,9 +1,14 @@
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, Repeat, AlertTriangle } from 'lucide-react'
+import { Plus, Trash2, Repeat, AlertTriangle, ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 import {
   Table,
   TableBody,
@@ -42,6 +47,7 @@ export function StepExpenses() {
   } = useCopyAnimation()
   const [editingItem, setEditingItem] = useState<WizardExpenseItem | null>(null)
   const [isAddingAllDue, setIsAddingAllDue] = useState(false)
+  const [otherExpensesOpen, setOtherExpensesOpen] = useState(false)
 
   const accounts = accountsData?.accounts ?? []
 
@@ -292,14 +298,33 @@ export function StepExpenses() {
               </div>
             )}
             {otherExpenses.length > 0 && (
-              <div>
-                <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-                  {dueExpenses.length > 0 ? 'Other recurring' : 'Quick add from recurring'}
-                </h4>
-                <div className="flex flex-col">
-                  {otherExpenses.map((item, index) => renderQuickAddItem(item, index > 0))}
-                </div>
-              </div>
+              <Collapsible
+                open={otherExpensesOpen}
+                onOpenChange={setOtherExpensesOpen}
+              >
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="-ml-2 h-8 px-2 text-xs font-medium uppercase tracking-wide text-muted-foreground hover:text-foreground"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        'w-3.5 h-3.5 mr-1 transition-transform duration-200',
+                        !otherExpensesOpen && '-rotate-90'
+                      )}
+                    />
+                    {otherExpensesOpen
+                      ? 'Hide other recurring expenses'
+                      : `Show other recurring expenses (${otherExpenses.length})`}
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="flex flex-col pt-2">
+                    {otherExpenses.map((item, index) => renderQuickAddItem(item, index > 0))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             )}
           </div>
         </div>

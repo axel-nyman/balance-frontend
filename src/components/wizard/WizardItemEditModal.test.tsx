@@ -32,13 +32,14 @@ describe('WizardItemEditModal', () => {
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
   })
 
-  it('pads the footer by the bottom safe-area inset while preserving the 0.5rem floor', () => {
+  it('insets the footer buttons horizontally on mobile to clear the rounded screen corners, leaving desktop unchanged', () => {
     renderModal()
 
     const footer = document.querySelector('[data-slot="sheet-footer"]')
     expect(footer).not.toBeNull()
-    // max() keeps the existing pb-2 (0.5rem) on devices without an inset (desktop)
-    // and grows to env(safe-area-inset-bottom) on notched/rounded phones.
-    expect(footer).toHaveClass('pb-[max(0.5rem,env(safe-area-inset-bottom))]')
+    // On mobile the full-width buttons get horizontal + extra bottom padding so
+    // their edges clear the phone's rounded corners; sm:* restores the original
+    // edge-to-edge desktop spacing (px-0 / pb-2 floor), keeping desktop unchanged.
+    expect(footer).toHaveClass('px-4', 'pb-4', 'sm:px-0', 'sm:pb-2')
   })
 })

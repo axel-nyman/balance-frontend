@@ -212,10 +212,20 @@ describe('StepExpenses', () => {
 
     renderWithMonthAndIncome()
 
+    // Netflix is due this month and shown immediately
     await waitFor(() => {
       expect(screen.getAllByText(/due this month/i).length).toBeGreaterThanOrEqual(1)
-      expect(screen.getAllByText('Rent').length).toBeGreaterThanOrEqual(1)
       expect(screen.getAllByText('Netflix').length).toBeGreaterThanOrEqual(1)
+    })
+
+    // Rent is not due — hidden behind the collapsed toggle until expanded
+    expect(screen.queryByText('Rent')).not.toBeInTheDocument()
+    await userEvent.click(
+      screen.getByRole('button', { name: /show other recurring expenses/i })
+    )
+
+    await waitFor(() => {
+      expect(screen.getAllByText('Rent').length).toBeGreaterThanOrEqual(1)
     })
   })
 
@@ -433,6 +443,157 @@ describe('StepExpenses', () => {
     await waitFor(() => {
       expect(screen.getByText(/due this month/i)).toBeInTheDocument()
       expect(screen.getByText(/other recurring/i)).toBeInTheDocument()
+    })
+  })
+
+  describe('non-due recurring collapse', () => {
+    const dueRent = {
+      id: 're-1',
+      name: 'Rent',
+      amount: 8000,
+      recurrenceInterval: 'MONTHLY',
+      isManual: false,
+      bankAccount: null,
+      dueMonth: 2,
+      dueYear: 2026,
+      dueDisplay: 'February',
+      createdAt: '2025-01-01',
+    }
+    const notDueNetflix = {
+      id: 're-2',
+      name: 'Netflix',
+      amount: 169,
+      recurrenceInterval: 'MONTHLY',
+      isManual: false,
+      bankAccount: null,
+      dueMonth: null,
+      dueYear: null,
+      dueDisplay: null,
+      createdAt: '2025-01-01',
+    }
+    const notDueSpotify = {
+      id: 're-3',
+      name: 'Spotify',
+      amount: 119,
+      recurrenceInterval: 'MONTHLY',
+      isManual: false,
+      bankAccount: null,
+      dueMonth: null,
+      dueYear: null,
+      dueDisplay: null,
+      createdAt: '2025-01-01',
+    }
+
+    function mockRecurring(expenses: unknown[]) {
+      server.use(
+        http.get('/api/recurring-expenses', () => {
+          return HttpResponse.json({ expenses })
+        })
+      )
+    }
+
+    it('renders due templates expanded and hides non-due behind a toggle (both groups)', async () => {
+      mockRecurring([dueRent, notDueNetflix, notDueSpotify])
+
+      renderWithMonthAndIncome()
+
+      // Due group is expanded
+      await waitFor(() => {
+        expect(screen.getByText(/due this month/i)).toBeInTheDocument()
+        expect(screen.getByText('Rent')).toBeInTheDocument()
+      })
+
+      // Non-due items are hidden, toggle shows the count
+      expect(screen.queryByText('Netflix')).not.toBeInTheDocument()
+      expect(screen.queryByText('Spotify')).not.toBeInTheDocument()
+      expect(
+        screen.getByRole('button', { name: /show other recurring expenses \(2\)/i })
+      ).toBeInTheDocument()
+    })
+
+    it('expands and collapses the non-due group on toggle', async () => {
+      mockRecurring([dueRent, notDueNetflix])
+
+      renderWithMonthAndIncome()
+
+      const toggle = await screen.findByRole('button', {
+        name: /show other recurring expenses/i,
+      })
+
+      await userEvent.click(toggle)
+      await waitFor(() => {
+        expect(screen.getByText('Netflix')).toBeInTheDocument()
+      })
+
+      // Toggle label flips to "hide" while expanded
+      await userEvent.click(
+        screen.getByRole('button', { name: /hide other recurring expenses/i })
+      )
+      await waitFor(() => {
+        expect(screen.queryByText('Netflix')).not.toBeInTheDocument()
+      })
+    })
+
+    it('does not render the toggle when there are no non-due templates (due only)', async () => {
+      mockRecurring([dueRent])
+
+      renderWithMonthAndIncome()
+
+      await waitFor(() => {
+        expect(screen.getByText('Rent')).toBeInTheDocument()
+      })
+      expect(
+        screen.queryByRole('button', { name: /other recurring expenses/i })
+      ).not.toBeInTheDocument()
+    })
+
+    it('shows only the toggle when there are no due templates (non-due only)', async () => {
+      mockRecurring([notDueNetflix, notDueSpotify])
+
+      renderWithMonthAndIncome()
+
+      // Toggle is the only recurring control; due heading absent
+      await waitFor(() => {
+        expect(
+          screen.getByRole('button', { name: /show other recurring expenses \(2\)/i })
+        ).toBeInTheDocument()
+      })
+      expect(screen.queryByText(/due this month/i)).not.toBeInTheDocument()
+      expect(screen.queryByText('Netflix')).not.toBeInTheDocument()
+    })
+
+    it('renders no recurring controls when there are no templates (neither)', async () => {
+      mockRecurring([])
+
+      renderWithMonthAndIncome()
+
+      // Give the empty response time to settle
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: /add expense/i })).toBeInTheDocument()
+      })
+      expect(screen.queryByText(/due this month/i)).not.toBeInTheDocument()
+      expect(
+        screen.queryByRole('button', { name: /other recurring expenses/i })
+      ).not.toBeInTheDocument()
+    })
+
+    it('adds a non-due template from the expanded list', async () => {
+      mockRecurring([notDueNetflix])
+
+      renderWithMonthAndIncome()
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: /show other recurring expenses/i })
+      )
+
+      await userEvent.click(
+        await screen.findByRole('button', { name: /add netflix/i })
+      )
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Netflix')).toBeInTheDocument()
+        expect(screen.getByDisplayValue('169')).toBeInTheDocument()
+      })
     })
   })
 

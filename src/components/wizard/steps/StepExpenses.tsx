@@ -320,7 +320,10 @@ export function StepExpenses() {
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="flex flex-col pt-2">
+                  {/* pb-2 keeps the last card's shadow-card clear of the
+                      content edge — CollapsibleContent is overflow-hidden for
+                      its animation, which would otherwise clip the shadow. */}
+                  <div className="flex flex-col pt-2 pb-2">
                     {otherExpenses.map((item, index) => renderQuickAddItem(item, index > 0))}
                   </div>
                 </CollapsibleContent>

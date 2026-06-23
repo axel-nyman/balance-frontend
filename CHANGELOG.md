@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.9.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.2...balance-frontend-v1.9.0) (2026-06-23)
+
+
+### Features
+
+* collapse non-due recurring expenses in budget wizard ([f9430d0](https://github.com/axel-nyman/balance-frontend/commit/f9430d01c72b67423c9ea2a4add1693aba88519d))
+* poll user-visible queries for near-real-time cross-device sync ([#22](https://github.com/axel-nyman/balance-frontend/issues/22)) ([8df8e6a](https://github.com/axel-nyman/balance-frontend/commit/8df8e6aec5d800f878977259f21d775a56263e79))
+* surface due-but-missing recurring expenses on budget detail ([6a192d0](https://github.com/axel-nyman/balance-frontend/commit/6a192d05903b0168ebd974e5fa577b39620a5eec))
+* tighten budget wizard quick-add card density ([#20](https://github.com/axel-nyman/balance-frontend/issues/20)) ([e2323d4](https://github.com/axel-nyman/balance-frontend/commit/e2323d499a738e099a52c649eef8c42d03b6abe2))
+
+
+### Bug Fixes
+
+* inset wizard modal footer buttons from rounded screen corners ([18041a6](https://github.com/axel-nyman/balance-frontend/commit/18041a6f9130a4cd91504097da2412bb10b86c89))
+* keep last recurring card's shadow clear of collapse clip ([c3bb62a](https://github.com/axel-nyman/balance-frontend/commit/c3bb62a93baccfe6c5baf223e4663ac69b4f5f3e))
+* keep wizard item modal buttons clear of iPhone home indicator ([84f8490](https://github.com/axel-nyman/balance-frontend/commit/84f8490c677a1cd6b5b1beff87b8f9185bcecf64))
+
 ## [1.8.2](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.1...balance-frontend-v1.8.2) (2026-03-09)
 
 

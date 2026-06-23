@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import type { QueryObserverOptions } from '@tanstack/react-query'
 import { useTodoList, useUpdateTodoItem } from './use-todo'
+import { queryKeys } from './query-keys'
+import { POLL_INTERVAL } from '@/lib/query-config'
 import { server } from '@/test/mocks/server'
 import { http, HttpResponse } from 'msw'
 import type { ReactNode } from 'react'
@@ -60,6 +63,28 @@ describe('useTodoList', () => {
 
     expect(result.current.data?.items).toHaveLength(1)
     expect(result.current.data?.items[0].name).toBe('Pay Rent')
+  })
+
+  it('polls the todo list on the shared interval (item 060)', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false } },
+    })
+    const wrapper = ({ children }: { children: ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    )
+
+    const { result } = renderHook(() => useTodoList('123'), { wrapper })
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true)
+    })
+
+    const options = queryClient
+      .getQueryCache()
+      .find({ queryKey: queryKeys.budgets.todo('123') })?.options as
+      | QueryObserverOptions
+      | undefined
+    expect(options?.refetchInterval).toBe(POLL_INTERVAL)
   })
 })
 

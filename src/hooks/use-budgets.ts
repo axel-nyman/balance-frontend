@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './query-keys'
+import { POLL_INTERVAL } from '@/lib/query-config'
 import {
   getBudgets,
   getBudget,
@@ -31,6 +32,7 @@ export function useBudgets() {
   return useQuery({
     queryKey: queryKeys.budgets.all,
     queryFn: getBudgets,
+    refetchInterval: POLL_INTERVAL,
   })
 }
 
@@ -39,6 +41,7 @@ export function useBudget(id: string) {
     queryKey: queryKeys.budgets.detail(id),
     queryFn: () => getBudget(id),
     enabled: !!id,
+    refetchInterval: POLL_INTERVAL,
   })
 }
 

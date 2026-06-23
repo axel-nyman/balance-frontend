@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './query-keys'
+import { POLL_INTERVAL } from '@/lib/query-config'
 import { getTodoList, updateTodoItem } from '@/api'
 import type { UpdateTodoItemRequest, TodoList } from '@/api'
 
@@ -9,6 +10,7 @@ export function useTodoList(budgetId: string, options?: { enabled?: boolean; sta
     queryFn: () => getTodoList(budgetId),
     enabled: !!budgetId && (options?.enabled !== false),
     staleTime: options?.staleTime,
+    refetchInterval: POLL_INTERVAL,
   })
 }
 

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './query-keys'
+import { POLL_INTERVAL } from '@/lib/query-config'
 import {
   getRecurringExpenses,
   createRecurringExpense,
@@ -15,6 +16,7 @@ export function useRecurringExpenses() {
   return useQuery({
     queryKey: queryKeys.recurringExpenses.all,
     queryFn: getRecurringExpenses,
+    refetchInterval: POLL_INTERVAL,
   })
 }
 

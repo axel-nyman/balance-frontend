@@ -407,7 +407,7 @@ describe('StepExpenses', () => {
     })
   })
 
-  it('shows bank account name on quick-add card', async () => {
+  it('defers the bank account on the quick-add card until the item is added', async () => {
     server.use(
       http.get('/api/recurring-expenses', () => {
         return HttpResponse.json({
@@ -420,10 +420,13 @@ describe('StepExpenses', () => {
 
     renderWithWizard()
 
-    // Account name appears as "• Checking" in the quick-add card
+    // The card shows the name and amount but not the account (deferred until add)
     await waitFor(() => {
-      expect(screen.getByText(/Checking/)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: /add rent/i })).toBeInTheDocument()
     })
+    expect(screen.getByText('Rent')).toBeInTheDocument()
+    expect(screen.getByText(/8 000,00 kr/)).toBeInTheDocument()
+    expect(screen.queryByText(/Checking/)).not.toBeInTheDocument()
   })
 
   it('groups due expenses separately from other recurring', async () => {

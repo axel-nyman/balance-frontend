@@ -32,47 +32,43 @@ export function WizardItemCard({
 }: WizardItemCardProps) {
   const isQuickAdd = variant === 'quick-add'
 
-  // Quick-add variant: two-row layout without account badge
+  // Quick-add variant: single compact row. The account is deferred until the
+  // item is added (the decision at scan time is "do I want this expense this
+  // month?", not which account it lands in) — it's set from the template's
+  // default on add and remains editable in the item modal. Padding tightens at
+  // md+ so more cards fit on a desktop screen; mobile keeps comfortable
+  // padding and the full-size tap target.
   if (isQuickAdd) {
     return (
       <div
         className={cn(
-          'w-full bg-popover rounded-xl p-4 transition-colors duration-150',
+          'w-full bg-popover rounded-xl p-4 md:px-3 md:py-2 transition-colors duration-150',
           isCopying && 'bg-income-muted'
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="flex-1 min-w-0">
-            {/* Row 1: Icons + Name */}
-            <div className="flex items-center gap-2 min-w-0">
-              {isRecurring && (
-                <Repeat
-                  className="w-4 h-4 shrink-0 text-savings/70"
-                  aria-label="Recurring"
-                />
-              )}
-              {isDue && (
-                <Badge variant="destructive" className="text-xs py-0 shrink-0">
-                  Due
-                </Badge>
-              )}
-              <span className="font-medium truncate text-muted-foreground/70">
-                {name || 'Unnamed'}
-              </span>
-            </div>
-
-            {/* Row 2: Amount + Account */}
-            <div className="mt-1 flex items-center gap-2">
-              <span className="font-semibold text-muted-foreground/70">
-                {formatCurrency(amount)}
-              </span>
-              {bankAccountName && (
-                <span className="text-xs text-muted-foreground/50">
-                  • {bankAccountName}
-                </span>
-              )}
-            </div>
+          {/* Icons + Name */}
+          <div className="flex flex-1 items-center gap-2 min-w-0">
+            {isRecurring && (
+              <Repeat
+                className="w-4 h-4 shrink-0 text-savings/70"
+                aria-label="Recurring"
+              />
+            )}
+            {isDue && (
+              <Badge variant="destructive" className="text-xs py-0 shrink-0">
+                Due
+              </Badge>
+            )}
+            <span className="font-medium truncate text-muted-foreground/70">
+              {name || 'Unnamed'}
+            </span>
           </div>
+
+          {/* Amount */}
+          <span className="font-semibold text-muted-foreground/70 shrink-0">
+            {formatCurrency(amount)}
+          </span>
 
           <Button
             variant="ghost"

@@ -76,12 +76,11 @@ Production images are built and tagged (versioned + `latest`) only when the
 maintainer merges the release-please PR — that merge is the deploy gate.
 
 Separately, every open pull request (once its lint/type-check/test/build checks
-pass) publishes a multi-arch image tagged **`pr-<number>`** (e.g.
-`axelnyman/balance-frontend:pr-42`) plus a short commit-SHA tag, via the
-`docker-pr-preview.yml` workflow. These let the maintainer pull and run a
-candidate build in the **test environment** before deciding to merge. They are
-**not for production**: the workflow never pushes the versioned or `latest`
-tags (those stay exclusively release-please's), and the `pr-<number>` tags are
-not cleaned up automatically, so they accumulate on Docker Hub (automating
-cleanup is a possible follow-up). Docs-only PRs (`**.md`, `.claude/**`,
-`product/**`) skip the build.
+pass) publishes a multi-arch image under a single rolling tag, **`pr-latest`**
+(e.g. `axelnyman/balance-frontend:pr-latest`), via the `docker-pr-preview.yml`
+workflow. This lets the maintainer pull and run the current candidate build in
+the **test environment** before deciding to merge. It is **not for
+production**: the workflow never pushes the versioned or `latest` tags (those
+stay exclusively release-please's). Each PR push overwrites `pr-latest`, so the
+preview never accumulates per-PR/per-SHA tags on Docker Hub. Docs-only PRs
+(`**.md`, `.claude/**`, `product/**`) skip the build.

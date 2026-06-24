@@ -18,6 +18,8 @@ interface AccountSelectProps {
   placeholder?: string
   triggerClassName?: string
   label?: string
+  /** Account ids to hide from the list (e.g. already chosen in another row). */
+  excludeIds?: string[]
 }
 
 export function AccountSelect({
@@ -26,9 +28,12 @@ export function AccountSelect({
   placeholder = 'Select account',
   triggerClassName,
   label,
+  excludeIds,
 }: AccountSelectProps) {
   const { data: accountsData } = useAccounts()
-  const accounts = accountsData?.accounts ?? []
+  const accounts = (accountsData?.accounts ?? []).filter(
+    (a) => a.id === value || !excludeIds?.includes(a.id)
+  )
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 

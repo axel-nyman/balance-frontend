@@ -7,6 +7,12 @@ export type RecurrenceInterval = 'MONTHLY' | 'QUARTERLY' | 'BIANNUALLY' | 'YEARL
 export type TodoItemType = 'TRANSFER' | 'PAYMENT'
 export type TodoItemStatus = 'PENDING' | 'COMPLETED'
 export type BalanceSource = 'MANUAL' | 'AUTOMATIC'
+export type SavingsGoalStatus = 'ACTIVE' | 'ARCHIVED'
+export type GoalAllocationChangeSource =
+  | 'MANUAL'
+  | 'BUDGET_LOCK'
+  | 'BALANCE_REALLOCATION'
+  | 'ARCHIVE'
 
 // =============================================================================
 // BANK ACCOUNTS
@@ -17,6 +23,13 @@ export interface BankAccount {
   name: string
   description: string | null
   currentBalance: number
+  /**
+   * Savings-goal allocation figures (item 070a, additive). Always present on the
+   * `/api/bank-accounts` response; optional here because a few places build
+   * partial account objects that don't carry allocation data.
+   */
+  allocatedAmount?: number
+  unallocatedAmount?: number
   createdAt: string
 }
 
@@ -264,6 +277,79 @@ export interface TodoList {
 
 export interface UpdateTodoItemRequest {
   status: TodoItemStatus
+}
+
+// =============================================================================
+// SAVINGS GOALS
+// =============================================================================
+
+export interface GoalAccountAllocation {
+  bankAccountId: string
+  bankAccountName: string
+  amount: number
+}
+
+export interface SavingsGoal {
+  id: string
+  name: string
+  targetAmount: number | null
+  endDate: string | null
+  status: SavingsGoalStatus
+  totalAllocated: number
+  /** Allocated / target as a percentage; null when no target is set. */
+  progressPercentage: number | null
+  completed: boolean
+  allocations: GoalAccountAllocation[]
+  archivedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface SavingsGoalListResponse {
+  goalCount: number
+  goals: SavingsGoal[]
+}
+
+export interface GoalAllocationChange {
+  id: string
+  bankAccountId: string
+  bankAccountName: string
+  changeAmount: number
+  resultingAmount: number
+  source: GoalAllocationChangeSource
+  createdAt: string
+}
+
+export interface GoalAllocationHistoryResponse {
+  goalId: string
+  changes: GoalAllocationChange[]
+}
+
+export interface SeedAllocationRequest {
+  bankAccountId: string
+  amount: number
+}
+
+export interface CreateSavingsGoalRequest {
+  name: string
+  targetAmount?: number
+  endDate?: string
+  allocations?: SeedAllocationRequest[]
+}
+
+export interface UpdateSavingsGoalRequest {
+  name: string
+  targetAmount?: number
+  endDate?: string
+}
+
+export interface AllocateRequest {
+  bankAccountId: string
+  amount: number
+}
+
+export interface ArchiveSavingsGoalRequest {
+  releaseToBalance: boolean
 }
 
 // =============================================================================

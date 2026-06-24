@@ -11,4 +11,9 @@ export const queryKeys = {
     detail: (budgetId: string) => ['budgets', budgetId] as const,
     todo: (budgetId: string) => ['budgets', budgetId, 'todo'] as const,
   },
+  goals: {
+    all: ['goals'] as const,
+    detail: (goalId: string) => ['goals', goalId] as const,
+    history: (goalId: string) => ['goals', goalId, 'history'] as const,
+  },
 }

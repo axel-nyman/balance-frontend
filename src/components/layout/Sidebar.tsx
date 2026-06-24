@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router'
-import { LayoutDashboard, Wallet, RefreshCw, X } from 'lucide-react'
+import { LayoutDashboard, Wallet, RefreshCw, Target, X } from 'lucide-react'
 import logo from '@/assets/logo.png'
 import { cn } from '@/lib/utils'
 import { ROUTES } from '@/routes'
@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Budgets', path: ROUTES.BUDGETS, icon: LayoutDashboard },
   { label: 'Accounts', path: ROUTES.ACCOUNTS, icon: Wallet },
   { label: 'Recurring', path: ROUTES.RECURRING_EXPENSES, icon: RefreshCw },
+  { label: 'Goals', path: ROUTES.GOALS, icon: Target },
 ]
 
 interface SidebarProps {

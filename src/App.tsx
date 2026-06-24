@@ -13,6 +13,8 @@ import {
   BudgetWizardPage,
   BudgetDetailPage,
   TodoListPage,
+  GoalsPage,
+  GoalDetailPage,
   NotFoundPage,
 } from './pages'
 
@@ -46,6 +48,8 @@ function App() {
             <Route path={ROUTES.BUDGET_NEW} element={<BudgetWizardPage />} />
             <Route path={ROUTES.BUDGET_DETAIL} element={<BudgetDetailPage />} />
             <Route path={ROUTES.BUDGET_TODO} element={<TodoListPage />} />
+            <Route path={ROUTES.GOALS} element={<GoalsPage />} />
+            <Route path={ROUTES.GOAL_DETAIL} element={<GoalDetailPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -8,9 +8,17 @@ export const handlers = [
       totalBalance: 10000,
       accountCount: 2,
       accounts: [
-        { id: '1', name: 'Checking', description: 'Main account', currentBalance: 5000, createdAt: '2025-01-01T00:00:00Z' },
-        { id: '2', name: 'Savings', description: 'Emergency fund', currentBalance: 5000, createdAt: '2025-01-01T00:00:00Z' },
+        { id: '1', name: 'Checking', description: 'Main account', currentBalance: 5000, allocatedAmount: 0, unallocatedAmount: 5000, createdAt: '2025-01-01T00:00:00Z' },
+        { id: '2', name: 'Savings', description: 'Emergency fund', currentBalance: 5000, allocatedAmount: 0, unallocatedAmount: 5000, createdAt: '2025-01-01T00:00:00Z' },
       ],
+    })
+  }),
+
+  // Savings goals (default empty response)
+  http.get('/api/savings-goals', () => {
+    return HttpResponse.json({
+      goalCount: 0,
+      goals: [],
     })
   }),
 

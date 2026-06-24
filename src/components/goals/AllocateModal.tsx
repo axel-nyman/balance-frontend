@@ -88,7 +88,7 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="flex max-h-[90dvh] flex-col">
         <DialogHeader>
           <DialogTitle>Assign money</DialogTitle>
           <DialogDescription>
@@ -101,8 +101,9 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
             e.stopPropagation()
             handleSubmit(onSubmit)(e)
           }}
-          className="space-y-4"
+          className="flex min-h-0 flex-1 flex-col gap-4"
         >
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto">
           <div className="space-y-2">
             <Label htmlFor="bankAccountId">Account *</Label>
             <AccountSelect
@@ -133,7 +134,8 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
               <AllocationImpact
                 account={account}
                 currentAllocation={currentAllocation}
-                newAmount={newAmount}
+                value={newAmount}
+                onValueChange={(v) => setValue('amount', v, { shouldValidate: false })}
               />
             )}
             {errors.amount && <p className="text-sm text-destructive">{errors.amount.message}</p>}
@@ -142,6 +144,7 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
           {allocate.error && (
             <p className="text-sm text-destructive">{allocate.error.message}</p>
           )}
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>

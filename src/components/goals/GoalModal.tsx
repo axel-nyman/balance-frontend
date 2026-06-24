@@ -158,7 +158,7 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent className="flex max-h-[90dvh] flex-col">
         <DialogHeader>
           <DialogTitle>{isEditing ? 'Edit Goal' : 'New Goal'}</DialogTitle>
         </DialogHeader>
@@ -168,8 +168,9 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
             e.stopPropagation()
             handleSubmit(onSubmit)(e)
           }}
-          className="space-y-4"
+          className="flex min-h-0 flex-1 flex-col gap-4"
         >
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto">
           <div className="space-y-2">
             <Label htmlFor="name">Name *</Label>
             <Input id="name" {...register('name')} placeholder="e.g., Summer trip" autoFocus />
@@ -220,16 +221,18 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
                           excludeIds={chosenAccountIds.filter((id) => id !== row.bankAccountId)}
                         />
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground"
-                        onClick={() => removeRow(index)}
-                        aria-label="Remove allocation"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      {seedRows.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="text-muted-foreground"
+                          onClick={() => removeRow(index)}
+                          aria-label="Remove allocation"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor={`seed-amount-${index}`}>Amount</Label>
@@ -245,7 +248,8 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
                         <AllocationImpact
                           account={account}
                           currentAllocation={0}
-                          newAmount={Number.isFinite(amount) ? amount : 0}
+                          value={Number.isFinite(amount) ? amount : 0}
+                          onValueChange={(v) => updateRow(index, { amount: String(v) })}
                         />
                       )}
                       {seedErrors[index] && (
@@ -273,6 +277,7 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
           {mutation.error && (
             <p className="text-sm text-destructive">{mutation.error.message}</p>
           )}
+          </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>

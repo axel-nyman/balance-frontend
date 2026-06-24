@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { screen, waitFor } from '@testing-library/react'
+import { screen, waitFor, fireEvent } from '@testing-library/react'
 import { renderWithRoute } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
@@ -88,6 +88,19 @@ describe('GoalDetailPage', () => {
     await waitFor(() => {
       expect(allocateBody).toMatchObject({ bankAccountId: '1', amount: 2000 })
     })
+  })
+
+  it('drives the assign amount from the allocation slider', async () => {
+    renderDetail()
+    await waitFor(() => screen.getByRole('heading', { name: 'Summer trip' }))
+
+    await userEvent.click(screen.getByRole('button', { name: /assign money/i }))
+    await selectAccount('Checking')
+
+    const slider = screen.getByLabelText(/amount to earmark from Checking/i)
+    fireEvent.change(slider, { target: { value: '1000' } })
+
+    expect(screen.getByLabelText(/amount earmarked/i)).toHaveValue(1000)
   })
 
   it('archives the goal freeing the earmark by default (releaseToBalance false)', async () => {

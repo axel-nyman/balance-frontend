@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@/test/test-utils'
+import { render, screen, waitFor, fireEvent } from '@/test/test-utils'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { GoalsPage } from './GoalsPage'
@@ -188,5 +188,32 @@ describe('GoalsPage', () => {
 
     expect(await screen.findByText(/only .*unallocated in Checking/i)).toBeInTheDocument()
     expect(postCalled).toBe(false)
+  })
+
+  it('only shows the remove-allocation control once a second row exists', async () => {
+    render(<GoalsPage />)
+    await userEvent.click(screen.getByRole('button', { name: /new goal/i }))
+
+    // Single (default) row: no remove control.
+    expect(screen.queryByLabelText(/remove allocation/i)).not.toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: /add another account/i }))
+
+    // Two rows now: each is removable.
+    expect(screen.getAllByLabelText(/remove allocation/i)).toHaveLength(2)
+  })
+
+  it('drives the seed amount from the allocation slider', async () => {
+    render(<GoalsPage />)
+    await userEvent.click(screen.getByRole('button', { name: /new goal/i }))
+    await userEvent.type(screen.getByLabelText(/^name/i), 'Slider goal')
+
+    await selectAccount('Checking')
+
+    // Slider appears once an account is chosen; dragging it fills the amount.
+    const slider = screen.getByLabelText(/amount to earmark from Checking/i)
+    fireEvent.change(slider, { target: { value: '1500' } })
+
+    expect(screen.getByLabelText(/^amount$/i)).toHaveValue(1500)
   })
 })

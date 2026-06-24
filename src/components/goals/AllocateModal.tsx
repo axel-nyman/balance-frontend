@@ -18,6 +18,7 @@ import { useAllocateToGoal, useAccounts } from '@/hooks'
 import { formatCurrency } from '@/lib/utils'
 import type { SavingsGoal } from '@/api/types'
 import { allocateFormSchema, type AllocateFormData } from './schemas'
+import { AllocationImpact } from './AllocationImpact'
 
 interface AllocateModalProps {
   goal: SavingsGoal
@@ -48,6 +49,8 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
   }, [open, reset])
 
   const bankAccountId = watch('bankAccountId')
+  const amountValue = watch('amount')
+  const newAmount = Number.isFinite(amountValue) ? amountValue : 0
   const account = accounts.find((a) => a.id === bankAccountId)
   const currentAllocation =
     goal.allocations.find((a) => a.bankAccountId === bankAccountId)?.amount ?? 0
@@ -122,10 +125,16 @@ export function AllocateModal({ goal, open, onOpenChange }: AllocateModalProps) 
               {...register('amount', { valueAsNumber: true })}
               placeholder="0.00"
             />
+            <p className="text-xs text-muted-foreground">
+              The total to earmark from this account for this goal. Set it to zero to remove the
+              earmark.
+            </p>
             {account && (
-              <p className="text-xs text-muted-foreground">
-                {formatCurrency(maxSettable)} available from {account.name}
-              </p>
+              <AllocationImpact
+                account={account}
+                currentAllocation={currentAllocation}
+                newAmount={newAmount}
+              />
             )}
             {errors.amount && <p className="text-sm text-destructive">{errors.amount.message}</p>}
           </div>

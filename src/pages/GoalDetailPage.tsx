@@ -131,7 +131,7 @@ export function GoalDetailPage() {
               }
             />
           ) : (
-            <Card>
+            <Card className="overflow-hidden py-0">
               <CardContent className="p-0">
                 <ul className="divide-y divide-border">
                   {goal.allocations.map((allocation) => (

@@ -21,13 +21,6 @@ export const goalFormSchema = z.object({
 
 export type GoalFormData = z.infer<typeof goalFormSchema>
 
-export const createGoalFormSchema = goalFormSchema.extend({
-  seedAccountId: z.string().optional(),
-  seedAmount: optionalPositiveAmount,
-})
-
-export type CreateGoalFormData = z.infer<typeof createGoalFormSchema>
-
 export const allocateFormSchema = z.object({
   bankAccountId: z.string().min(1, 'Account is required'),
   amount: z

@@ -37,6 +37,13 @@ async function selectAccount(name: string) {
   await userEvent.click(option!)
 }
 
+// Same as selectAccount but targets the nth combobox (multiple allocation rows).
+async function selectAccountAt(index: number, name: string) {
+  await userEvent.click(screen.getAllByRole('combobox')[index])
+  const option = screen.getAllByText(name).find((el) => el.closest('[role="option"]'))
+  await userEvent.click(option!)
+}
+
 describe('GoalsPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear()
@@ -122,6 +129,41 @@ describe('GoalsPage', () => {
       expect(createBody).toMatchObject({
         name: 'Buffer',
         allocations: [{ bankAccountId: '1', amount: 2000 }],
+      })
+    })
+  })
+
+  it('seeds allocations from multiple accounts at once', async () => {
+    let createBody: Record<string, unknown> | null = null
+    server.use(
+      http.post('/api/savings-goals', async ({ request }) => {
+        createBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...mockGoal }, { status: 201 })
+      })
+    )
+
+    render(<GoalsPage />)
+    await userEvent.click(screen.getByRole('button', { name: /new goal/i }))
+    await userEvent.type(screen.getByLabelText(/^name/i), 'Multi')
+
+    // First row: Checking 2 000
+    await selectAccountAt(0, 'Checking')
+    await userEvent.type(screen.getAllByLabelText(/^amount$/i)[0], '2000')
+
+    // Add a second row and fund it from Savings
+    await userEvent.click(screen.getByRole('button', { name: /add another account/i }))
+    await selectAccountAt(1, 'Savings')
+    await userEvent.type(screen.getAllByLabelText(/^amount$/i)[1], '1000')
+
+    await userEvent.click(screen.getByRole('button', { name: /^create$/i }))
+
+    await waitFor(() => {
+      expect(createBody).toMatchObject({
+        name: 'Multi',
+        allocations: [
+          { bankAccountId: '1', amount: 2000 },
+          { bankAccountId: '2', amount: 1000 },
+        ],
       })
     })
   })

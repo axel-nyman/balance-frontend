@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.10.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.9.0...balance-frontend-v1.10.0) (2026-06-25)
+
+
+### Features
+
+* add goal selector to budget savings modal (item 070c) ([#25](https://github.com/axel-nyman/balance-frontend/issues/25)) ([85e3b71](https://github.com/axel-nyman/balance-frontend/commit/85e3b71b34c5b6a07d39295d8dca63450ad1e508))
+* add savings goals pages (list, detail, create/edit/assign/archive) ([#23](https://github.com/axel-nyman/balance-frontend/issues/23)) ([ae7f5aa](https://github.com/axel-nyman/balance-frontend/commit/ae7f5aafdba5ec45ac8961cbb9553fc423868052))
+* add savings-goal progress chart and projections on goal detail (item 070e) ([#27](https://github.com/axel-nyman/balance-frontend/issues/27)) ([d41f26e](https://github.com/axel-nyman/balance-frontend/commit/d41f26ed37d3e232d0c25820466ccce73b3269a1))
+* reconcile savings-goal allocations in update-balance modal (item 070d) ([#26](https://github.com/axel-nyman/balance-frontend/issues/26)) ([ba04ab7](https://github.com/axel-nyman/balance-frontend/commit/ba04ab7f2527cfcc826b3367b6639b7c49b1fe4a))
+
 ## [1.9.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.8.2...balance-frontend-v1.9.0) (2026-06-23)
 
 

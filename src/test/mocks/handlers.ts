@@ -22,6 +22,11 @@ export const handlers = [
     })
   }),
 
+  // Goal allocation history (default empty response)
+  http.get('/api/savings-goals/:id/history', ({ params }) => {
+    return HttpResponse.json({ goalId: params.id, changes: [] })
+  }),
+
   // Balance history (default empty response)
   http.get('/api/bank-accounts/:id/balance-history', () => {
     return HttpResponse.json({

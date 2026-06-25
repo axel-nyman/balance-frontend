@@ -1,6 +1,8 @@
 export { GoalCard } from './GoalCard'
 export { GoalGrid } from './GoalGrid'
 export { GoalProgress } from './GoalProgress'
+export { GoalInsights } from './GoalInsights'
+export { GoalHistoryChart } from './GoalHistoryChart'
 export { GoalSelect } from './GoalSelect'
 export { GoalModal } from './GoalModal'
 export { AllocateModal } from './AllocateModal'

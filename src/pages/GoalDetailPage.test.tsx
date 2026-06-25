@@ -144,6 +144,88 @@ describe('GoalDetailPage', () => {
     })
   })
 
+  function isoDaysFromNow(days: number): string {
+    return new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString()
+  }
+
+  function historyChange(createdAt: string, changeAmount: number) {
+    return {
+      id: createdAt,
+      bankAccountId: '1',
+      bankAccountName: 'Checking',
+      changeAmount,
+      resultingAmount: 0,
+      source: 'BUDGET_LOCK' as const,
+      createdAt,
+    }
+  }
+
+  it('shows remaining-to-target alongside the progress bar', async () => {
+    renderDetail()
+    await waitFor(() => screen.getByRole('heading', { name: 'Summer trip' }))
+    expect(screen.getByText('Remaining')).toBeInTheDocument()
+    // target 10000 - allocated 4000 = 6000 remaining
+    expect(screen.getByText('6 000,00 kr')).toBeInTheDocument()
+  })
+
+  it('renders the history chart and a completion projection when enough history exists', async () => {
+    server.use(
+      http.get('/api/savings-goals/g1/history', () =>
+        HttpResponse.json({
+          goalId: 'g1',
+          changes: [
+            historyChange(isoDaysFromNow(-30), 3000),
+            historyChange(isoDaysFromNow(-90), 3000),
+          ],
+        })
+      )
+    )
+    renderDetail()
+    await waitFor(() => screen.getByRole('heading', { name: 'Summer trip' }))
+    await waitFor(() => {
+      expect(screen.getByTestId('goal-history-chart')).toBeInTheDocument()
+    })
+    expect(screen.getByText(/on track to reach/i)).toBeInTheDocument()
+  })
+
+  it('shows a graceful fallback when history is too thin to project', async () => {
+    server.use(
+      http.get('/api/savings-goals/g1/history', () =>
+        HttpResponse.json({
+          goalId: 'g1',
+          changes: [historyChange(isoDaysFromNow(-5), 1000)],
+        })
+      )
+    )
+    renderDetail()
+    await waitFor(() => screen.getByRole('heading', { name: 'Summer trip' }))
+    await waitFor(() => {
+      expect(screen.getByText(/not enough history yet/i)).toBeInTheDocument()
+    })
+  })
+
+  it('shows the required monthly contribution for a goal with a future end date', async () => {
+    server.use(
+      http.get('/api/savings-goals/g1', () =>
+        HttpResponse.json({ ...mockGoal, endDate: isoDaysFromNow(180).slice(0, 10) })
+      ),
+      http.get('/api/savings-goals/g1/history', () =>
+        HttpResponse.json({
+          goalId: 'g1',
+          changes: [
+            historyChange(isoDaysFromNow(-30), 2000),
+            historyChange(isoDaysFromNow(-90), 2000),
+          ],
+        })
+      )
+    )
+    renderDetail()
+    await waitFor(() => screen.getByRole('heading', { name: 'Summer trip' }))
+    await waitFor(() => {
+      expect(screen.getByText(/to reach this by your target date/i)).toBeInTheDocument()
+    })
+  })
+
   it('hides edit/assign/archive actions for an archived goal', async () => {
     server.use(
       http.get('/api/savings-goals/g1', () =>

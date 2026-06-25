@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { PageHeader, LoadingState, ErrorState, EmptyState } from '@/components/shared'
-import { GoalProgress, GoalModal, AllocateModal, ArchiveGoalDialog } from '@/components/goals'
+import { GoalProgress, GoalInsights, GoalModal, AllocateModal, ArchiveGoalDialog } from '@/components/goals'
 import { useGoal } from '@/hooks'
 import { ROUTES } from '@/routes'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { computeProgress } from '@/lib/goal-projection'
 
 export function GoalDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -52,6 +53,7 @@ export function GoalDetailPage() {
   }
 
   const isArchived = goal.status === 'ARCHIVED'
+  const progress = computeProgress(goal)
 
   return (
     <div>
@@ -102,6 +104,14 @@ export function GoalDetailPage() {
                   {goal.targetAmount !== null ? formatCurrency(goal.targetAmount) : '—'}
                 </p>
               </div>
+              {progress && (
+                <div>
+                  <p className="text-sm text-muted-foreground">Remaining</p>
+                  <p className="text-lg tabular-nums text-foreground">
+                    {formatCurrency(progress.remaining)}
+                  </p>
+                </div>
+              )}
               {goal.endDate && (
                 <div>
                   <p className="text-sm text-muted-foreground">Target date</p>
@@ -111,6 +121,8 @@ export function GoalDetailPage() {
             </div>
           </CardContent>
         </Card>
+
+        <GoalInsights goal={goal} />
 
         <div>
           <h2 className="text-lg font-semibold tracking-tight text-foreground mb-3">

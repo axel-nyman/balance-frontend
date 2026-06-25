@@ -34,6 +34,8 @@ export interface WizardSavingsItem {
   amount: number // Required: Must be positive
   bankAccountId: string // Required: Target savings account
   bankAccountName: string // Display only
+  savingsGoalId?: string // Optional: earmark toward this goal on lock
+  savingsGoalName?: string // Display only
 }
 
 // =============================================================================
@@ -121,6 +123,7 @@ export function toSavingsRequest(item: WizardSavingsItem): CreateBudgetSavingsRe
     name: item.name,
     amount: item.amount,
     bankAccountId: item.bankAccountId,
+    savingsGoalId: item.savingsGoalId,
   }
 }
 

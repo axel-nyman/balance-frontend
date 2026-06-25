@@ -16,6 +16,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { AccountSelect } from '@/components/accounts'
+import { GoalSelect } from '@/components/goals'
 
 import { wizardItemSchema, type WizardItemFormData } from './schemas'
 import type { WizardIncomeItem, WizardExpenseItem, WizardSavingsItem } from './types'
@@ -74,6 +75,7 @@ export function WizardItemEditModal({
 }: WizardItemEditModalProps) {
   const config = CONFIG[itemType]
   const accountNameRef = useRef<string>('')
+  const goalNameRef = useRef<string>('')
 
   const {
     register,
@@ -89,10 +91,12 @@ export function WizardItemEditModal({
       amount: undefined,
       bankAccountId: '',
       isManual: false,
+      savingsGoalId: undefined,
     },
   })
 
   const selectedAccountId = watch('bankAccountId')
+  const selectedGoalId = watch('savingsGoalId')
   const isManual = watch('isManual')
 
   useEffect(() => {
@@ -102,8 +106,12 @@ export function WizardItemEditModal({
         amount: item.amount || undefined,
         bankAccountId: item.bankAccountId,
         isManual: itemType === 'expense' ? (item as WizardExpenseItem).isManual : undefined,
+        savingsGoalId:
+          itemType === 'savings' ? (item as WizardSavingsItem).savingsGoalId : undefined,
       })
       accountNameRef.current = item.bankAccountName
+      goalNameRef.current =
+        itemType === 'savings' ? (item as WizardSavingsItem).savingsGoalName ?? '' : ''
     }
   }, [item, reset, itemType])
 
@@ -121,6 +129,12 @@ export function WizardItemEditModal({
 
     if (itemType === 'expense' && data.isManual !== undefined) {
       ;(updates as Partial<WizardExpenseItem>).isManual = data.isManual
+    }
+
+    if (itemType === 'savings') {
+      ;(updates as Partial<WizardSavingsItem>).savingsGoalId = data.savingsGoalId
+      ;(updates as Partial<WizardSavingsItem>).savingsGoalName =
+        data.savingsGoalId ? goalNameRef.current || undefined : undefined
     }
 
     onSave(item.id, updates)
@@ -195,6 +209,24 @@ export function WizardItemEditModal({
               <p className="text-sm text-destructive">{errors.amount.message}</p>
             )}
           </div>
+
+          {/* Goal Field (Savings Only) */}
+          {itemType === 'savings' && (
+            <div className="space-y-2">
+              <Label htmlFor="savings-goal">Goal</Label>
+              <GoalSelect
+                value={selectedGoalId ?? undefined}
+                onValueChange={(goalId, goalName) => {
+                  setValue('savingsGoalId', goalId)
+                  goalNameRef.current = goalName ?? ''
+                }}
+                label="Goal"
+              />
+              <p className="text-sm text-muted-foreground">
+                Link this saving to a goal to earmark it when the budget locks.
+              </p>
+            </div>
+          )}
 
           {/* Manual Checkbox (Expense Only) */}
           {itemType === 'expense' && (

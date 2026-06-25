@@ -7,6 +7,7 @@ interface WizardItemCardProps {
   name: string
   amount: number
   bankAccountName: string
+  goalName?: string
   isRecurring?: boolean
   isManual?: boolean
   isDue?: boolean
@@ -21,6 +22,7 @@ export function WizardItemCard({
   name,
   amount,
   bankAccountName,
+  goalName,
   isRecurring,
   isManual,
   isDue,
@@ -121,20 +123,27 @@ export function WizardItemCard({
           </span>
         </div>
 
-        {/* Row 2: Bank account badge + Amount */}
+        {/* Row 2: Bank account badge (+ goal) + Amount */}
         <div className="flex items-center justify-between mt-2">
-          {bankAccountName ? (
-            <Badge variant="secondary" className="text-xs font-normal">
-              {bankAccountName}
-            </Badge>
-          ) : (
-            <Badge
-              variant="outline"
-              className="text-xs font-normal text-muted-foreground"
-            >
-              No account
-            </Badge>
-          )}
+          <div className="flex items-center gap-1.5 min-w-0">
+            {bankAccountName ? (
+              <Badge variant="secondary" className="text-xs font-normal">
+                {bankAccountName}
+              </Badge>
+            ) : (
+              <Badge
+                variant="outline"
+                className="text-xs font-normal text-muted-foreground"
+              >
+                No account
+              </Badge>
+            )}
+            {goalName && (
+              <Badge variant="outline" className="text-xs font-normal text-savings">
+                {goalName}
+              </Badge>
+            )}
+          </div>
           <span className={`font-semibold ${amountColorClass}`}>
             {formatCurrency(amount)}
           </span>

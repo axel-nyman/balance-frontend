@@ -12,7 +12,7 @@ import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
 import { SavingsItemModal } from '@/components/budget-detail/SavingsItemModal'
 import { BudgetActions } from '@/components/budget-detail/BudgetActions'
 import { DueRecurringHint } from '@/components/budget-detail/DueRecurringHint'
-import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings } from '@/hooks'
+import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings, useGoals } from '@/hooks'
 import { formatMonthYear } from '@/lib/utils'
 import type { BudgetIncome, BudgetExpense, BudgetSavings } from '@/api/types'
 
@@ -35,19 +35,33 @@ function mapExpensesToSectionItems(expenses: BudgetExpense[]) {
   }))
 }
 
-function mapSavingsToSectionItems(savings: BudgetSavings[]) {
-  return savings.map((item) => ({
-    id: item.id,
-    label: item.name,
-    amount: item.amount,
-    sublabel: item.bankAccount.name,
-  }))
+function mapSavingsToSectionItems(
+  savings: BudgetSavings[],
+  goalNamesById: Map<string, string>
+) {
+  return savings.map((item) => {
+    const goalName = item.savingsGoalId
+      ? goalNamesById.get(item.savingsGoalId)
+      : undefined
+    return {
+      id: item.id,
+      label: item.name,
+      amount: item.amount,
+      sublabel: goalName
+        ? `${item.bankAccount.name} · ${goalName}`
+        : item.bankAccount.name,
+    }
+  })
 }
 
 export function BudgetDetailPage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { data: budget, isLoading, isError, refetch } = useBudget(id!)
+  const { data: goalsData } = useGoals()
+  const goalNamesById = new Map(
+    (goalsData?.goals ?? []).map((goal) => [goal.id, goal.name])
+  )
   const deleteIncome = useDeleteIncome(id!)
   const deleteExpense = useDeleteExpense(id!)
   const deleteSavings = useDeleteSavings(id!)
@@ -254,7 +268,7 @@ export function BudgetDetailPage() {
 
         <BudgetSection
           title="Savings"
-          items={mapSavingsToSectionItems(budget.savings)}
+          items={mapSavingsToSectionItems(budget.savings, goalNamesById)}
           total={budget.totals.savings}
           totalColor="blue"
           isEditable={!isLocked}

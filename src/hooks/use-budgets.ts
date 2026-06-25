@@ -76,6 +76,9 @@ export function useLockBudget() {
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.all })
+      // Locking earmarks goal-linked savings (item 070c), so goal allocations
+      // change too — refresh the goals views immediately.
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all })
     },
   })
 }
@@ -89,6 +92,8 @@ export function useUnlockBudget() {
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.detail(id) })
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.all })
+      // Unlocking reverses the goal earmarks made on lock (item 070c).
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all })
     },
   })
 }

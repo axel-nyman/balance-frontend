@@ -23,6 +23,8 @@ export const savingsItemSchema = z.object({
     .number({ message: 'Must be a number' })
     .positive('Amount must be greater than 0'),
   bankAccountId: z.string().min(1, 'Account is required'),
+  // Optional link to a savings goal; undefined means no goal.
+  savingsGoalId: z.string().optional(),
 })
 
 export type IncomeItemFormData = z.infer<typeof incomeItemSchema>

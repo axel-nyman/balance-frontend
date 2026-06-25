@@ -21,7 +21,11 @@ import {
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60, // 1 minute
+      // Treat data as immediately stale so every navigation/mount and window
+      // focus refetches. Balance runs on a LAN for two users, so the extra
+      // requests are cheap and keep views (notably goals after a budget lock)
+      // current without waiting for the background poll.
+      staleTime: 0,
       refetchOnWindowFocus: true,
       retry: 1,
     },

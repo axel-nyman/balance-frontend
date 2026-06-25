@@ -87,9 +87,17 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
     })
   }
 
-  const addRow = () => setSeedRows((rows) => [...rows, EMPTY_ROW])
-  const removeRow = (index: number) =>
+  const addRow = () => {
+    setSeedRows((rows) => [...rows, EMPTY_ROW])
+    setSeedErrors({})
+  }
+  // Removing the sole row clears it back to empty so the goal can still be
+  // created with no initial allocations; additional rows are dropped outright.
+  // Errors are index-keyed, so reset them on any structural change.
+  const removeRow = (index: number) => {
     setSeedRows((rows) => (rows.length === 1 ? [EMPTY_ROW] : rows.filter((_, i) => i !== index)))
+    setSeedErrors({})
+  }
 
   const buildSeedAllocations = (): SeedAllocationRequest[] | null => {
     const allocations: SeedAllocationRequest[] = []
@@ -207,6 +215,10 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
               {seedRows.map((row, index) => {
                 const account = accounts.find((a) => a.id === row.bankAccountId)
                 const amount = Number(row.amount)
+                // The sole row gets a clear control once it has any content, so a
+                // user who picked an account can undo back to "no allocations".
+                const isOnlyRow = seedRows.length === 1
+                const canRemove = !isOnlyRow || Boolean(row.bankAccountId) || row.amount !== ''
                 return (
                   <div key={index} className="space-y-2">
                     {index > 0 && <div className="border-t border-border" />}
@@ -221,14 +233,14 @@ export function GoalModal({ goal, open, onOpenChange }: GoalModalProps) {
                           excludeIds={chosenAccountIds.filter((id) => id !== row.bankAccountId)}
                         />
                       </div>
-                      {seedRows.length > 1 && (
+                      {canRemove && (
                         <Button
                           type="button"
                           variant="ghost"
                           size="icon"
                           className="text-muted-foreground"
                           onClick={() => removeRow(index)}
-                          aria-label="Remove allocation"
+                          aria-label={isOnlyRow ? 'Clear allocation' : 'Remove allocation'}
                         >
                           <X className="h-4 w-4" />
                         </Button>

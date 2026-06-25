@@ -190,17 +190,48 @@ describe('GoalsPage', () => {
     expect(postCalled).toBe(false)
   })
 
-  it('only shows the remove-allocation control once a second row exists', async () => {
+  it('exposes a clear control on the sole row once it has content, remove controls for extra rows', async () => {
     render(<GoalsPage />)
     await userEvent.click(screen.getByRole('button', { name: /new goal/i }))
 
-    // Single (default) row: no remove control.
+    // Untouched single row: nothing to clear or remove.
+    expect(screen.queryByLabelText(/clear allocation/i)).not.toBeInTheDocument()
     expect(screen.queryByLabelText(/remove allocation/i)).not.toBeInTheDocument()
 
-    await userEvent.click(screen.getByRole('button', { name: /add another account/i }))
+    // Once the sole row has an account, a clear control appears so the choice
+    // can be undone.
+    await selectAccount('Checking')
+    expect(screen.getByLabelText(/clear allocation/i)).toBeInTheDocument()
 
-    // Two rows now: each is removable.
+    // Adding a second row makes both rows removable.
+    await userEvent.click(screen.getByRole('button', { name: /add another account/i }))
     expect(screen.getAllByLabelText(/remove allocation/i)).toHaveLength(2)
+  })
+
+  it('clears the sole allocation row so the goal can be created with no allocations', async () => {
+    let createBody: Record<string, unknown> | null = null
+    server.use(
+      http.post('/api/savings-goals', async ({ request }) => {
+        createBody = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ ...mockGoal, name: 'No alloc' }, { status: 201 })
+      })
+    )
+
+    render(<GoalsPage />)
+    await userEvent.click(screen.getByRole('button', { name: /new goal/i }))
+    await userEvent.type(screen.getByLabelText(/^name/i), 'No alloc')
+
+    // Try the account picker, then change your mind and clear the row.
+    await selectAccount('Checking')
+    await userEvent.click(screen.getByLabelText(/clear allocation/i))
+
+    // The account is deselected and create goes through with no allocations.
+    await userEvent.click(screen.getByRole('button', { name: /^create$/i }))
+
+    await waitFor(() => {
+      expect(createBody).toMatchObject({ name: 'No alloc' })
+    })
+    expect(createBody).not.toHaveProperty('allocations')
   })
 
   it('drives the seed amount from the allocation slider', async () => {

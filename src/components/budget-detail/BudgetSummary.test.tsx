@@ -19,7 +19,7 @@ function makeBudget(overrides: Partial<BudgetDetail> = {}): BudgetDetail {
     lockedAt: null,
     income: [{ id: 'i1', name: 'Salary', amount: 50000, bankAccount: { id: 'a1', name: 'Main' } }],
     expenses: [{ id: 'e1', name: 'Rent', amount: 30000, bankAccount: { id: 'a1', name: 'Main' }, recurringExpenseId: null, deductedAt: null, isManual: false }],
-    savings: [{ id: 's1', name: 'Savings', amount: 10000, bankAccount: { id: 'a2', name: 'Savings' } }],
+    savings: [{ id: 's1', name: 'Savings', amount: 10000, bankAccount: { id: 'a2', name: 'Savings' }, savingsGoalId: null }],
     totals: { income: 50000, expenses: 30000, savings: 10000, balance: 10000 },
     ...overrides,
   }

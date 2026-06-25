@@ -179,6 +179,7 @@ export interface BudgetSavings {
   name: string
   amount: number
   bankAccount: BankAccountRef
+  savingsGoalId: string | null
 }
 
 export interface BudgetDetail {
@@ -232,12 +233,14 @@ export interface CreateBudgetSavingsRequest {
   name: string
   amount: number
   bankAccountId: string
+  savingsGoalId?: string
 }
 
 export interface UpdateBudgetSavingsRequest {
   name: string
   amount: number
   bankAccountId: string
+  savingsGoalId?: string | null
 }
 
 // =============================================================================

@@ -13,8 +13,9 @@ import {
 } from '@/components/ui/table'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { AccountSelect } from '@/components/accounts'
+import { GoalSelect } from '@/components/goals'
 import { useWizard } from '../WizardContext'
-import { useAccounts, useIsMobile } from '@/hooks'
+import { useAccounts, useGoals, useIsMobile } from '@/hooks'
 import { useLastBudget } from '@/hooks/use-last-budget'
 import { cn, formatCurrency, generateId } from '@/lib/utils'
 import { WizardItemCard } from '../WizardItemCard'
@@ -38,6 +39,8 @@ export function StepSavings() {
   const [editingItem, setEditingItem] = useState<WizardSavingsItem | null>(null)
 
   const accounts = accountsData?.accounts ?? []
+  const { data: goalsData } = useGoals()
+  const goals = goalsData?.goals ?? []
 
   // Calculate totals
   const totalIncome = state.incomeItems.reduce(
@@ -130,6 +133,10 @@ export function StepSavings() {
           amount: item.amount,
           bankAccountId: item.bankAccount.id,
           bankAccountName: item.bankAccount.name,
+          savingsGoalId: item.savingsGoalId ?? undefined,
+          savingsGoalName: item.savingsGoalId
+            ? goals.find((g) => g.id === item.savingsGoalId)?.name
+            : undefined,
         },
       })
     })
@@ -251,8 +258,9 @@ export function StepSavings() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[35%]">Name</TableHead>
-                  <TableHead className="w-[35%]">Account</TableHead>
+                  <TableHead className="w-[28%]">Name</TableHead>
+                  <TableHead className="w-[26%]">Account</TableHead>
+                  <TableHead className="w-[26%]">Goal</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
                   <TableHead className="w-[50px]"></TableHead>
                 </TableRow>
@@ -261,7 +269,7 @@ export function StepSavings() {
                 {state.savingsItems.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={4}
+                      colSpan={5}
                       className="text-center text-muted-foreground py-8"
                     >
                       No savings planned yet. Savings are optional.
@@ -302,6 +310,22 @@ export function StepSavings() {
                             triggerClassName="border-0 shadow-none focus:ring-0 px-0"
                           />
                         </TableCell>
+                        <TableCell>
+                          <GoalSelect
+                            value={item.savingsGoalId}
+                            onValueChange={(goalId, goalName) => {
+                              dispatch({
+                                type: 'UPDATE_SAVINGS_ITEM',
+                                id: item.id,
+                                updates: {
+                                  savingsGoalId: goalId,
+                                  savingsGoalName: goalName,
+                                },
+                              })
+                            }}
+                            triggerClassName="border-0 shadow-none focus:ring-0 px-0"
+                          />
+                        </TableCell>
                         <TableCell className="text-right">
                           <Input
                             type="number"
@@ -334,7 +358,7 @@ export function StepSavings() {
               {state.savingsItems.length > 0 && (
                 <TableFooter>
                   <TableRow>
-                    <TableCell colSpan={2} className="font-medium">
+                    <TableCell colSpan={3} className="font-medium">
                       Total
                     </TableCell>
                     <TableCell className="text-right font-semibold text-savings">
@@ -365,6 +389,7 @@ export function StepSavings() {
                       name={item.name}
                       amount={item.amount}
                       bankAccountName={item.bankAccountName}
+                      goalName={item.savingsGoalName}
                       amountColorClass="text-savings"
                       onClick={() => setEditingItem(item)}
                     />

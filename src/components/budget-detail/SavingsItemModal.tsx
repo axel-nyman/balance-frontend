@@ -12,21 +12,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { AccountSelect } from '@/components/accounts'
-import { useAddSavings, useUpdateSavings, useGoals } from '@/hooks'
+import { GoalSelect } from '@/components/goals'
+import { useAddSavings, useUpdateSavings } from '@/hooks'
 import { savingsItemSchema, type SavingsItemFormData } from './schemas'
 import type { BudgetSavings } from '@/api/types'
-
-// Radix Select disallows an empty-string item value, so use a sentinel for
-// "no goal" and translate it to undefined on the form.
-const NO_GOAL_VALUE = '__no_goal__'
 
 interface SavingsItemModalProps {
   budgetId: string
@@ -38,8 +28,6 @@ interface SavingsItemModalProps {
 export function SavingsItemModal({ budgetId, item, open, onOpenChange }: SavingsItemModalProps) {
   const addSavings = useAddSavings(budgetId)
   const updateSavings = useUpdateSavings(budgetId)
-  const { data: goalsData } = useGoals()
-  const goals = goalsData?.goals ?? []
   const isEditing = item !== null
 
   const {
@@ -157,27 +145,10 @@ export function SavingsItemModal({ budgetId, item, open, onOpenChange }: Savings
 
           <div className="space-y-2">
             <Label htmlFor="savingsGoalId">Goal</Label>
-            <Select
-              value={selectedGoalId ?? NO_GOAL_VALUE}
-              onValueChange={(value) =>
-                setValue(
-                  'savingsGoalId',
-                  value === NO_GOAL_VALUE ? undefined : value
-                )
-              }
-            >
-              <SelectTrigger id="savingsGoalId" aria-label="Goal">
-                <SelectValue placeholder="No goal" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={NO_GOAL_VALUE}>No goal</SelectItem>
-                {goals.map((goal) => (
-                  <SelectItem key={goal.id} value={goal.id}>
-                    {goal.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <GoalSelect
+              value={selectedGoalId ?? undefined}
+              onValueChange={(goalId) => setValue('savingsGoalId', goalId)}
+            />
             <p className="text-sm text-muted-foreground">
               Link this saving to a goal to earmark it when the budget locks.
             </p>

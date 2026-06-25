@@ -90,6 +90,32 @@ describe('StepSavings', () => {
     )
   })
 
+  function mockGoals() {
+    server.use(
+      http.get('/api/savings-goals', () =>
+        HttpResponse.json({
+          goalCount: 1,
+          goals: [
+            {
+              id: 'goal-1',
+              name: 'Vacation',
+              targetAmount: null,
+              endDate: null,
+              status: 'ACTIVE',
+              totalAllocated: 0,
+              progressPercentage: null,
+              completed: false,
+              allocations: [],
+              archivedAt: null,
+              createdAt: '2026-01-01T00:00:00Z',
+              updatedAt: '2026-01-01T00:00:00Z',
+            },
+          ],
+        })
+      )
+    )
+  }
+
   it('renders savings table with headers', async () => {
     renderWithWizard()
 
@@ -99,7 +125,30 @@ describe('StepSavings', () => {
     })
 
     expect(screen.getByText('Account')).toBeInTheDocument()
+    expect(screen.getByText('Goal')).toBeInTheDocument()
     expect(screen.getByText('Amount')).toBeInTheDocument()
+  })
+
+  it('persists a selected goal on the savings item', async () => {
+    mockGoals()
+    renderWithWizard()
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: /add savings/i })
+      ).toBeInTheDocument()
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
+
+    // Row comboboxes are [account, goal]; pick a goal on the second one.
+    await userEvent.click(screen.getAllByRole('combobox')[1])
+    await userEvent.click(await screen.findByRole('option', { name: 'Vacation' }))
+
+    // The goal select now reflects the persisted link.
+    expect(screen.getByRole('combobox', { name: /goal/i })).toHaveTextContent(
+      'Vacation'
+    )
   })
 
   it('shows empty state message when no items', async () => {
@@ -230,7 +279,8 @@ describe('StepSavings', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
 
-    const accountSelect = screen.getByRole('combobox')
+    // First combobox in the row is the account select (goal select follows).
+    const accountSelect = screen.getAllByRole('combobox')[0]
     await userEvent.click(accountSelect)
 
     await waitFor(() => {
@@ -311,7 +361,9 @@ describe('StepSavings', () => {
 
     // Add first savings item and select an account
     await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
-    const firstSelect = screen.getByRole('combobox')
+    // Each row has an account select then a goal select, so the account
+    // select for the first row is the first combobox.
+    const firstSelect = screen.getAllByRole('combobox')[0]
     await userEvent.click(firstSelect)
     await waitFor(() => {
       expect(screen.getByText('Savings Account')).toBeInTheDocument()
@@ -321,9 +373,10 @@ describe('StepSavings', () => {
     // Add second savings item
     await userEvent.click(screen.getByRole('button', { name: /add savings/i }))
 
-    // The second dropdown should also show "Savings Account"
+    // Comboboxes are now [account1, goal1, account2, goal2]; the second row's
+    // account select is index 2.
     const selects = screen.getAllByRole('combobox')
-    await userEvent.click(selects[1])
+    await userEvent.click(selects[2])
 
     await waitFor(() => {
       // Both accounts should be available in the dropdown

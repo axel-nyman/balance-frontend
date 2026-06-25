@@ -8,6 +8,7 @@ export const wizardItemSchema = z.object({
     .positive('Amount must be greater than 0'),
   bankAccountId: z.string().min(1, 'Account is required'),
   isManual: z.boolean().optional(),
+  savingsGoalId: z.string().optional(),
 })
 
 export type WizardItemFormData = z.infer<typeof wizardItemSchema>

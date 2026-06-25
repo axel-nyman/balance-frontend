@@ -135,7 +135,11 @@ export function StepReview({ lockAfterSave, onLockAfterSaveChange, isBalanced }:
                 <div key={item.id} className="flex justify-between">
                   <div className="flex flex-col">
                     <span className="text-foreground">{item.name}</span>
-                    <span className="text-xs text-muted-foreground">{item.bankAccountName}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.savingsGoalName
+                        ? `${item.bankAccountName} · ${item.savingsGoalName}`
+                        : item.bankAccountName}
+                    </span>
                   </div>
                   <span>{formatCurrency(item.amount)}</span>
                 </div>

@@ -20,7 +20,10 @@ export class ApiClientError extends Error {
   constructor(
     public originalMessage: string,
     public userMessage: string,
-    public status: number
+    public status: number,
+    /** Full parsed error body, when the response was JSON. Lets callers read
+     * structured conflict detail (e.g. the item 070d reallocation conflict). */
+    public body?: unknown
   ) {
     super(userMessage)
     this.name = 'ApiClientError'
@@ -34,11 +37,12 @@ function mapErrorMessage(apiError: string): string {
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorMessage = 'An unexpected error occurred'
+    let errorBody: unknown
 
     try {
-      const errorBody = await response.json()
-      if (errorBody.error) {
-        errorMessage = errorBody.error
+      errorBody = await response.json()
+      if (errorBody && typeof errorBody === 'object' && 'error' in errorBody) {
+        errorMessage = (errorBody as { error: string }).error
       }
     } catch {
       // Response wasn't JSON, use status text
@@ -48,7 +52,8 @@ async function handleResponse<T>(response: Response): Promise<T> {
     throw new ApiClientError(
       errorMessage,
       mapErrorMessage(errorMessage),
-      response.status
+      response.status,
+      errorBody
     )
   }
 

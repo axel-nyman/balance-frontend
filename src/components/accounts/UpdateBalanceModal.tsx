@@ -134,7 +134,10 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
           `${a.changeAmount < 0 ? '−' : '+'}${formatCurrency(Math.abs(a.changeAmount))} ${a.goalName}`
       )
       .join('; ')
-    toast.success('Balance updated', { description: `Goal allocations: ${description}` })
+    toast.success('Balance updated', {
+      description: `Goal allocations: ${description}`,
+      classNames: { description: 'text-foreground!' },
+    })
   }
 
   const buildIncreaseReallocation = (delta: number): ReallocationEntry[] | undefined => {
@@ -263,16 +266,24 @@ export function UpdateBalanceModal({ account, open, onOpenChange }: UpdateBalanc
             </div>
 
             {showEarmark && singleGoal && (
-              <div className="flex items-start gap-2 rounded-xl border p-3">
+              <div className="flex items-start gap-3 rounded-xl border p-3">
                 <Checkbox
                   id="earmark-single"
                   checked={earmarkSingle}
                   onCheckedChange={(checked) => setEarmarkSingle(checked === true)}
                   className="mt-0.5"
                 />
-                <Label htmlFor="earmark-single" className="font-normal leading-snug">
-                  Also add the {formatCurrency(increase)} increase to{' '}
-                  <span className="font-medium">{backingGoals[0].name}</span>?
+                <Label
+                  htmlFor="earmark-single"
+                  className="flex-1 space-y-0.5 font-normal leading-snug"
+                >
+                  <span className="block">
+                    Earmark this increase toward{' '}
+                    <span className="font-medium">{backingGoals[0].name}</span>
+                  </span>
+                  <span className="block text-sm text-muted-foreground">
+                    +{formatCurrency(increase)}
+                  </span>
                 </Label>
               </div>
             )}

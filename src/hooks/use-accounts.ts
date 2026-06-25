@@ -79,6 +79,8 @@ export function useUpdateBalance() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.accounts.history(variables.id) })
+      // A balance update can reduce or add goal earmarks (item 070d), so refresh goals too.
+      queryClient.invalidateQueries({ queryKey: queryKeys.goals.all })
     },
   })
 }

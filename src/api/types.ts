@@ -54,6 +54,43 @@ export interface UpdateBalanceRequest {
   newBalance: number
   date: string
   comment?: string
+  /**
+   * Optional savings-goal reallocation (item 070d). Signed per-goal changes that
+   * resolve the balance update against this account's earmarks: negative reduces
+   * (splits a deficit on a decrease), positive adds (earmarks an increase).
+   * Omitted on the common case.
+   */
+  reallocation?: ReallocationEntry[]
+}
+
+export interface ReallocationEntry {
+  savingsGoalId: string
+  changeBy: number
+}
+
+/** A goal earmark adjusted as part of a balance update (item 070d). */
+export interface AllocationAdjustment {
+  savingsGoalId: string
+  goalName: string
+  changeAmount: number
+  resultingAmount: number
+}
+
+/** 409 body when a decrease over-allocates an account backed by 2+ goals (item 070d). */
+export interface ReallocationConflictResponse {
+  error: string
+  accountId: string
+  accountName: string
+  newBalance: number
+  totalAllocated: number
+  requiredReduction: number
+  goals: ReallocationConflictGoal[]
+}
+
+export interface ReallocationConflictGoal {
+  savingsGoalId: string
+  goalName: string
+  currentAllocation: number
 }
 
 export interface BalanceUpdateResponse {
@@ -63,6 +100,8 @@ export interface BalanceUpdateResponse {
   previousBalance: number
   changeAmount: number
   lastUpdated: string
+  /** Earmarks adjusted by this update; empty/absent when none changed (item 070d). */
+  allocationAdjustments?: AllocationAdjustment[]
 }
 
 export interface BalanceHistoryEntry {

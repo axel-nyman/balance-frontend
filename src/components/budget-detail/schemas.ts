@@ -27,6 +27,16 @@ export const savingsItemSchema = z.object({
   savingsGoalId: z.string().optional(),
 })
 
+export const editBudgetMonthSchema = z.object({
+  month: z
+    .number({ message: 'Month is required' })
+    .int()
+    .min(1, 'Month must be between 1 and 12')
+    .max(12, 'Month must be between 1 and 12'),
+  year: z.number({ message: 'Year is required' }).int(),
+})
+
 export type IncomeItemFormData = z.infer<typeof incomeItemSchema>
 export type ExpenseItemFormData = z.infer<typeof expenseItemSchema>
 export type SavingsItemFormData = z.infer<typeof savingsItemSchema>
+export type EditBudgetMonthFormData = z.infer<typeof editBudgetMonthSchema>

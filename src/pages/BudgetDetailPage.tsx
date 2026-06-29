@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
-import { Lock, ListTodo } from 'lucide-react'
+import { Lock, ListTodo, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,6 +10,7 @@ import { BudgetSection } from '@/components/budget-detail/BudgetSection'
 import { IncomeItemModal } from '@/components/budget-detail/IncomeItemModal'
 import { ExpenseItemModal } from '@/components/budget-detail/ExpenseItemModal'
 import { SavingsItemModal } from '@/components/budget-detail/SavingsItemModal'
+import { EditBudgetMonthModal } from '@/components/budget-detail/EditBudgetMonthModal'
 import { BudgetActions } from '@/components/budget-detail/BudgetActions'
 import { DueRecurringHint } from '@/components/budget-detail/DueRecurringHint'
 import { useBudget, useDeleteIncome, useDeleteExpense, useDeleteSavings, useGoals } from '@/hooks'
@@ -77,6 +78,9 @@ export function BudgetDetailPage() {
   const [editingExpense, setEditingExpense] = useState<BudgetExpense | null>(null)
   const [deleteExpenseDialogOpen, setDeleteExpenseDialogOpen] = useState(false)
   const [deletingExpenseId, setDeletingExpenseId] = useState<string | null>(null)
+
+  // Edit-month modal state
+  const [editMonthModalOpen, setEditMonthModalOpen] = useState(false)
 
   // Savings modal state
   const [savingsModalOpen, setSavingsModalOpen] = useState(false)
@@ -217,13 +221,18 @@ export function BudgetDetailPage() {
         }
         action={
           <div className="flex gap-2">
-            {isLocked && (
+            {isLocked ? (
               <Button
                 variant="outline"
                 onClick={() => navigate(`/budgets/${id}/todo`)}
               >
                 <ListTodo className="w-4 h-4 mr-2" />
                 Todo List
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={() => setEditMonthModalOpen(true)}>
+                <Pencil className="w-4 h-4 mr-2" />
+                Edit Month
               </Button>
             )}
             <BudgetActions budgetId={id!} status={budget.status} />
@@ -278,6 +287,17 @@ export function BudgetDetailPage() {
           onDelete={handleDeleteSavingsClick}
         />
       </div>
+
+      {/* Edit Month Modal (UNLOCKED only) */}
+      {!isLocked && (
+        <EditBudgetMonthModal
+          budgetId={id!}
+          month={budget.month}
+          year={budget.year}
+          open={editMonthModalOpen}
+          onOpenChange={setEditMonthModalOpen}
+        />
+      )}
 
       {/* Income Modal */}
       <IncomeItemModal

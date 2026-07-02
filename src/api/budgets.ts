@@ -4,6 +4,7 @@ import type {
   BudgetDetail,
   BudgetSummary,
   CreateBudgetRequest,
+  UpdateBudgetRequest,
   CreateBudgetIncomeRequest,
   UpdateBudgetIncomeRequest,
   CreateBudgetExpenseRequest,
@@ -26,6 +27,10 @@ export async function getBudget(id: string): Promise<BudgetDetail> {
 
 export async function createBudget(data: CreateBudgetRequest): Promise<BudgetSummary> {
   return apiPost('/budgets', data)
+}
+
+export async function updateBudget(id: string, data: UpdateBudgetRequest): Promise<BudgetSummary> {
+  return apiPut(`/budgets/${id}`, data)
 }
 
 export async function deleteBudget(id: string): Promise<void> {

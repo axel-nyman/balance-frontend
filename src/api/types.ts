@@ -239,6 +239,11 @@ export interface CreateBudgetRequest {
   year: number
 }
 
+export interface UpdateBudgetRequest {
+  month: number
+  year: number
+}
+
 export interface CreateBudgetIncomeRequest {
   name: string
   amount: number

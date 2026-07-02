@@ -105,6 +105,29 @@ describe('BudgetDetailPage', () => {
     })
   })
 
+  it('shows the edit-month pen action for unlocked budgets', async () => {
+    renderBudgetDetailPage()
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /edit month/i })).toBeInTheDocument()
+    })
+  })
+
+  it('hides the edit-month pen action for locked budgets', async () => {
+    server.use(
+      http.get('/api/budgets/123', () => {
+        return HttpResponse.json({ ...mockBudget, status: 'LOCKED' })
+      })
+    )
+
+    renderBudgetDetailPage()
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /todo list/i })).toBeInTheDocument()
+    })
+    expect(screen.queryByRole('button', { name: /edit month/i })).not.toBeInTheDocument()
+  })
+
   it('shows error state for non-existent budget', async () => {
     server.use(
       http.get('/api/budgets/999', () => {

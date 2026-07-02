@@ -5,6 +5,7 @@ import {
   getBudgets,
   getBudget,
   createBudget,
+  updateBudget,
   deleteBudget,
   lockBudget,
   unlockBudget,
@@ -20,6 +21,7 @@ import {
 } from '@/api'
 import type {
   CreateBudgetRequest,
+  UpdateBudgetRequest,
   CreateBudgetIncomeRequest,
   UpdateBudgetIncomeRequest,
   CreateBudgetExpenseRequest,
@@ -52,6 +54,18 @@ export function useCreateBudget() {
     mutationFn: (data: CreateBudgetRequest) => createBudget(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
+    },
+  })
+}
+
+export function useUpdateBudget(id: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: UpdateBudgetRequest) => updateBudget(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.budgets.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.budgets.detail(id) })
     },
   })
 }

@@ -105,7 +105,7 @@ describe('BudgetDetailPage', () => {
     })
   })
 
-  it('shows Edit Month button for unlocked budgets', async () => {
+  it('shows the edit-month pen action for unlocked budgets', async () => {
     renderBudgetDetailPage()
 
     await waitFor(() => {
@@ -113,7 +113,7 @@ describe('BudgetDetailPage', () => {
     })
   })
 
-  it('hides Edit Month button for locked budgets', async () => {
+  it('hides the edit-month pen action for locked budgets', async () => {
     server.use(
       http.get('/api/budgets/123', () => {
         return HttpResponse.json({ ...mockBudget, status: 'LOCKED' })

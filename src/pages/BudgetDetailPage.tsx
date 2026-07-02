@@ -207,6 +207,19 @@ export function BudgetDetailPage() {
     <div>
       <PageHeader
         title={title}
+        titleAction={
+          !isLocked && (
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setEditMonthModalOpen(true)}
+              aria-label="Edit month"
+              title="Edit month"
+            >
+              <Pencil className="w-4 h-4" />
+            </Button>
+          )
+        }
         description={
           <Badge variant={isLocked ? 'default' : 'secondary'} className="mt-1">
             {isLocked ? (
@@ -221,18 +234,13 @@ export function BudgetDetailPage() {
         }
         action={
           <div className="flex gap-2">
-            {isLocked ? (
+            {isLocked && (
               <Button
                 variant="outline"
                 onClick={() => navigate(`/budgets/${id}/todo`)}
               >
                 <ListTodo className="w-4 h-4 mr-2" />
                 Todo List
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={() => setEditMonthModalOpen(true)}>
-                <Pencil className="w-4 h-4 mr-2" />
-                Edit Month
               </Button>
             )}
             <BudgetActions budgetId={id!} status={budget.status} />

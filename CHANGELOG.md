@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.10.0...balance-frontend-v1.11.0) (2026-07-03)
+
+
+### Features
+
+* add month-over-month trends chart to the budgets page (item 110) ([#30](https://github.com/axel-nyman/balance-frontend/issues/30)) ([d2ddff4](https://github.com/axel-nyman/balance-frontend/commit/d2ddff4383c742b3edd76fc98f177864ee52b697))
+* edit budget month/year on the detail page (item 080) ([#28](https://github.com/axel-nyman/balance-frontend/issues/28)) ([fef8b45](https://github.com/axel-nyman/balance-frontend/commit/fef8b456f377be3797d878d11edae13770810827))
+
 ## [1.10.0](https://github.com/axel-nyman/balance-frontend/compare/balance-frontend-v1.9.0...balance-frontend-v1.10.0) (2026-06-25)
 
 

@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { PageHeader } from '@/components/shared'
-import { BudgetGrid } from '@/components/budgets'
+import { BudgetGrid, BudgetTrendsCard } from '@/components/budgets'
 import { useBudgets } from '@/hooks/use-budgets'
 import { useBudgetValidation } from '@/hooks/use-budget-validation'
 
@@ -36,6 +36,8 @@ export function BudgetsPage() {
           </Button>
         }
       />
+
+      <BudgetTrendsCard budgets={data?.budgets ?? []} />
 
       <BudgetGrid
         budgets={data?.budgets ?? []}
